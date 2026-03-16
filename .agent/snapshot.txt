@@ -1,0 +1,83 @@
+Trạng thái hiện tại của trang sorajapan.edu.vn
+Trang web sorajapan.edu.vn hiện không thể truy cập (mã lỗi 503 - Service Unavailable). Có thể trang đã ngừng hoạt động hoặc tạm thời gặp vấn đề.
+Các snapshot được lưu trữ trên Wayback Machine
+Dựa trên dữ liệu từ CDX API của Wayback Machine, trang sorajapan.edu.vn được lưu trữ từ năm 2018 đến 2021, với tổng cộng 68 captures (bao gồm root và subpages). Các captures chủ yếu tập trung vào năm 2018 và 2019, sau đó thưa dần và chuyển sang trang mặc định hoặc redirect.
+Phân bố theo năm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NămSố lượng captures2018~40 (chủ yếu tháng 8-12)2019~20 (tháng 1-9)20213 (tháng 4 và 12, chủ yếu robots.txt và trang mặc định)
+Các ngày capture chính (unique dates cho root page)
+
+2018: 07-09, 08-09, 08-10, 08-11, 09-12
+2019: 10-01, 11-01, 12-02, 16-03, 16-04, 18-05, 21-06, 08-08, 09-09, 10-09
+2021: 14-04, 25-12
+
+Snapshot sớm nhất (root page): 2018-09-07
+Snapshot muộn nhất (root page): 2021-12-25 - nhưng chỉ là trang mặc định, không có nội dung gốc.
+Các snapshot sau 2019 chủ yếu là redirect đến một trang dev (ví dụ: http://dev.crmmovan.com/wp-signup.php?new=sorajapan.edu.vn) hoặc trang mặc định CGI (cgi-sys/defaultwebpage.cgi), cho thấy trang có thể đã hết hạn domain hoặc bị bỏ.
+Các subpages được lưu trữ
+Có 44 unique URLs được capture, chủ yếu là các category pages liên quan đến học tiếng Nhật (như /category/cap-do-n5/, /category/han-tu/, /category/luyen-nghe/), feeds (/feed/, /comments/feed/), và các file WordPress (/wp-json/, /wp-includes/wlwmanifest.xml, /robots.txt). Tuy nhiên, hầu hết các category pages đều trống hoặc hiển thị "Không tìm thấy" (Not found), không có bài viết hoặc nội dung cụ thể. Không có bài post nào được tìm thấy trong các category này, cho thấy trang có thể chỉ là landing page mà không có blog hoạt động.
+Ví dụ một số subpages:
+
+/category/hoc-tieng-nhat/ (capture 2018-09-09): Trống.
+/category/co-hoi-tai-nhat-co-hoi-tai-nhat/ (capture 2018-09-09): Trống.
+/category/cap-do-n5/ (capture 2018-09-09): Trống.
+/robots.txt (capture 2018-08-09 và 2021-12-25): File chuẩn robots, không có nội dung đặc biệt.
+Các landingpage-novaonx-com-* : Có thể là pages quảng cáo, nhưng không có nội dung chi tiết được capture.
+
+Nội dung chính từ các snapshot (từ homepage)
+Trang sorajapan.edu.vn là một landing page quảng bá dịch vụ của công ty Sora Japan, tập trung vào du học, đào tạo tiếng Nhật, và xuất khẩu lao động sang Nhật Bản. Cấu trúc đơn giản: header với tiêu đề, menu với 2 category (Học Tiếng Nhật và Cơ hội tại Nhật), nội dung chính dưới dạng sections với headings, và footer với liên hệ. Nội dung không thay đổi đáng kể giữa các snapshot 2018 (tháng 8 và tháng 12), và không có nội dung mới ở 2019 (chỉ redirect).
+Cấu trúc và menu
+
+Header: "Du học nhật bản – sora japan chắp cánh ước mơ" hoặc "# SORAJAPAN - Du học nhật bản".
+Menu:
+Học Tiếng Nhật (/category/hoc-tieng-nhat/)
+Cơ hội tại nhật (/category/co-hoi-tai-nhat-co-hoi-tai-nhat/)
+
+Footer: Liên hệ Facebook và số điện thoại.
+
+Nội dung chính (trích dẫn key texts bằng tiếng Việt gốc)
+
+Giới thiệu vấn đề: "Thấu Hiểu Những Vấn Đề Bạn Lo Lắng" – Liệt kê lo lắng như "Không tìm được công ty tin tưởng", "Lo lắng về dịch vụ không an toàn", "Chờ đợi đơn hàng hoặc thi tuyển chưa đỗ", "Không được định hướng tư vấn về đơn hàng và trường tiếng Nhật uy tín", "Công việc không giống hợp đồng khi xuất cảnh", "Chi phí cao không phù hợp".
+Dịch vụ chuyên: "SORA JAPAN chuyên đào tạo & tư vấn thực tập sinh du học sinh vừa học vừa làm tại nhật bản".
+About công ty: "SORA JAPAN là Công ty Cổ phần quốc tế chuyên tư vấn đào tạo tiếng Nhật, du học Nhật Bản, xuất khẩu lao động Nhật Bản. Hiện tại công ty đang liên kết và hợp tác với những trường học uy tín tại Nhật Bản ở các thành phố lớn như Tokyo, Osaka, Kobe, Hiroshima... Bên cạnh đó là thiết lập mối quan hệ với những nghiệp đoàn lớn, lâu năm tại Nhật Bản và trở thành một trong những công ty xuất khẩu lao động, du học sinh Nhật Bản uy tín nhất tại Việt Nam. Với phương châm “chắp cánh ước mơ”, SORA JAPAN cam kết sẽ mang lại chất lượng trong đào tạo sự hài lòng về dịch vụ chắp cánh cho những ước mơ, nguyện vọng đi Nhật Bản học và làm việc của khách hàng thông qua những đơn hàng đi lao động Nhật Bản hấp dẫn với thu nhập cao, môi trường làm việc tốt nhất!"
+Lý do chọn Sora Japan: "TẠI SAO BẠN NÊN CÙNG SORA JAPAN THỰC HIỆN “ƯỚC MƠ NHẬT BẢN”" – Bao gồm đội ngũ tư vấn, liên kết trường uy tín, hỗ trợ vay vốn, khám sức khỏe, học tập, việc làm sau về nước, tiết kiệm 600-800 triệu VNĐ sau 3 năm, nhận 50 đơn hàng/tháng, đồng hành trong 3-5 năm.
+Khóa học/dịch vụ: Đào tạo chứng chỉ N5-N2, tư vấn miễn phí, hỗ trợ xin việc, đăng ký điện thoại/ký túc xá, rèn luyện tác phong (kỷ luật, trách nhiệm, vệ sinh), học ngoại khóa về văn hóa Nhật, cơ hội làm thêm.
+Chi phí và quà tặng: Hỗ trợ vay ngân hàng, khám sức khỏe miễn phí, hỗ trợ ăn học đến khi trúng tuyển, hỗ trợ vay vốn.
+Cam kết: Chất lượng đào tạo, dịch vụ hài lòng, môi trường làm việc tốt.
+Lời chứng thực: Phần "các du học sinh họ nói gì về sora Japan" – Nhưng không có nội dung cụ thể trong snapshot.
+Liên hệ: Số điện thoại: 0242-216-7788. Facebook: https://www.facebook.com/sora1405/.
+
+Tập trung chính
+
+Tiếng Nhật và văn hóa: Đào tạo tiếng Nhật (N5-N2), tìm hiểu văn hóa qua hoạt động ngoại khóa, rèn luyện phong cách làm việc Nhật (kỷ luật, punctuality, trách nhiệm).
+Du học/lao động: Tư vấn du học vừa học vừa làm, thực tập sinh kỹ năng, xuất khẩu lao động sang Nhật (và một số nước khác như Hàn, Đài Loan).
+
+Hướng dẫn xây dựng lại trang mới
+Để xây dựng lại trang sorajapan.edu.vn dựa trên dữ liệu lưu trữ:
+
+Sử dụng WordPress: Trang gốc dùng WP (dựa trên /wp-json/, /wp-admin/), nên rebuild với theme đơn giản, landing page focus.
+Cấu trúc: Tạo homepage với sections như trên (sử dụng headings H1-H2). Thêm menu với 2 category, dù gốc trống – bạn có thể thêm nội dung mới về học tiếng Nhật (bài viết N5-N2, từ vựng, ngữ pháp) và cơ hội việc làm.
+Nội dung: Copy-paste các texts trích dẫn ở trên vào sections tương ứng. Thêm hình ảnh (nếu có, nhưng archive không capture media tốt).
+Chức năng: Thêm form liên hệ, liên kết Facebook, số điện thoại. Nếu muốn mở rộng, tạo bài post thực tế cho categories để tránh "Not found".
+Cập nhật: Vì nội dung gốc từ 2018, cập nhật thông tin mới về du học Nhật (kiểm tra quy định hiện tại qua web chính thức như JLPT hoặc đại sứ quán Nhật).
+Công cụ: Sử dụng Wayback URLs để xem trực tiếp (ví dụ: https://web.archive.org/web/20181209223734/http://sorajapan.edu.vn/) và copy HTML nếu cần (view source).
