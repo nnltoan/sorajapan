@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
       navToggle.classList.toggle('open');
       navLinks.classList.toggle('open');
       document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+      
+      // Reset dropdowns when closing the menu
+      if (!navLinks.classList.contains('open')) {
+        document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
+      }
     });
 
     // Close nav when a link without dropdown is clicked, or handle dropdown toggle
@@ -43,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
           navToggle.classList.remove('open');
           navLinks.classList.remove('open');
           document.body.style.overflow = '';
+          document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
           return;
         }
 
@@ -50,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navToggle.classList.remove('open');
         navLinks.classList.remove('open');
         document.body.style.overflow = '';
+        document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
       });
     });
   }
