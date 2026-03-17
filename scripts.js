@@ -25,9 +25,28 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
     });
 
-    // Close nav when a link is clicked
+    // Close nav when a link without dropdown is clicked, or handle dropdown toggle
     navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
+      link.addEventListener('click', (e) => {
+        const dropdownParent = link.parentElement;
+        
+        // Mobile dropdown logic
+        if (dropdownParent && dropdownParent.classList.contains('dropdown') && window.innerWidth <= 900) {
+          // If the dropdown is not yet expanded, prevent navigation and expand it
+          if (!dropdownParent.classList.contains('active')) {
+            e.preventDefault();
+            dropdownParent.classList.add('active');
+            return; // Exit here, keeping menu open
+          }
+          // If already expanded, let the default navigation happen (second tap navigates to the page)
+          // Still need to close the mobile menu overlay manually though so it doesn't linger
+          navToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+          document.body.style.overflow = '';
+          return;
+        }
+
+        // Normal link behavior (close the menu)
         navToggle.classList.remove('open');
         navLinks.classList.remove('open');
         document.body.style.overflow = '';

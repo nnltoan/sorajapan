@@ -324,8 +324,9 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   background-color: var(--color-bg-white);
   min-width: 200px;
-  box-shadow: var(--shadow-lg);
-  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-top: 3px solid var(--color-cta);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   z-index: 1001;
   padding: 8px 0;
   overflow: hidden;
@@ -362,9 +363,12 @@ h1, h2, h3, h4, h5, h6 {
   .dropdown-content {
     position: static;
     box-shadow: none;
+    border-top: none;
     min-width: 100%;
-    background-color: transparent;
-    padding-left: 15px;
+    background-color: rgba(255,255,255,0.05); /* slightly distinct background for mobile submenu */
+    padding-left: 20px;
+    margin-top: 10px;
+    border-left: 2px solid rgba(255,255,255,0.2);
     display: none;
   }
   
@@ -1633,17 +1637,19 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(12, 74, 110, 0.97);
+    background: rgba(12, 74, 110, 0.98);
     backdrop-filter: blur(20px);
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 100px 30px 40px 30px;
+    gap: 20px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
     transform: none; /* Override absolute positioning */
     z-index: 1000;
+    overflow-y: auto;
   }
 
   .nav-links.open {
@@ -1651,9 +1657,16 @@ h1, h2, h3, h4, h5, h6 {
     pointer-events: all;
   }
 
+  .dropdown {
+    width: 100%;
+  }
+
   .nav-links a {
-    font-size: 20px;
-    color: rgba(255,255,255,0.8);
+    font-size: 18px;
+    color: rgba(255,255,255,0.85);
+    width: 100%;
+    display: block;
+    padding: 10px 0;
   }
 
   .nav-links a:hover,
@@ -1661,12 +1674,27 @@ h1, h2, h3, h4, h5, h6 {
     color: #fff;
   }
 
+  .dropdown-content a {
+    font-size: 16px;
+    padding: 10px 15px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .dropdown-content a:hover {
+    color: #fff;
+    background-color: rgba(255,255,255,0.1);
+  }
+
   .header.scrolled .nav-links a {
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.85);
   }
 
   .header.scrolled .nav-links a:hover {
     color: #fff;
+  }
+  
+  .header.scrolled .dropdown-content {
+    background-color: rgba(255,255,255,0.05); /* Override the white background from desktop scrolled state */
   }
 
   .nav-cta-wrapper.hide-on-mobile {
