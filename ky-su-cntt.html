@@ -120,8 +120,30 @@
 
   <div class="service-detail-content">
     <div class="highlight-box">
-      Nội dung chi tiết về chương trình Kỹ sư CNTT đang được cập nhật. Vui lòng liên hệ để biết thêm chi tiết.
+      Nhật Bản đang khát nhân sự Công nghệ thông tin (IT) chất lượng cao. Tham gia chương trình Kỹ sư CNTT tại Sora Japan, bạn có cơ hội làm việc tại các tập đoàn công nghệ hàng đầu, phát triển các dự án AI, Cloud, phần mềm với mức đãi ngộ hấp dẫn và lộ trình thăng tiến rõ rệt.
     </div>
+    
+    <h3>Môi trường làm việc & Quyền lợi</h3>
+    <ul>
+      <li>Làm việc trực tiếp với khách hàng Nhật Bản, tiếp cận công nghệ lõi tiên tiến.</li>
+      <li>Mức lương khởi điểm từ 20-35 man/tháng (tùy năng lực và kinh nghiệm).</li>
+      <li>Hỗ trợ chi phí đi lại, nhà ở ký túc xá, và các chế độ bảo hiểm trọn gói.</li>
+      <li>Cơ hội bảo lãnh người thân (vợ/chồng, con cái) sang Nhật sinh sống và học tập dài hạn.</li>
+    </ul>
+
+    <h2 style="margin-top: 50px; text-align: center; margin-bottom: 20px; color: var(--color-primary); border-bottom: none;">DANH SÁCH ĐƠN HÀNG CNTT MỚI NHẤT</h2>
+    <div class="filter-bar">
+      <span><i class="fas fa-filter"></i> Lọc JLPT:</span>
+      <select id="filter-jlpt">
+        <option value="all">Tất cả JPLT</option>
+        <option value="N5">N5</option>
+        <option value="N4">N4</option>
+        <option value="N3">N3</option>
+        <option value="N2">N2</option>
+        <option value="N1">N1</option>
+      </select>
+    </div>
+    <div id="card-container" class="card-container"></div>
 
     <div style="text-align: center; margin-top: 50px;">
       <a href="index.html#contact" class="back-btn" style="background: var(--color-cta); padding: 15px 30px; font-size: 1.2rem;">ĐĂNG KÝ TƯ VẤN NGAY</a>
@@ -134,5 +156,9 @@
     &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
   </footer>
 
+
+  <script>const NGANH_HIEN_TAI = "CNTT";</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="don-hang-ky-su/assets/js/donhang.js"></script>
 </body>
 </html>

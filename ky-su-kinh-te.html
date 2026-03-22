@@ -120,8 +120,30 @@
 
   <div class="service-detail-content">
     <div class="highlight-box">
-      Nội dung chi tiết về chương trình Kỹ sư Kinh tế đang được cập nhật. Vui lòng liên hệ để biết thêm chi tiết.
+      Không chỉ có khối kỹ thuật, các tập đoàn đa quốc gia Nhật Bản ngày càng săn đón nhân lực Kinh tế: Sale, Logistics, Kế toán, Nhân sự, Phiên dịch. Sora Japan cung cấp cánh cửa bước vào môi trường doanh nghiệp trí thức chuyên nghiệp.
     </div>
+    
+    <h3>Môi trường làm việc & Quyền lợi</h3>
+    <ul>
+      <li>Phát triển kỹ năng đàm phán, quản trị chuỗi cung ứng, thấu hiểu văn hóa doanh nghiệp Nhật.</li>
+      <li>Làm việc văn phòng quốc tế, cơ hội thăng tiến lên các vị trí quản lý khu vực.</li>
+      <li>Đãi ngộ, thưởng doanh thu cuối năm (Bonus) rất hấp dẫn từ 1.5 - 3 tháng lương.</li>
+      <li>Phát triển mạng lưới quan hệ quốc tế (Networking) vững chắc để bứt phá thu nhập.</li>
+    </ul>
+
+    <h2 style="margin-top: 50px; text-align: center; margin-bottom: 20px; color: var(--color-primary); border-bottom: none;">ĐƠN HÀNG KINH TẾ / VĂN PHÒNG</h2>
+    <div class="filter-bar">
+      <span><i class="fas fa-filter"></i> Lọc JLPT:</span>
+      <select id="filter-jlpt">
+        <option value="all">Tất cả JPLT</option>
+        <option value="N5">N5</option>
+        <option value="N4">N4</option>
+        <option value="N3">N3</option>
+        <option value="N2">N2</option>
+        <option value="N1">N1</option>
+      </select>
+    </div>
+    <div id="card-container" class="card-container"></div>
 
     <div style="text-align: center; margin-top: 50px;">
       <a href="index.html#contact" class="back-btn" style="background: var(--color-cta); padding: 15px 30px; font-size: 1.2rem;">ĐĂNG KÝ TƯ VẤN NGAY</a>
@@ -134,5 +156,9 @@
     &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
   </footer>
 
+
+  <script>const NGANH_HIEN_TAI = "KinhTe";</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="don-hang-ky-su/assets/js/donhang.js"></script>
 </body>
 </html>

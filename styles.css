@@ -2018,3 +2018,246 @@ h1, h2, h3, h4, h5, h6 {
   .floating-contact { bottom: 80px; right: 15px; gap: 12px; }
   .floating-btn { width: 55px; height: 55px; }
 }
+
+/* ============================================
+   JOB BOARD EMBEDDED STYLES
+   ============================================ */
+/* --- Filter Bar --- */
+.filter-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  background: var(--color-bg-white);
+  padding: 15px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-bar select {
+  padding: 10px 15px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  min-width: 150px;
+}
+
+/* --- Card Grid --- */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* --- Job Card --- */
+.job-card {
+  background: var(--color-bg-white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.job-card-image {
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.job-card-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: var(--color-primary);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.job-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.job-title {
+  font-size: 18px;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #000;
+}
+
+.job-company {
+  font-size: 14px;
+  color: var(--color-text-light);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.job-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.job-detail-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+.detail-label {
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.detail-value.highlight {
+  color: var(--color-cta);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.btn {
+  display: inline-block;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.job-btn {
+  background: var(--color-bg);
+  color: var(--color-primary);
+  width: 100%;
+  border: 1px solid var(--color-primary);
+}
+
+.job-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-call-now {
+  background: var(--color-cta);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+}
+
+.btn-call-now:hover {
+  background: #ea580c;
+}
+
+/* --- Modal --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  padding: 30px;
+  border-radius: var(--radius-md);
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 22px;
+  padding-right: 30px;
+}
+
+.modal-content h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: var(--color-primary);
+}
+
+.modal-content p {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.highlight {
+  color: var(--color-cta);
+  font-weight: bold;
+}
+
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: var(--color-text-light);
+  grid-column: 1 / -1;
+}
+
+.error {
+  color: #ef4444;
+}
+
