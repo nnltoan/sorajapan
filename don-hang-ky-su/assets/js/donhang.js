@@ -1,5 +1,5 @@
 // === CONFIG ===
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2Rok7HSTasR0vVuLfCndCGp14ULHDCpCQ59ZCLwLFHKnfpmYzftwVfI_-m1hogCeiYVLfOu36fzwt/pub?gid=0&single=true&output=csv";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2Rok7HSTasR0vVuLfCndCGp14ULHDCpCQ59ZCLwLFHKnfpmYzftwVfI_-m1hogCeiYVLfOu36fzwt/pub?output=csv";
 
 let allData = [];
 
@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show loading state
     document.getElementById("card-container").innerHTML = '<div class="loading">Đang tải dữ liệu đơn hàng...</div>';
     
-    // Bỏ cache browser bằng timestamp
-    const urlToFetch = SHEET_CSV_URL + "&t=" + new Date().getTime();
+    // Sử dụng link chính xác người dùng cung cấp
+    const urlToFetch = SHEET_CSV_URL;
 
     Papa.parse(urlToFetch, {
       download: true,
