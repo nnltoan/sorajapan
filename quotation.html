@@ -8,12 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Include Mermaid JS -->
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#f0f4ff', primaryBorderColor: '#3b82f6', primaryTextColor: '#111827', fontSize: '14px' } });
-    </script>
-    <style>
         /* === A4 PRINT OPTIMIZATION === */
         @page {
             size: A4;
@@ -390,37 +384,7 @@
                 <strong>💡 Smart Architecture:</strong> Giao diện tĩnh (Frontend) đọc/ghi dữ liệu thời gian thực trực tiếp từ Google Workspace, loại phỏ hoàn toàn sự cồng kềnh của Backend truyền thống.
             </div>
             <div class="diagram-container">
-                <div class="mermaid">
-                    graph TD
-                        User([Người dùng / Học viên]) -->|Truy cập HTTPS| CDN[GitHub Pages CDN]
-                        
-                        subgraph "Frontend Layer"
-                            UI[Sora Japan UI\nHTML/CSS/JS thuần]
-                        end
-                        
-                        CDN --> UI
-                        
-                        subgraph "Google Workspace Backend"
-                            Webhook[Google Apps Script\nWebhook Form]
-                            CSV[Google Sheets\nPublished CSV]
-                            DB1[(Sheet Dữ liệu\nKhách hàng)]
-                            DB2[(Sheet Quản lý\nĐơn hàng Kỹ sư)]
-                        end
-                        
-                        UI -->|1. Submit Form Đăng Ký| Webhook
-                        Webhook -->|Lưu & Báo cáo| DB1
-                        
-                        DB2 -->|Đồng bộ Auto| CSV
-                        UI -->|2. Fetch data JS (PapaParse)| CSV
-                        
-                        classDef fr fill:#eff6ff,stroke:#3b82f6,stroke-width:2px;
-                        classDef be fill:#ecfdf5,stroke:#10b981,stroke-width:2px;
-                        classDef usr fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,border-radius:50%;
-                        
-                        class UI fr;
-                        class Webhook,CSV,DB1,DB2 be;
-                        class User usr;
-                </div>
+                <img src="images/architecture.svg" alt="Sora Japan Hệ Thống Kiến Trúc" style="max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px;">
             </div>
         </section>
 
