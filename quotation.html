@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo giá Website Sora Japan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0EA5E9;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --light-gray: #f8fafc;
+      --border: #e2e8f0;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #334155;
+      background: #f1f5f9;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .document {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 60px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo img {
+      height: 48px;
+    }
+
+    .doc-meta {
+      text-align: right;
+      font-size: 14px;
+      color: var(--gray);
+    }
+    
+    .doc-meta strong {
+      color: var(--dark);
+    }
+
+    .doc-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--dark);
+      text-align: center;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .client-info {
+      margin-bottom: 40px;
+      background: var(--light-gray);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .client-info p {
+      margin-bottom: 5px;
+    }
+
+    h3 {
+      color: var(--dark);
+      font-size: 18px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    h3::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--light-gray);
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .price {
+      text-align: right;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .total-row {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--primary);
+    }
+    
+    .total-row td {
+      border-top: 2px solid var(--primary);
+      border-bottom: none;
+    }
+
+    .features-list {
+      margin-left: 20px;
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--gray);
+    }
+    
+    .features-list li {
+      margin-bottom: 4px;
+    }
+
+    .terms {
+      font-size: 14px;
+      color: var(--gray);
+      background: var(--light-gray);
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 40px;
+    }
+    
+    .terms ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--gray);
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .print-btn {
+      display: block;
+      width: fit-content;
+      margin: 20px auto 40px;
+      padding: 12px 30px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+      transition: all 0.2s;
+    }
+
+    .print-btn:hover {
+      background: #0284c7;
+      transform: translateY(-2px);
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .document {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .print-btn {
+        display: none !important;
+      }
+      table {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-btn" onclick="window.print()">🖨️ Xuất File PDF / In Báo Giá</button>
+
+  <div class="document">
+    <div class="header">
+      <div class="logo">
+        <!-- Replace with absolute/relative path if needed, or leave text -->
+        SORA JAPAN
+      </div>
+      <div class="doc-meta">
+        <p><strong>Ngày báo giá:</strong> 22/03/2026</p>
+        <p><strong>Hiệu lực đến:</strong> 22/04/2026</p>
+        <p><strong>Dự án:</strong> Hệ thống Web Thông minh</p>
+      </div>
+    </div>
+
+    <div class="doc-title">
+      BÁO GIÁ THIẾT KẾ, LẬP TRÌNH & BẢO TRÌ WEBSITE
+    </div>
+
+    <div class="client-info">
+      <p><strong>Kính gửi:</strong> Ban Giám Đốc / Đối tác đại diện thương hiệu <strong>Sora Japan</strong></p>
+      <p>Cảm ơn Quý công ty đã tin tưởng giao phó dự án xây dựng hệ thống Website Du học và Kỹ sư Nhật Bản. Dưới đây là bảng dự toán chi phí chi tiết cho các hạng mục thiết kế (Design), lập trình (Code), và gói bảo trì công nghệ (Maintain).</p>
+    </div>
+
+    <h3>1. Hạng mục Phát triển Website (Design & Code)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Hạng mục công việc / Tính năng</th>
+          <th class="price">Thành tiền (VNĐ)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01</td>
+          <td>
+            <strong>Giao diện UI/UX Hiện đại (Design)</strong>
+            <ul class="features-list">
+              <li>Thiết kế hệ sinh thái chuẩn quy chuẩn (Tông màu xanh dương / cam).</li>
+              <li>Responsive 100% Mobile-first (tối ưu cho điện thoại).</li>
+              <li>Hơn 20 trang vệ tinh (Detail Pages) cho các chuyên ngành Kỹ sư, Khóa học Tiếng Nhật, và Du học.</li>
+              <li>Tối ưu hệ thống Menu động (Dropdown) mượt mà, Slider ảnh Hero Section, Animations CSS.</li>
+            </ul>
+          </td>
+          <td class="price">8.500.000</td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td>
+            <strong>Lập trình Frontend & Logic Nội bộ (Code)</strong>
+            <ul class="features-list">
+              <li>Lập trình bộ HTML/CSS/JS thuần không độ trễ, tối ưu hóa tốc độ tải trang (PageSpeed Insights 90+).</li>
+              <li>Tích hợp Form Đăng ký đổ dữ liệu Real-time về <strong>Google Sheets</strong> qua Webhook tự phát triển (Không cần Backend phức tạp).</li>
+              <li>Tạo cụm Floating liên hệ (Zalo, Messenger, Hotline).</li>
+              <li>Card lưới hiển thị Danh mục (Grid Link) cho điều hướng Dịch Vụ.</li>
+            </ul>
+          </td>
+          <td class="price">5.000.000</td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td>
+            <strong>Trình cắm Dữ liệu Động (Google Sheets Job Board CMS)</strong>
+            <ul class="features-list">
+              <li>Tự động lấy Data các Đơn Hàng Kỹ Sư từ "CSV Web Publication" của Google Sheet.</li>
+              <li>Áp dụng bộ lọc JS (Lọc trình độ JLPT N5-N1).</li>
+              <li>Hiển thị Đơn Hàng theo Nhóm ngành tự động vào Form Pop-up chi tiết (Modal).</li>
+            </ul>
+          </td>
+          <td class="price">6.500.000</td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td>
+            <strong>Triển khai Server & Tối ưu SEO Cơ bản</strong>
+            <ul class="features-list">
+              <li>Tối ưu thẻ H1-H6, Meta Titlte, Schema phục vụ Google Search.</li>
+              <li>Triển khai lên nền tảng máy chủ tốc độ cao (VD: GitHub Pages miễn phí băng thông).</li>
+              <li>Trỏ tên miền chính thức của Sora Japan vào Server.</li>
+            </ul>
+          </td>
+          <td class="price">2.000.000</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="2" style="text-align: right;">Tổng Ngân sách Setup Ban đầu:</td>
+          <td class="price">22.000.000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>2. Hạng mục Bảo trì & Vận hành (Maintainer)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Gói dịch vụ</th>
+          <th>Quyền lợi bao gồm</th>
+          <th class="price">Chi phí (VNĐ)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bảo hành Kỹ thuật (1 Năm Tặng kèm)</strong></td>
+          <td>
+            <ul class="features-list" style="margin-left: 0;">
+              <li>Xử lý sự cố nếu website không truy cập được hoặc Form lỗi.</li>
+              <li>Đảm bảo hệ code tương thích với các trình duyệt mới nhất.</li>
+            </ul>
+          </td>
+          <td class="price">Miễn phí</td>
+        </tr>
+        <tr>
+          <td><strong>Gói Bảo trì Liên tục (Retainer Hàng tháng)</strong></td>
+          <td>
+            <ul class="features-list" style="margin-left: 0;">
+              <li>Cập nhật Nội dung, Baner ảnh, Bài viết Blog hàng tuần (Theo yêu cầu).</li>
+              <li>Thêm mới hoặc sửa đổi cấu trúc các trang Dịch vụ con (Tối đa 5h làm việc lập trình/tháng).</li>
+              <li>Theo dõi Traffic và Fix lỗi bảo mật API/Google Sheet nếu hãng thay đổi thuật toán.</li>
+            </ul>
+          </td>
+          <td class="price">1.500.000 / Tháng</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="terms">
+      <strong>Lưu ý chung:</strong>
+      <ul>
+        <li>Báo giá trên chưa bao gồm 10% thuế VAT.</li>
+        <li>Chi phí tên miền (Domain) do phía Sora Japan tự chi trả và sở hữu vĩnh viễn với nhà mạng (PA Việt Nam / Tenten).</li>
+        <li>Các tính năng Phát sinh ngoài Hạng mục (VD: Xây dựng cổng Đăng nhập tài khoản phức tạp, Cổng thanh toán) sẽ được làm rõ thông qua Phụ lục Hợp đồng bổ sung.</li>
+        <li>Thanh toán chia làm 2 giai đoạn: 50% khi ký hợp đồng và 50% khi triển khai hoàn tất nghiệm thu.</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      Tài liệu Báo giá nội bộ dự án Website Sora Japan. Mọi thắc mắc xin vui lòng liên hệ Kỹ sư phụ trách dự án.
+    </div>
+  </div>
+
+</body>
+</html>
