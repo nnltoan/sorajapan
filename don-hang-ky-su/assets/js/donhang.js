@@ -3,16 +3,12 @@ const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2Rok7HS
 
 let allData = [];
 
-// Bypass CORS for fetching the CSV using public Google Sheets URL
-// We don't always need a proxy if published to web properly, but we'll use one to be safe as per instructions.
-const PROXY = "https://api.allorigins.win/raw?url=";
-
 document.addEventListener('DOMContentLoaded', () => {
     // Show loading state
     document.getElementById("card-container").innerHTML = '<div class="loading">Đang tải dữ liệu đơn hàng...</div>';
     
-    // NGANH_HIEN_TAI is expected to be defined in the HTML file before loading this script.
-    const urlToFetch = PROXY + encodeURIComponent(SHEET_CSV_URL);
+    // Google Sheets published to web natively supports CORS
+    const urlToFetch = SHEET_CSV_URL;
 
     Papa.parse(urlToFetch, {
       download: true,
