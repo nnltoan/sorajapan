@@ -1,0 +1,36 @@
+graph TD
+    %% Define Styles
+    classDef frontend fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e40af
+    classDef backend fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46
+    classDef client fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,border-radius:50%,color:#92400e
+    classDef external fill:#f3f4f6,stroke:#9ca3af,stroke-width:1px,stroke-dasharray: 5 5
+
+    %% Clients
+    User([Người dùng / Học viên]):::client
+    Admin([Quản trị viên Sora Japan]):::client
+
+    %% Frontend Layer
+    subgraph Frontend [Giao diện Frontend - GitHub Pages CDN]
+        UI[Trang chủ & 20+ Detail Pages\nHTML/CSS/JS thuần]:::frontend
+        FilterJS[Bộ lọc động & Parser CSV]:::frontend
+    end
+
+    %% Backend Layer
+    subgraph GWorkspace [Google Workspace Backend - Headless CMS]
+        Webhook[Google Apps Script\nAPI Webhook POST]:::backend
+        Sheet1[(Google Sheet\nData Khách Hàng)]:::backend
+        Sheet2[(Google Sheet\nData Đơn Hàng)]:::backend
+        CSV[Google Sheets\nPublished CSV API]:::backend
+    end
+
+    %% Flow: Submit
+    User -->|Submit Form| UI
+    UI -->|JS Fetch POST| Webhook
+    Webhook -->|Ghi dữ liệu| Sheet1
+
+    %% Flow: Jobs
+    Admin -->|Cập nhật dữ liệu\nqua giao diện Sheet| Sheet2
+    Sheet2 -->|Auto Sync| CSV
+    User -->|Vào Web| FilterJS
+    FilterJS -->|Fetch JS GET| CSV
+    UI -. Load trực tiếp lên HTML .-> FilterJS

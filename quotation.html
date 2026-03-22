@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
         /* === A4 PRINT OPTIMIZATION === */
         @page {
             size: A4;
@@ -52,7 +53,7 @@
         }
 
         .content-page {
-            padding: 20mm;
+            padding: 15mm;
         }
 
         .page-break {
@@ -66,7 +67,7 @@
             justify-content: space-between;
             width: 210mm;
             height: 297mm;
-            padding: 20mm 20mm 5mm 20mm;
+            padding: 20mm;
             page-break-after: always;
             break-after: page;
             overflow: hidden;
@@ -148,7 +149,8 @@
             font-size: 9pt;
         }
 
-        th, td {
+        th,
+        td {
             padding: 8px 10px;
             text-align: left;
             border: 1px solid var(--border);
@@ -183,7 +185,8 @@
             color: #1e40af;
         }
 
-        ul, ol {
+        ul,
+        ol {
             margin-left: 18px;
             margin-bottom: 10px;
         }
@@ -215,8 +218,8 @@
 
         .diagram-container {
             text-align: center;
-            margin: 20px 0;
-            padding: 20px;
+            margin: 10px 0;
+            padding: 10px;
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
@@ -227,24 +230,34 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+
             .page {
                 width: 100%;
                 padding: 0;
                 margin: 0;
             }
+
             .header {
                 background: white !important;
             }
+
             h2 {
                 background: var(--bg-subtle) !important;
                 -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
+
             .alert {
                 -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
-            th, tr:nth-child(even) {
+
+            th,
+            tr:nth-child(even) {
                 -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
+
             .print-btn {
                 display: none !important;
             }
@@ -255,10 +268,12 @@
                 background: #e5e7eb;
                 padding: 20px;
             }
+
             .page {
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
                 margin-bottom: 20px;
             }
+
             .print-btn {
                 display: block;
                 width: fit-content;
@@ -282,11 +297,16 @@
     <!-- COVER PAGE -->
     <div class="page cover-page">
         <!-- Subtle Background Pattern -->
-        <div style="position: absolute; top: 0; right: 0; width: 250px; height: 250px; background: linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, transparent 70%); border-radius: 0 0 0 100%;"></div>
-        <div style="position: absolute; bottom: 0; left: 0; width: 180px; height: 180px; background: linear-gradient(45deg, rgba(5, 150, 105, 0.04) 0%, transparent 70%); border-radius: 0 100% 0 0;"></div>
+        <div
+            style="position: absolute; top: 0; right: 0; width: 250px; height: 250px; background: linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, transparent 70%); border-radius: 0 0 0 100%;">
+        </div>
+        <div
+            style="position: absolute; bottom: 0; left: 0; width: 180px; height: 180px; background: linear-gradient(45deg, rgba(5, 150, 105, 0.04) 0%, transparent 70%); border-radius: 0 100% 0 0;">
+        </div>
 
         <!-- Top Logo Section -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; position: relative; z-index: 1;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; position: relative; z-index: 1;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <img src="logodanaexperts.png" alt="DanaExperts" style="height: 42px; object-fit: contain;">
                 <div style="text-align: left; border-left: 2px solid #e5e7eb; padding-left: 12px;">
@@ -299,13 +319,15 @@
                     <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Sora Japan</div>
                     <div style="font-size: 7pt; color: #6b7280; letter-spacing: 0.5px;">Client</div>
                 </div>
-                <img src="images/logo_transparent.png" alt="Sora Japan" style="height: 42px; object-fit: contain; filter: invert(0) brightness(0.4) sepia(1) hue-rotate(180deg) saturate(300%);">
+                <img src="images/logo_transparent.png" alt="Sora Japan" style="height: 42px; object-fit: contain;">
             </div>
         </div>
 
         <!-- Main Title Section (Center) -->
-        <div style="text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1;">
-            <div style="display: inline-block; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; font-size: 8pt; font-weight: 600; letter-spacing: 2px; padding: 6px 20px; border-radius: 16px; margin: 0 auto 18px;">
+        <div
+            style="text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1;">
+            <div
+                style="display: inline-block; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; font-size: 8pt; font-weight: 600; letter-spacing: 2px; padding: 6px 20px; border-radius: 16px; margin: 0 auto 18px;">
                 PROJECT DEVELOPMENT PROPOSAL
             </div>
 
@@ -313,7 +335,9 @@
                 SORA JAPAN
             </h1>
 
-            <div style="width: 70px; height: 3px; background: linear-gradient(90deg, #d4af37, #f5d061); margin: 0 auto 14px; border-radius: 2px;"></div>
+            <div
+                style="width: 70px; height: 3px; background: linear-gradient(90deg, #d4af37, #f5d061); margin: 0 auto 14px; border-radius: 2px;">
+            </div>
 
             <div style="font-size: 12pt; color: #374151; line-height: 1.6; font-weight: 400;">
                 Hệ thống Website Du học & Kỹ sư sinh động<br>
@@ -321,39 +345,53 @@
             </div>
 
             <!-- Platform Cards -->
-            <div style="display: flex; justify-content: center; gap: 16px; margin-top: 30px; flex-wrap: wrap;">
-                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                    <div style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">Platform</div>
+            <div style="display: flex; justify-content: center; gap: 16px; margin-top: 15px; flex-wrap: wrap;">
+                <div
+                    style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div
+                        style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Platform</div>
                     <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Web tĩnh tối ưu hiệu năng</div>
                 </div>
-                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                    <div style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">Database</div>
+                <div
+                    style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div
+                        style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Database</div>
                     <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Google Sheets API CMS</div>
                 </div>
             </div>
-        </div>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <!-- Bottom Info -->
+            <div style="position: relative; z-index: 1;">
+                <div style="display: flex; justify-content: center; gap: 35px; margin-bottom: 12px;">
+                    <div style="text-align: center;">
+                        <div
+                            style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">
+                            Phase</div>
+                        <div style="font-size: 9pt; font-weight: 600; color: #374151;">Hoàn thiện & Triển khai</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div
+                            style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">
+                            Version</div>
+                        <div style="font-size: 9pt; font-weight: 600; color: #374151;">1.1</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div
+                            style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">
+                            Date</div>
+                        <div style="font-size: 9pt; font-weight: 600; color: #374151;">22/03/2026</div>
+                    </div>
+                </div>
 
-        <!-- Bottom Info -->
-        <div style="position: relative; z-index: 1;">
-            <div style="display: flex; justify-content: center; gap: 35px; margin-bottom: 12px;">
-                <div style="text-align: center;">
-                    <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Phase</div>
-                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">Hoàn thiện & Triển khai</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Version</div>
-                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">1.1</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Date</div>
-                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">22/03/2026</div>
-                </div>
-            </div>
-
-            <div style="text-align: center; padding-top: 10px; border-top: 1px solid #e5e7eb;">
-                <span style="display: inline-block; background: #fef3c7; color: #92400e; font-size: 7pt; font-weight: 600; letter-spacing: 1px; padding: 3px 10px; border-radius: 4px;">BUSINESS PROPOSAL</span>
-                <div style="font-size: 7pt; color: #9ca3af; margin-top: 5px;">
-                    This document is proprietary to DanaExperts & Sora Japan
+                <div style="text-align: center; padding-top: 10px; border-top: 1px solid #e5e7eb;">
+                    <span
+                        style="display: inline-block; background: #fef3c7; color: #92400e; font-size: 7pt; font-weight: 600; letter-spacing: 1px; padding: 3px 10px; border-radius: 4px;">BUSINESS
+                        PROPOSAL</span>
+                    <div style="font-size: 7pt; color: #9ca3af; margin-top: 5px;">
+                        This document is proprietary to DanaExperts & Sora Japan
+                    </div>
                 </div>
             </div>
         </div>
@@ -370,7 +408,7 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="font-size: 8pt; color: var(--text-muted);">Khách hàng</span>
-                    <img src="images/logo_transparent.png" alt="Sora Japan" style="height: 45px; object-fit: contain; filter: brightness(0.2);">
+                    <img src="images/logo_transparent.png" alt="Sora Japan" style="height: 45px; object-fit: contain;">
                 </div>
             </div>
             <h1>CHI TIẾT KIẾN TRÚC & HẠNG MỤC DỰ ÁN</h1>
@@ -381,17 +419,19 @@
         <section class="avoid-break">
             <h2>1. Architecture (Sơ đồ Kiến trúc Hệ thống)</h2>
             <div class="alert alert-note">
-                <strong>💡 Smart Architecture:</strong> Giao diện tĩnh (Frontend) đọc/ghi dữ liệu thời gian thực trực tiếp từ Google Workspace, loại bỏ hoàn toàn sự cồng kềnh của Backend truyền thống.
+                <strong>💡 Smart Architecture:</strong> Giao diện tĩnh (Frontend) đọc/ghi dữ liệu thời gian thực trực
+                tiếp từ Google Workspace, loại bỏ hoàn toàn sự cồng kềnh của Backend truyền thống.
             </div>
             <div class="diagram-container" style="padding: 10px;">
-                <img src="Gemini_Generated_Image_882nky882nky882n.png" alt="Sora Japan Hệ Thống Kiến Trúc" style="max-width: 100%; max-height: 280px; object-fit: contain; display: block; margin: 0 auto; border-radius: 8px;">
+                <img src="Gemini_Generated_Image_882nky882nky882n.png" alt="Sora Japan Hệ Thống Kiến Trúc"
+                    style="max-width: 100%; max-height: 250px; object-fit: contain; display: block; margin: 0 auto; border-radius: 8px;">
             </div>
         </section>
 
         <!-- 2. HẠNG MỤC CÔNG VIỆC CHI TIẾT -->
         <section class="avoid-break">
             <h2>2. Chi tiết Hạng mục Phát triển (Breakdown)</h2>
-            
+
             <h4>2.1 Giao diện UI/UX & Frontend Optimization</h4>
             <table>
                 <tr>
@@ -428,29 +468,33 @@
                 <tr>
                     <td><strong>Contact Data Pipeline</strong></td>
                     <td>
-                        Thiết lập JavaScript POST data gửi từ Form liên hệ về Google Apps Script Webhook, ghi nhận Lead vào Sheet an toàn và xuất thông báo Success cho Client.
+                        Thiết lập JavaScript POST data gửi từ Form liên hệ về Google Apps Script Webhook, ghi nhận Lead
+                        vào Sheet an toàn và xuất thông báo Success cho Client.
                     </td>
                 </tr>
                 <tr>
                     <td><strong>Dynamic Job Boards</strong></td>
                     <td>
-                        Module đọc trực tiếp CSV từ sheet "Đơn hàng Kỹ sư", phân luồng danh sách theo từng chuyên ngành (CNTT, Cơ khí..). Tích hợp bộ lọc JLPT thời gian thực bằng JS, popup Modal hiển thị nội dung công việc chuẩn.
+                        Module đọc trực tiếp CSV từ sheet "Đơn hàng Kỹ sư", phân luồng danh sách theo từng chuyên ngành
+                        (CNTT, Cơ khí..). Tích hợp bộ lọc JLPT thời gian thực bằng JS, popup Modal hiển thị nội dung
+                        công việc chuẩn.
                     </td>
                 </tr>
             </table>
         </section>
-        
+
         <!-- BÁO GIÁ Ở TRANG TIẾP THEO -->
         <div class="page-break"></div>
     </div>
-        
+
     <!-- CONTENT PAGE 2 -->
     <div class="page content-page">
         <!-- 3. CHI PHÍ ĐẦU TƯ -->
         <section class="avoid-break">
             <h2>3. Báo Giá Dịch Vụ Đầu Tư (Pricing)</h2>
             <div class="alert alert-important">
-                <strong>📝 Chính sách Tài nguyên mạng:</strong> Phía Sora Japan đã có sẵn tên miền (Domain) và hệ thống Hosting. DanaExpert sẽ bàn giao Source và loại bỏ hoàn toàn các chi phí phần cứng liên quan.
+                <strong>📝 Chính sách Tài nguyên mạng:</strong> Phía Sora Japan đã có sẵn tên miền (Domain) và hệ thống
+                Hosting. DanaExpert sẽ bàn giao Source và loại bỏ hoàn toàn các chi phí phần cứng liên quan.
             </div>
             <table>
                 <thead>
@@ -465,15 +509,19 @@
                         <td>1</td>
                         <td>
                             <strong>Frontend & Trải nghiệm Người Tương tác (UI/UX Design)</strong><br>
-                            <span style="font-size: 8pt; color: #6b7280;">Quy hoạch bộ khung CSS/HTML tổng thể. Thiết kế 20+ Detail Pages. Animations nút trôi nổi, Slider, Nav mượt mà tốc độ cao. (Chiếm đa số khối lượng công việc)</span>
+                            <span style="font-size: 8pt; color: #6b7280;">Quy hoạch bộ khung CSS/HTML tổng thể. Thiết kế
+                                20+ Detail Pages. Animations nút trôi nổi, Slider, Nav mượt mà tốc độ cao. (Chiếm đa số
+                                khối lượng công việc)</span>
                         </td>
-                        <td style="text-align: right; font-weight: 500;">7.500.000</td>
+                        <td style="text-align: right; font-weight: 500;">8.500.000</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>
                             <strong>Lập trình Tích hợp Google Sheets & CMS Data (Backend Base)</strong><br>
-                            <span style="font-size: 8pt; color: #6b7280;">Bao gồm cơ chế đẩy dữ liệu Webhook Form liên lạc, Module đọc CSV vẽ cấu trúc Card Job Boards và Bộ phận lọc JS. (Khối lượng phát triển BE được tối giản nhờ kiến trúc thông minh).</span>
+                            <span style="font-size: 8pt; color: #6b7280;">Bao gồm cơ chế đẩy dữ liệu Webhook Form liên
+                                lạc, Module đọc CSV vẽ cấu trúc Card Job Boards và Bộ phận lọc JS. (Khối lượng phát
+                                triển BE được tối giản nhờ kiến trúc thông minh).</span>
                         </td>
                         <td style="text-align: right; font-weight: 500;">2.500.000</td>
                     </tr>
@@ -481,13 +529,14 @@
                         <td>3</td>
                         <td>
                             <strong>Cấu hình Deployment, Hosting Server & Domain</strong><br>
-                            <span style="font-size: 8pt; color: #6b7280;">Khách hàng tự chuẩn bị, DanaExpert hỗ trợ setup HTTPS cơ bản bằng nền tảng có sẵn.</span>
+                            <span style="font-size: 8pt; color: #6b7280;">Khách hàng tự chuẩn bị, DanaExpert hỗ trợ
+                                setup HTTPS cơ bản bằng nền tảng có sẵn.</span>
                         </td>
                         <td style="text-align: right; font-weight: 500;">1.000.000</td>
                     </tr>
                     <tr class="price-row" style="background: #f0f4ff;">
                         <td colspan="2" style="text-align: right;">TỔNG CỘNG ĐẦU TƯ GIAI ĐOẠN 1:</td>
-                        <td style="text-align: right;">11.000.000</td>
+                        <td style="text-align: right;">12.000.000</td>
                     </tr>
                 </tbody>
             </table>
@@ -504,29 +553,36 @@
                 </tr>
                 <tr>
                     <td><strong>Bảo hành Kỹ thuật Lỗi (Lifetime)</strong></td>
-                    <td>Bảo hành <strong>TRỌN ĐỜI</strong> đối với mọi Bugs, lỗi Logic phát sinh (ví dụ: Modal không nhảy, CSV không load) nguyên nhân từ cấu trúc Code do DanaExpert bàn giao.</td>
+                    <td>Bảo hành <strong>TRỌN ĐỜI</strong> đối với mọi Bugs, lỗi Logic phát sinh (ví dụ: Modal không
+                        nhảy, CSV không load) nguyên nhân từ cấu trúc Code do DanaExpert bàn giao.</td>
                     <td><strong>Miễn phí trọn đời</strong></td>
                 </tr>
                 <tr>
                     <td><strong>Maintain Vận hành 06 Tháng</strong></td>
-                    <td>Hỗ trợ tư vấn kỹ thuật tổng quát, cập nhật sửa chữ Text nhẹ, theo dõi độ phu sóng và bảo mật định kỳ đảm bảo website vận hành trơn tru.</td>
+                    <td>Hỗ trợ tư vấn kỹ thuật tổng quát, cập nhật sửa chữ Text nhẹ, theo dõi độ phu sóng và bảo mật
+                        định kỳ đảm bảo website vận hành trơn tru.</td>
                     <td><strong>Miễn phí 6 Tháng</strong></td>
                 </tr>
                 <tr>
-                     <td><strong>Yêu cầu Phát sinh Quy mô lớn (Sau 6 tháng)</strong></td>
-                    <td>Được áp dụng khi có nhu cầu Code/Thêm giao diện mới diện rộng nằm ngoài bản giao gốc ban đầu trên nền tảng.</td>
+                    <td><strong>Yêu cầu Phát sinh Quy mô lớn (Sau 6 tháng)</strong></td>
+                    <td>Được áp dụng khi có nhu cầu Code/Thêm giao diện mới diện rộng nằm ngoài bản giao gốc ban đầu
+                        trên nền tảng.</td>
                     <td><strong>500.000đ / 1 giờ</strong></td>
                 </tr>
             </table>
         </section>
-        
-        <div style="margin-top: 40px; padding: 20px; border: 1px dashed var(--border); border-radius: 8px; font-size: 9pt; color: var(--text-muted);">
-            * Báo giá chưa bao gồm thuế GTGT 10%. Tài liệu có giá trị hiệu lực báo giá trong vòng 30 ngày. Thanh toán được chia làm 50% tạm ứng ban đầu và 50% sau khi hệ thống Codec được bàn giao chính thức.
+
+        <div
+            style="margin-top: 40px; padding: 20px; border: 1px dashed var(--border); border-radius: 8px; font-size: 9pt; color: var(--text-muted);">
+            * Tài liệu có giá trị hiệu lực báo giá trong vòng 30 ngày. Thanh toán
+            được chia làm 50% tạm ứng ban đầu và 50% sau khi hệ thống Codec được bàn giao chính thức.
         </div>
 
         <div class="footer">
-            Tài liệu thống nhất Báo giá & Giải pháp nội bộ giữa <strong>DanaExperts</strong> và <strong>Sora Japan</strong>.
+            Tài liệu thống nhất Báo giá & Giải pháp nội bộ giữa <strong>DanaExperts</strong> và <strong>Sora
+                Japan</strong>.
         </div>
     </div>
 </body>
+
 </html>
