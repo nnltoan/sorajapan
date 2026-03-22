@@ -8,6 +8,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Include Mermaid JS -->
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#f0f4ff', primaryBorderColor: '#3b82f6', primaryTextColor: '#111827', fontSize: '14px' } });
+    </script>
     <style>
         /* === A4 PRINT OPTIMIZATION === */
         @page {
@@ -190,7 +195,7 @@
         }
 
         li {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-size: 9pt;
         }
 
@@ -212,6 +217,15 @@
             font-size: 11pt;
             font-weight: 700;
             color: var(--primary);
+        }
+
+        .diagram-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
         }
 
         @media print {
@@ -309,18 +323,18 @@
 
             <div style="font-size: 12pt; color: #374151; line-height: 1.6; font-weight: 400;">
                 Hệ thống Website Du học & Kỹ sư sinh động<br>
-                <span style="color: #6b7280; font-size: 10pt;">Tích hợp Real-time Data từ Google Sheets</span>
+                <span style="color: #6b7280; font-size: 10pt;">Kích hoạt Google Sheets CMS Architecture</span>
             </div>
 
             <!-- Platform Cards -->
             <div style="display: flex; justify-content: center; gap: 16px; margin-top: 30px; flex-wrap: wrap;">
                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                     <div style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">Platform</div>
-                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Web tĩnh thông minh</div>
+                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Web tĩnh tối ưu hiệu năng</div>
                 </div>
                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                     <div style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">Database</div>
-                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Google Sheets API</div>
+                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Google Sheets API CMS</div>
                 </div>
             </div>
         </div>
@@ -334,7 +348,7 @@
                 </div>
                 <div style="text-align: center;">
                     <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Version</div>
-                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">1.0</div>
+                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">1.1</div>
                 </div>
                 <div style="text-align: center;">
                     <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Date</div>
@@ -351,7 +365,7 @@
         </div>
     </div>
 
-    <!-- CONTENT PAGE -->
+    <!-- CONTENT PAGE 1 -->
     <div class="page content-page">
         <!-- HEADER -->
         <div class="header">
@@ -365,103 +379,114 @@
                     <img src="images/logo_transparent.png" alt="Sora Japan" style="height: 45px; object-fit: contain; filter: brightness(0.2);">
                 </div>
             </div>
-            <h1>PROJECT DEVELOPMENT PROPOSAL</h1>
+            <h1>CHI TIẾT KIẾN TRÚC & HẠNG MỤC DỰ ÁN</h1>
             <div class="subtitle">SORA JAPAN – Nền tảng Website Tư vấn & Quản trị dữ liệu bằng Sheet</div>
-            <div class="meta-row">
-                <span><strong>Ngày:</strong> 22/03/2026</span>
-                <span><strong>Phiên bản:</strong> v1.0</span>
-            </div>
         </div>
 
-        <!-- 1. TỔNG QUAN -->
+        <!-- 1. KIẾN TRÚC HỆ THỐNG -->
         <section class="avoid-break">
-            <h2>1. Tổng quan dự án</h2>
+            <h2>1. Архіtecture (Sơ đồ Kiến trúc Hệ thống)</h2>
+            <div class="alert alert-note">
+                <strong>💡 Smart Architecture:</strong> Giao diện tĩnh (Frontend) đọc/ghi dữ liệu thời gian thực trực tiếp từ Google Workspace, loại phỏ hoàn toàn sự cồng kềnh của Backend truyền thống.
+            </div>
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph TD
+                        User([Người dùng / Học viên]) -->|Truy cập HTTPS| CDN[GitHub Pages CDN]
+                        
+                        subgraph "Frontend Layer"
+                            UI[Sora Japan UI\nHTML/CSS/JS thuần]
+                        end
+                        
+                        CDN --> UI
+                        
+                        subgraph "Google Workspace Backend"
+                            Webhook[Google Apps Script\nWebhook Form]
+                            CSV[Google Sheets\nPublished CSV]
+                            DB1[(Sheet Dữ liệu\nKhách hàng)]
+                            DB2[(Sheet Quản lý\nĐơn hàng Kỹ sư)]
+                        end
+                        
+                        UI -->|1. Submit Form Đăng Ký| Webhook
+                        Webhook -->|Lưu & Báo cáo| DB1
+                        
+                        DB2 -->|Đồng bộ Auto| CSV
+                        UI -->|2. Fetch data JS (PapaParse)| CSV
+                        
+                        classDef fr fill:#eff6ff,stroke:#3b82f6,stroke-width:2px;
+                        classDef be fill:#ecfdf5,stroke:#10b981,stroke-width:2px;
+                        classDef usr fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,border-radius:50%;
+                        
+                        class UI fr;
+                        class Webhook,CSV,DB1,DB2 be;
+                        class User usr;
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. HẠNG MỤC CÔNG VIỆC CHI TIẾT -->
+        <section class="avoid-break">
+            <h2>2. Chi tiết Hạng mục Phát triển (Breakdown)</h2>
+            
+            <h4>2.1 Giao diện UI/UX & Frontend Optimization</h4>
             <table>
                 <tr>
-                    <th width="25%">Thông tin</th>
-                    <th>Chi tiết</th>
+                    <th width="30%">Cấu phần</th>
+                    <th>Chi tiết thực hiện</th>
                 </tr>
                 <tr>
-                    <td><strong>Tên sản phẩm</strong></td>
-                    <td>Website Sora Japan</td>
+                    <td><strong>Hệ thống Layout & Branding</strong></td>
+                    <td>
+                        <ul>
+                            <li>Thiết kế hệ tiêu chuẩn nhận diện Xanh/Cam Sora Japan với lưới Grid hiện đại.</li>
+                            <li>Xây dựng hơn 20 trang vệ tinh cho cụm Dịch vụ Kỹ sư, Tiếng Nhật, Du học đồng nhất.</li>
+                            <li>Mobile First: Giao diện hiển thị hoàn hảo trên iOS/Android viewport.</li>
+                        </ul>
+                    </td>
                 </tr>
                 <tr>
-                    <td><strong>Tính chất</strong></td>
-                    <td>Web Application tĩnh giao diện hiện đại kết hợp logic Fetch API động</td>
+                    <td><strong>Hiệu ứng Tương tác (Interactive)</strong></td>
+                    <td>
+                        <ul>
+                            <li>Menu Header Dropdown mượt mà, Slider Ảnh Hero tự động chạy.</li>
+                            <li>Tích hợp Module liên hệ "Floating Buttons" với Pulse Animations đa nền tảng.</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <h4>2.2 Tích hợp Data Logic (Google Sheets CMS)</h4>
+            <table>
+                <tr>
+                    <th width="30%">Cấu phần</th>
+                    <th>Chi tiết thực hiện</th>
                 </tr>
                 <tr>
-                    <td><strong>Hệ quản trị (DB)</strong></td>
-                    <td>Sử dụng hoàn toàn Google Sheets CMS (Miễn phí, dễ vận hành nội bộ)</td>
+                    <td><strong>Contact Data Pipeline</strong></td>
+                    <td>
+                        Thiết lập JavaScript POST data gửi từ Form liên hệ về Google Apps Script Webhook, ghi nhận Lead vào Sheet an toàn và xuất thông báo Success cho Client.
+                    </td>
                 </tr>
                 <tr>
-                    <td><strong>Quy mô triển khai</strong></td>
-                    <td>Toàn bộ giao diện 20+ trang vệ tinh, Hệ thống Floating Button, Form Webhook, Job Board</td>
+                    <td><strong>Dynamic Job Boards</strong></td>
+                    <td>
+                        Module đọc trực tiếp CSV từ sheet "Đơn hàng Kỹ sư", phân luồng danh sách theo từng chuyên ngành (CNTT, Cơ khí..). Tích hợp bộ lọc JLPT thời gian thực bằng JS, popup Modal hiển thị nội dung công việc chuẩn.
+                    </td>
                 </tr>
             </table>
         </section>
-
-        <!-- 2. PHẠM VI CÔNG VIỆC -->
-        <section class="avoid-break">
-            <h2>2. Phạm vi Công việc (Scope of Work)</h2>
-            <div class="two-col">
-                <div>
-                    <h4>Giao diện (Frontend & UI/UX)</h4>
-                    <table>
-                        <tr>
-                            <th>Hạng mục</th>
-                            <th>Mô tả</th>
-                        </tr>
-                        <tr>
-                            <td>Thiết kế Chuẩn mực</td>
-                            <td>Tone màu Xanh/Cam đồng bộ nhận diện, CSS grid chuẩn, Font hiện đại.</td>
-                        </tr>
-                        <tr>
-                            <td>Responsive 100%</td>
-                            <td>Tương thích hoàn hảo mọi thiết bị di động Mobile-first.</td>
-                        </tr>
-                        <tr>
-                            <td>Interactive UI</td>
-                            <td>Slider Hero Section, Animation Floating Buttons (Zalo, Msg, Call).</td>
-                        </tr>
-                        <tr>
-                            <td>Hệ thống 20+ Pages</td>
-                            <td>Điều hướng thông minh, Cards lưới phân bố dịch vụ logic, thân thiện với SEO.</td>
-                        </tr>
-                    </table>
-                </div>
-                <div>
-                    <h4>Công nghệ Xử lý (Logic & Data)</h4>
-                    <table>
-                        <tr>
-                            <th>Hạng mục</th>
-                            <th>Mô tả</th>
-                        </tr>
-                        <tr>
-                            <td>Google Sheets Board</td>
-                            <td>Viết logic Parser CSV real-time để render thẻ Đơn Hàng (Không cần server DB).</td>
-                        </tr>
-                        <tr>
-                            <td>Bộ lọc JS Động</td>
-                            <td>Lọc đơn hàng theo chứng chỉ JLPT N5-N1 tức thì ngay trên trình duyệt.</td>
-                        </tr>
-                        <tr>
-                            <td>Webhook Contact Form</td>
-                            <td>Bắn Data điền Form của khách hàng đẩy thẳng vào Google Sheet của bộ phận CSKH.</td>
-                        </tr>
-                        <tr>
-                            <td>Tối ưu Load Speed</td>
-                            <td>Kiến trúc tinh gọn, cache-busting, bypass CORS tự động.</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </section>
-
+        
+        <!-- BÁO GIÁ Ở TRANG TIẾP THEO -->
+        <div class="page-break"></div>
+    </div>
+        
+    <!-- CONTENT PAGE 2 -->
+    <div class="page content-page">
         <!-- 3. CHI PHÍ ĐẦU TƯ -->
         <section class="avoid-break">
-            <h2>3. Báo Giá Dịch Vụ</h2>
-            <div class="alert alert-note">
-                <strong>📝 Lưu ý:</strong> Phía Sora Japan đã có sẵn tên miền (Domain) và Hosting. Do đó, DanaExpert sẽ loại bỏ chi phí máy chủ, chỉ tập trung vào Chi phí Xúc tiến Công nghệ.
+            <h2>3. Báo Giá Dịch Vụ Đầu Tư (Pricing)</h2>
+            <div class="alert alert-important">
+                <strong>📝 Chính sách Tài nguyên mạng:</strong> Phía Sora Japan đã có sẵn tên miền (Domain) và hệ thống Hosting. DanaExpert sẽ bàn giao Source và loại bỏ hoàn toàn các chi phí phần cứng liên quan.
             </div>
             <table>
                 <thead>
@@ -475,30 +500,30 @@
                     <tr>
                         <td>1</td>
                         <td>
-                            <strong>Thiết lập Giao diện & Tư duy Trải nghiệm (UI/UX + Frontend)</strong><br>
-                            <span style="font-size: 8pt; color: #6b7280;">Bao gồm responsive, cấu trúc CSS tổng thể cho hơn 20 trang vệ tinh, Floating button, Menu Header.</span>
+                            <strong>Frontend & Trải nghiệm Người Tương tác (UI/UX Design)</strong><br>
+                            <span style="font-size: 8pt; color: #6b7280;">Quy hoạch bộ khung CSS/HTML tổng thể. Thiết kế 20+ Detail Pages. Animations nút trôi nổi, Slider, Nav mượt mà tốc độ cao. (Chiếm đa số khối lượng công việc)</span>
                         </td>
-                        <td style="text-align: right; font-weight: 500;">6.000.000</td>
+                        <td style="text-align: right; font-weight: 500;">7.500.000</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>
-                            <strong>Lập trình Xử lý Dữ liệu Nội bộ & Tích hợp (Backend Logic)</strong><br>
-                            <span style="font-size: 8pt; color: #6b7280;">Xây dựng cơ chế Hook Data vào Google Sheets, Fetch CSV tạo Modals/Card lọc Đơn hàng tức thì.</span>
+                            <strong>Lập trình Tích hợp Google Sheets & CMS Data (Backend Base)</strong><br>
+                            <span style="font-size: 8pt; color: #6b7280;">Bao gồm cơ chế đẩy dữ liệu Webhook Form liên lạc, Module đọc CSV vẽ cấu trúc Card Job Boards và Bộ phận lọc JS. (Khối lượng phát triển BE được tối giản nhờ kiến trúc thông minh).</span>
                         </td>
-                        <td style="text-align: right; font-weight: 500;">9.000.000</td>
+                        <td style="text-align: right; font-weight: 500;">2.500.000</td>
                     </tr>
                     <tr>
                         <td>3</td>
                         <td>
-                            <strong>Hệ thống Server (Hosting & Domain)</strong><br>
-                            <span style="font-size: 8pt; color: #6b7280;">Khách hàng tự cung cấp và quản lý.</span>
+                            <strong>Cấu hình Deployment, Hosting Server & Domain</strong><br>
+                            <span style="font-size: 8pt; color: #6b7280;">Khách hàng tự chuẩn bị, DanaExpert hỗ trợ setup HTTPS cơ bản bằng nền tảng có sẵn.</span>
                         </td>
-                        <td style="text-align: right; font-weight: 500;">0</td>
+                        <td style="text-align: right; font-weight: 500;">1.000.000</td>
                     </tr>
                     <tr class="price-row" style="background: #f0f4ff;">
-                        <td colspan="2" style="text-align: right;">TỔNG CỘNG:</td>
-                        <td style="text-align: right;">15.000.000</td>
+                        <td colspan="2" style="text-align: right;">TỔNG CỘNG ĐẦU TƯ GIAI ĐOẠN 1:</td>
+                        <td style="text-align: right;">11.000.000</td>
                     </tr>
                 </tbody>
             </table>
@@ -506,7 +531,7 @@
 
         <!-- 4. BẢO HÀNH & BẢO TRÌ -->
         <section class="avoid-break" style="margin-top: 25px;">
-            <h2>4. Chính sách Bảo hành & Bảo trì (Maintenance)</h2>
+            <h2>4. Chính sách Bảo hành & Bảo trì Thương hiệu (SLAs)</h2>
             <table>
                 <tr>
                     <th width="30%">Gói Hỗ trợ</th>
@@ -514,25 +539,29 @@
                     <th width="20%">Chi phí</th>
                 </tr>
                 <tr>
-                    <td><strong>Bảo hành Kỹ thuật (Bug/Lỗi)</strong></td>
-                    <td>Bảo hành <strong>TRỌN ĐỜI</strong> đối với mọi lỗi phát sinh do sai sót từ phía mã nguồn do DanaExpert xây dựng.</td>
-                    <td><strong>Free</strong> (Trọn đời)</td>
+                    <td><strong>Bảo hành Kỹ thuật Lỗi (Lifetime)</strong></td>
+                    <td>Bảo hành <strong>TRỌN ĐỜI</strong> đối với mọi Bugs, lỗi Logic phát sinh (ví dụ: Modal không nhảy, CSV không load) nguyên nhân từ cấu trúc Code do DanaExpert bàn giao.</td>
+                    <td><strong>Miễn phí trọn đời</strong></td>
                 </tr>
                 <tr>
-                    <td><strong>Maintain Miễn phí 6 Tháng</strong></td>
-                    <td>Hỗ trợ kỹ thuật tổng quát, theo dõi độ ổn định, cập nhật nội dung nhẹ qua Git không làm thay đổi cấu trúc cốt lõi.</td>
-                    <td><strong>Free</strong> (6 Tháng)</td>
+                    <td><strong>Maintain Vận hành 06 Tháng</strong></td>
+                    <td>Hỗ trợ tư vấn kỹ thuật tổng quát, cập nhật sửa chữ Text nhẹ, theo dõi độ phu sóng và bảo mật định kỳ đảm bảo website vận hành trơn tru.</td>
+                    <td><strong>Miễn phí 6 Tháng</strong></td>
                 </tr>
                 <tr>
-                     <td><strong>Yêu cầu Phát sinh (Sau 6 tháng)</strong></td>
-                    <td>Nếu có yêu cầu code thêm tính năng mới, thay đổi giao diện diện rộng, mức phí Maintain sẽ được tính theo giờ.</td>
+                     <td><strong>Yêu cầu Phát sinh Quy mô lớn (Sau 6 tháng)</strong></td>
+                    <td>Được áp dụng khi có nhu cầu Code/Thêm giao diện mới diện rộng nằm ngoài bản giao gốc ban đầu trên nền tảng.</td>
                     <td><strong>500.000đ / 1 giờ</strong></td>
                 </tr>
             </table>
         </section>
+        
+        <div style="margin-top: 40px; padding: 20px; border: 1px dashed var(--border); border-radius: 8px; font-size: 9pt; color: var(--text-muted);">
+            * Báo giá chưa bao gồm thuế GTGT 10%. Tài liệu có giá trị hiệu lực báo giá trong vòng 30 ngày. Thanh toán được chia làm 50% tạm ứng ban đầu và 50% sau khi hệ thống Codec được bàn giao chính thức.
+        </div>
 
         <div class="footer">
-            Tài liệu thống nhất Báo giá nội bộ giữa <strong>DanaExperts</strong> và <strong>Sora Japan</strong>.
+            Tài liệu thống nhất Báo giá & Giải pháp nội bộ giữa <strong>DanaExperts</strong> và <strong>Sora Japan</strong>.
         </div>
     </div>
 </body>
