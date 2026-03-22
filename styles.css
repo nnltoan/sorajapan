@@ -210,6 +210,11 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   height: var(--nav-height);
   position: relative;
+  transition: height var(--transition);
+}
+
+.header.scrolled .nav {
+  height: 75px; 
 }
 
 .nav-logo {
@@ -241,7 +246,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .header.scrolled .nav-logo img {
-  height: 76px;
+  height: 90px; /* Kept very close to 96px to honor constraint, allowing an elegant overhang */
 }
 
 .nav-logo-accent {
