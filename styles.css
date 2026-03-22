@@ -38,7 +38,7 @@
   --radius-full: 9999px;
 
   --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --nav-height: 72px;
+  --nav-height: 110px;
 }
 
 /* --- Reset & Base --- */
@@ -234,14 +234,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-logo img {
-  height: 48px; /* Larger logo */
+  height: 96px; /* Larger logo */
   width: auto;
   object-fit: contain;
   transition: all var(--transition);
 }
 
 .header.scrolled .nav-logo img {
-  height: 38px;
+  height: 76px;
 }
 
 .nav-logo-accent {
@@ -1878,3 +1878,94 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ============================================
+   HERO SLIDER
+   ============================================ */
+.hero-slider {
+  position: absolute;
+  left: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 220px;
+  height: 320px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  z-index: 3;
+}
+
+.hero-slider img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  animation: slideFade 15s infinite;
+}
+
+.hero-slider img:nth-child(1) { animation-delay: 0s; }
+.hero-slider img:nth-child(2) { animation-delay: 5s; }
+.hero-slider img:nth-child(3) { animation-delay: 10s; }
+
+@keyframes slideFade {
+  0% { opacity: 0; transform: scale(1.05); }
+  5% { opacity: 1; transform: scale(1); }
+  33% { opacity: 1; transform: scale(1); }
+  38% { opacity: 0; transform: scale(1.05); }
+  100% { opacity: 0; }
+}
+
+@media (max-width: 900px) {
+  .hero-slider {
+    display: none;
+  }
+}
+
+/* ============================================
+   FLOATING CONTACT BUTTONS
+   ============================================ */
+.floating-contact {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.floating-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.floating-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.btn-zalo { background: #25d366; }
+.btn-messenger { background: #0084ff; }
+.btn-call { background: #e74c3c; }
+
+/* Pulse animation for call button */
+@keyframes pulse-call {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.btn-call { animation: pulse-call 2s infinite; }
+
+@media (max-width: 767px) {
+  .floating-contact { bottom: 80px; right: 15px; gap: 12px; }
+  .floating-btn { width: 55px; height: 55px; }
+}

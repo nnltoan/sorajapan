@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đơn hàng Kỹ sư CNTT - Sora Japan</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="../index.html" class="logo"><img src="../images/logo_transparent.png" alt="Sora Japan" style="filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));"></a>
+    <a href="../index.html"><i class="fas fa-arrow-left"></i> Về trang chủ</a>
+  </header>
+
+  <h1 class="page-title">Đơn hàng Kỹ sư Nhật Bản</h1>
+
+  <div class="container">
+    <div class="job-nav">
+      <a href="cntt.html" class="active">CNTT</a>
+      <a href="cokhi.html">Cơ Khí</a>
+      <a href="dien.html">Điện / Điện tử</a>
+      <a href="kinhte.html">Kinh Tế</a>
+      <a href="xaydung.html">Xây Dựng</a>
+    </div>
+
+    <div class="filter-bar">
+      <span><i class="fas fa-filter"></i> Lọc đơn hàng:</span>
+      <select id="filter-jlpt">
+        <option value="all">Tất cả trình độ JLPT</option>
+        <option value="N5">N5</option>
+        <option value="N4">N4</option>
+        <option value="N3">N3</option>
+        <option value="N2">N2</option>
+        <option value="N1">N1</option>
+      </select>
+    </div>
+
+    <div id="card-container" class="card-container">
+      <!-- Cards rendered via JS -->
+    </div>
+  </div>
+
+  <script>const NGANH_HIEN_TAI = "CNTT";</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="assets/js/donhang.js"></script>
+</body>
+</html>

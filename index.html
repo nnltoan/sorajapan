@@ -75,7 +75,6 @@
         <a href="#">Tin tức</a>
         <a href="index.html#contact">Liên hệ</a>
       </nav>
-
       <div class="nav-cta-wrapper hide-on-mobile">
         <a href="index.html#contact" class="nav-cta">
           Tư vấn miễn phí
@@ -95,6 +94,12 @@
     <div class="hero-overlay"></div>
     <div class="hero-particles"></div>
 
+    <div class="hero-slider hide-on-mobile">
+      <img src="images/a1.png" alt="Cảnh đẹp Nhật Bản 1">
+      <img src="images/a2.png" alt="Cảnh đẹp Nhật Bản 2">
+      <img src="images/a3.png" alt="Cảnh đẹp Nhật Bản 3">
+    </div>
+
     <div class="container hero-content">
       <div class="hero-badge reveal hide-on-mobile">
         <div class="hero-badge-dot"></div>
@@ -113,7 +118,6 @@
       </p>
 
       <div class="hero-actions reveal">
-        <a href="#contact" class="btn btn-primary">Đăng ký tư vấn miễn phí</a>
         <a href="#services" class="btn btn-secondary">Khám phá dịch vụ</a>
       </div>
 
@@ -686,24 +690,31 @@
         <div class="contact-form-wrapper reveal-left">
           <form id="contact-form">
             <div class="form-group">
-              <label for="form-name" class="form-label">Họ và tên *</label>
-              <input type="text" id="form-name" class="form-input" placeholder="Nhập họ tên của bạn" required>
+              <label for="ho-ten" class="form-label">Họ và tên *</label>
+              <input type="text" id="ho-ten" name="ho-ten" class="form-input" placeholder="Nhập họ tên của bạn" required>
             </div>
             <div class="form-group">
-              <label for="form-phone" class="form-label">Số điện thoại *</label>
-              <input type="tel" id="form-phone" class="form-input" placeholder="090x xxx xxx" required>
+              <label for="sdt" class="form-label">Số điện thoại *</label>
+              <input type="tel" id="sdt" name="sdt" class="form-input" placeholder="090x xxx xxx" required pattern="[0-9]{9,11}">
             </div>
             <div class="form-group">
-              <label for="form-email" class="form-label">Email hỗ trợ *</label>
-              <input type="email" id="form-email" class="form-input" placeholder="email@example.com" required>
+              <label for="email" class="form-label">Email hỗ trợ *</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="email@example.com" required>
             </div>
             <div class="form-group">
-              <label for="form-message" class="form-label">Bạn quan tâm đến chương trình nào?</label>
-              <textarea id="form-message" class="form-textarea"
-                placeholder="Ví dụ: Tôi muốn tư vấn du học Nhật Bản vừa học vừa làm..."></textarea>
+              <label for="chuong-trinh" class="form-label">Bạn quan tâm đến chương trình nào?</label>
+              <select id="chuong-trinh" name="chuong-trinh" class="form-input" required style="width: 100%; padding: 12px 16px; border: 1px solid var(--color-border); border-radius: 8px; font-family: inherit; font-size: 15px; color: var(--color-text); outline: none;">
+                <option value="">Chọn chương trình</option>
+                <option value="Du học Nhật Bản">Du học Nhật Bản</option>
+                <option value="Kỹ sư CNTT">Kỹ sư CNTT</option>
+                <option value="Kỹ sư Cơ khí">Kỹ sư Cơ khí</option>
+                <option value="Điều dưỡng">Điều dưỡng</option>
+                <option value="Dạy tiếng Nhật">Dạy tiếng Nhật</option>
+              </select>
             </div>
             <button type="submit" class="btn btn-primary form-submit">Gửi Yêu Cầu Tư Vấn</button>
           </form>
+          <div id="message" style="margin-top: 15px;"></div>
         </div>
 
         <div class="contact-info reveal-right">
