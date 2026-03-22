@@ -1,5 +1,5 @@
 // === CONFIG ===
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2Rok7HSTasR0vVuLfCndCGp14ULHDCpCQ59ZCLwLFHKnfpmYzftwVfI_-m1hogCeiYVLfOu36fzwt/pub?output=csv";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR2Rok7HSTasR0vVuLfCndCGp14ULHDCpCQ59ZCLwLFHKnfpmYzftwVfI_-m1hogCeiYVLfOu36fzwt/pub?gid=0&single=true&output=csv";
 
 let allData = [];
 
@@ -7,20 +7,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show loading state
     document.getElementById("card-container").innerHTML = '<div class="loading">Đang tải dữ liệu đơn hàng...</div>';
     
-    // Google Sheets published to web natively supports CORS
-    const urlToFetch = SHEET_CSV_URL;
+    // Bỏ cache browser bằng timestamp
+    const urlToFetch = SHEET_CSV_URL + "&t=" + new Date().getTime();
 
     Papa.parse(urlToFetch, {
       download: true,
       header: true,
       skipEmptyLines: true,
       complete: function(results) {
-        allData = results.data.filter(row => row.Status === "Active" && row.Nganh === NGANH_HIEN_TAI);
+        // Robust filtering: handle cases with accidental spaces in target cells
+        allData = results.data.filter(row => 
+            row.Status && row.Status.trim() === "Active" && 
+            row.Nganh && row.Nganh.trim() === NGANH_HIEN_TAI
+        );
         renderCards(allData);
         initFilters();
       },
-      error: function(err) {
-        document.getElementById("card-container").innerHTML = '<div class="error">Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.</div>';
+      error: function(err, file) {
+        let msg = "Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.";
+        if (window.location.protocol === "file:") {
+            msg = "Trình duyệt đang chặn lấy dữ liệu từ Google Sheet vì bạn đang mở dưới dạng file local (file:///). Vui lòng sử dụng Live Server hoặc xem trên link thực tế (http://...) để test!";
+        }
+        document.getElementById("card-container").innerHTML = `<div class="error" style="color:red; padding:20px; text-align:center;"><strong>Lỗi:</strong> ${msg}</div>`;
         console.error("Parse Error:", err);
       }
     });
