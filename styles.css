@@ -506,7 +506,7 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   z-index: 3;
   max-width: 580px; /* Reduced from 720px to shift text more to the left and leave room for float cards */
-  padding-top: 40px;
+  padding-top: 130px; /* Increased from 40px to prevent overlap with the enlarged 96px logo header */
 }
 
 .hero-badge {
