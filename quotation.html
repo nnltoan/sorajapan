@@ -1,368 +1,539 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Báo giá Website Sora Japan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #0EA5E9;
-      --dark: #0f172a;
-      --gray: #64748b;
-      --light-gray: #f8fafc;
-      --border: #e2e8f0;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      color: #334155;
-      background: #f1f5f9;
-      line-height: 1.6;
-      padding: 40px 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sora Japan - Project Development Proposal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === A4 PRINT OPTIMIZATION === */
+        @page {
+            size: A4;
+            margin: 0;
+        }
 
-    .document {
-      max-width: 850px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 60px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    }
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #059669;
+            --accent: #7c3aed;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --text: #111827;
+            --text-muted: #4b5563;
+            --bg: #ffffff;
+            --border: #e5e7eb;
+            --bg-subtle: #f9fafb;
+        }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 50px;
-      padding-bottom: 30px;
-      border-bottom: 2px solid var(--primary);
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .logo {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .logo img {
-      height: 48px;
-    }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 10pt;
+            line-height: 1.5;
+            color: var(--text);
+            background: var(--bg);
+            width: auto;
+            margin: 0;
+        }
 
-    .doc-meta {
-      text-align: right;
-      font-size: 14px;
-      color: var(--gray);
-    }
-    
-    .doc-meta strong {
-      color: var(--dark);
-    }
+        .page {
+            width: 100%;
+            padding: 0;
+            background: white;
+            position: relative;
+        }
 
-    .doc-title {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--dark);
-      text-align: center;
-      margin-bottom: 40px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+        .content-page {
+            padding: 20mm;
+        }
 
-    .client-info {
-      margin-bottom: 40px;
-      background: var(--light-gray);
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
 
-    .client-info p {
-      margin-bottom: 5px;
-    }
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 210mm;
+            height: 297mm;
+            padding: 20mm 20mm 5mm 20mm;
+            page-break-after: always;
+            break-after: page;
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+        }
 
-    h3 {
-      color: var(--dark);
-      font-size: 18px;
-      margin-top: 30px;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    h3::before {
-      content: '';
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      background: var(--primary);
-      border-radius: 50%;
-    }
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-    }
+        .header {
+            text-align: center;
+            padding: 20px 0 25px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+        }
 
-    th, td {
-      padding: 15px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
+        .header h1 {
+            font-size: 18pt;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
 
-    th {
-      background: var(--light-gray);
-      font-weight: 600;
-      color: var(--dark);
-    }
+        .header .subtitle {
+            font-size: 11pt;
+            color: var(--text);
+            font-weight: 500;
+        }
 
-    .price {
-      text-align: right;
-      font-weight: 600;
-      white-space: nowrap;
-    }
+        .meta-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 15px;
+            font-size: 9pt;
+            color: var(--text-muted);
+        }
 
-    .total-row {
-      font-weight: 700;
-      font-size: 18px;
-      color: var(--primary);
-    }
-    
-    .total-row td {
-      border-top: 2px solid var(--primary);
-      border-bottom: none;
-    }
+        .meta-row strong {
+            color: var(--text);
+        }
 
-    .features-list {
-      margin-left: 20px;
-      margin-top: 8px;
-      font-size: 14px;
-      color: var(--gray);
-    }
-    
-    .features-list li {
-      margin-bottom: 4px;
-    }
+        section {
+            margin-bottom: 20px;
+        }
 
-    .terms {
-      font-size: 14px;
-      color: var(--gray);
-      background: var(--light-gray);
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 40px;
-    }
-    
-    .terms ul {
-      margin-left: 20px;
-      margin-top: 10px;
-    }
+        h2 {
+            font-size: 13pt;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            background: var(--bg-subtle);
+            border-left: 4px solid var(--primary);
+        }
 
-    .footer {
-      margin-top: 60px;
-      text-align: center;
-      font-size: 14px;
-      color: var(--gray);
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
+        h3 {
+            font-size: 11pt;
+            font-weight: 600;
+            color: var(--text);
+            margin: 15px 0 10px;
+        }
 
-    .print-btn {
-      display: block;
-      width: fit-content;
-      margin: 20px auto 40px;
-      padding: 12px 30px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
-      transition: all 0.2s;
-    }
+        h4 {
+            font-size: 10pt;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 12px 0 8px;
+        }
 
-    .print-btn:hover {
-      background: #0284c7;
-      transform: translateY(-2px);
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 9pt;
+        }
 
-    /* Print Styles */
-    @media print {
-      body {
-        background: none;
-        padding: 0;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-      .document {
-        box-shadow: none;
-        padding: 0;
-        max-width: 100%;
-      }
-      .print-btn {
-        display: none !important;
-      }
-      table {
-        page-break-inside: avoid;
-      }
-    }
-  </style>
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-subtle);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .alert {
+            padding: 10px 14px;
+            margin: 12px 0;
+            font-size: 9pt;
+            border-radius: 4px;
+        }
+
+        .alert-important {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+        }
+
+        .alert-note {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+        }
+
+        ul, ol {
+            margin-left: 18px;
+            margin-bottom: 10px;
+        }
+
+        li {
+            margin-bottom: 4px;
+            font-size: 9pt;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 2px solid var(--border);
+            font-size: 10pt;
+        }
+
+        .price-row {
+            font-size: 11pt;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .page {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            .header {
+                background: white !important;
+            }
+            h2 {
+                background: var(--bg-subtle) !important;
+                -webkit-print-color-adjust: exact;
+            }
+            .alert {
+                -webkit-print-color-adjust: exact;
+            }
+            th, tr:nth-child(even) {
+                -webkit-print-color-adjust: exact;
+            }
+            .print-btn {
+                display: none !important;
+            }
+        }
+
+        @media screen {
+            body {
+                background: #e5e7eb;
+                padding: 20px;
+            }
+            .page {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                margin-bottom: 20px;
+            }
+            .print-btn {
+                display: block;
+                width: fit-content;
+                margin: 0 auto 30px;
+                padding: 12px 30px;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-family: 'Inter', sans-serif;
+                font-weight: 600;
+                cursor: pointer;
+            }
+        }
+    </style>
 </head>
+
 <body>
+    <button class="print-btn" onclick="window.print()">🖨️ Xuất File PDF / In Báo Giá</button>
 
-  <button class="print-btn" onclick="window.print()">🖨️ Xuất File PDF / In Báo Giá</button>
+    <!-- COVER PAGE -->
+    <div class="page cover-page">
+        <!-- Subtle Background Pattern -->
+        <div style="position: absolute; top: 0; right: 0; width: 250px; height: 250px; background: linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, transparent 70%); border-radius: 0 0 0 100%;"></div>
+        <div style="position: absolute; bottom: 0; left: 0; width: 180px; height: 180px; background: linear-gradient(45deg, rgba(5, 150, 105, 0.04) 0%, transparent 70%); border-radius: 0 100% 0 0;"></div>
 
-  <div class="document">
-    <div class="header">
-      <div class="logo">
-        <!-- Replace with absolute/relative path if needed, or leave text -->
-        SORA JAPAN
-      </div>
-      <div class="doc-meta">
-        <p><strong>Ngày báo giá:</strong> 22/03/2026</p>
-        <p><strong>Hiệu lực đến:</strong> 22/04/2026</p>
-        <p><strong>Dự án:</strong> Hệ thống Web Thông minh</p>
-      </div>
+        <!-- Top Logo Section -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; position: relative; z-index: 1;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="logodanaexperts.png" alt="DanaExperts" style="height: 42px; object-fit: contain;">
+                <div style="text-align: left; border-left: 2px solid #e5e7eb; padding-left: 12px;">
+                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">DanaExperts</div>
+                    <div style="font-size: 7pt; color: #6b7280; letter-spacing: 0.5px;">Development Partner</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="text-align: right; border-right: 2px solid #e5e7eb; padding-right: 12px;">
+                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Sora Japan</div>
+                    <div style="font-size: 7pt; color: #6b7280; letter-spacing: 0.5px;">Client</div>
+                </div>
+                <img src="images/logo_transparent.png" alt="Sora Japan" style="height: 42px; object-fit: contain; filter: invert(0) brightness(0.4) sepia(1) hue-rotate(180deg) saturate(300%);">
+            </div>
+        </div>
+
+        <!-- Main Title Section (Center) -->
+        <div style="text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1;">
+            <div style="display: inline-block; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; font-size: 8pt; font-weight: 600; letter-spacing: 2px; padding: 6px 20px; border-radius: 16px; margin: 0 auto 18px;">
+                PROJECT DEVELOPMENT PROPOSAL
+            </div>
+
+            <h1 style="font-size: 38pt; font-weight: 700; color: #111827; margin-bottom: 6px; letter-spacing: -1px;">
+                SORA JAPAN
+            </h1>
+
+            <div style="width: 70px; height: 3px; background: linear-gradient(90deg, #d4af37, #f5d061); margin: 0 auto 14px; border-radius: 2px;"></div>
+
+            <div style="font-size: 12pt; color: #374151; line-height: 1.6; font-weight: 400;">
+                Hệ thống Website Du học & Kỹ sư sinh động<br>
+                <span style="color: #6b7280; font-size: 10pt;">Tích hợp Real-time Data từ Google Sheets</span>
+            </div>
+
+            <!-- Platform Cards -->
+            <div style="display: flex; justify-content: center; gap: 16px; margin-top: 30px; flex-wrap: wrap;">
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">Platform</div>
+                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Web tĩnh thông minh</div>
+                </div>
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 20px; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="font-size: 8pt; color: #9ca3af; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;">Database</div>
+                    <div style="font-size: 10pt; font-weight: 600; color: #1e40af;">Google Sheets API</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Info -->
+        <div style="position: relative; z-index: 1;">
+            <div style="display: flex; justify-content: center; gap: 35px; margin-bottom: 12px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Phase</div>
+                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">Hoàn thiện & Triển khai</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Version</div>
+                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">1.0</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 7pt; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Date</div>
+                    <div style="font-size: 9pt; font-weight: 600; color: #374151;">22/03/2026</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; padding-top: 10px; border-top: 1px solid #e5e7eb;">
+                <span style="display: inline-block; background: #fef3c7; color: #92400e; font-size: 7pt; font-weight: 600; letter-spacing: 1px; padding: 3px 10px; border-radius: 4px;">BUSINESS PROPOSAL</span>
+                <div style="font-size: 7pt; color: #9ca3af; margin-top: 5px;">
+                    This document is proprietary to DanaExperts & Sora Japan
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="doc-title">
-      BÁO GIÁ THIẾT KẾ, LẬP TRÌNH & BẢO TRÌ WEBSITE
+    <!-- CONTENT PAGE -->
+    <div class="page content-page">
+        <!-- HEADER -->
+        <div class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="logodanaexperts.png" alt="DanaExperts" style="height: 45px; object-fit: contain;">
+                    <span style="font-size: 8pt; color: var(--text-muted);">Đơn vị thực hiện</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 8pt; color: var(--text-muted);">Khách hàng</span>
+                    <img src="images/logo_transparent.png" alt="Sora Japan" style="height: 45px; object-fit: contain; filter: brightness(0.2);">
+                </div>
+            </div>
+            <h1>PROJECT DEVELOPMENT PROPOSAL</h1>
+            <div class="subtitle">SORA JAPAN – Nền tảng Website Tư vấn & Quản trị dữ liệu bằng Sheet</div>
+            <div class="meta-row">
+                <span><strong>Ngày:</strong> 22/03/2026</span>
+                <span><strong>Phiên bản:</strong> v1.0</span>
+            </div>
+        </div>
+
+        <!-- 1. TỔNG QUAN -->
+        <section class="avoid-break">
+            <h2>1. Tổng quan dự án</h2>
+            <table>
+                <tr>
+                    <th width="25%">Thông tin</th>
+                    <th>Chi tiết</th>
+                </tr>
+                <tr>
+                    <td><strong>Tên sản phẩm</strong></td>
+                    <td>Website Sora Japan</td>
+                </tr>
+                <tr>
+                    <td><strong>Tính chất</strong></td>
+                    <td>Web Application tĩnh giao diện hiện đại kết hợp logic Fetch API động</td>
+                </tr>
+                <tr>
+                    <td><strong>Hệ quản trị (DB)</strong></td>
+                    <td>Sử dụng hoàn toàn Google Sheets CMS (Miễn phí, dễ vận hành nội bộ)</td>
+                </tr>
+                <tr>
+                    <td><strong>Quy mô triển khai</strong></td>
+                    <td>Toàn bộ giao diện 20+ trang vệ tinh, Hệ thống Floating Button, Form Webhook, Job Board</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 2. PHẠM VI CÔNG VIỆC -->
+        <section class="avoid-break">
+            <h2>2. Phạm vi Công việc (Scope of Work)</h2>
+            <div class="two-col">
+                <div>
+                    <h4>Giao diện (Frontend & UI/UX)</h4>
+                    <table>
+                        <tr>
+                            <th>Hạng mục</th>
+                            <th>Mô tả</th>
+                        </tr>
+                        <tr>
+                            <td>Thiết kế Chuẩn mực</td>
+                            <td>Tone màu Xanh/Cam đồng bộ nhận diện, CSS grid chuẩn, Font hiện đại.</td>
+                        </tr>
+                        <tr>
+                            <td>Responsive 100%</td>
+                            <td>Tương thích hoàn hảo mọi thiết bị di động Mobile-first.</td>
+                        </tr>
+                        <tr>
+                            <td>Interactive UI</td>
+                            <td>Slider Hero Section, Animation Floating Buttons (Zalo, Msg, Call).</td>
+                        </tr>
+                        <tr>
+                            <td>Hệ thống 20+ Pages</td>
+                            <td>Điều hướng thông minh, Cards lưới phân bố dịch vụ logic, thân thiện với SEO.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <h4>Công nghệ Xử lý (Logic & Data)</h4>
+                    <table>
+                        <tr>
+                            <th>Hạng mục</th>
+                            <th>Mô tả</th>
+                        </tr>
+                        <tr>
+                            <td>Google Sheets Board</td>
+                            <td>Viết logic Parser CSV real-time để render thẻ Đơn Hàng (Không cần server DB).</td>
+                        </tr>
+                        <tr>
+                            <td>Bộ lọc JS Động</td>
+                            <td>Lọc đơn hàng theo chứng chỉ JLPT N5-N1 tức thì ngay trên trình duyệt.</td>
+                        </tr>
+                        <tr>
+                            <td>Webhook Contact Form</td>
+                            <td>Bắn Data điền Form của khách hàng đẩy thẳng vào Google Sheet của bộ phận CSKH.</td>
+                        </tr>
+                        <tr>
+                            <td>Tối ưu Load Speed</td>
+                            <td>Kiến trúc tinh gọn, cache-busting, bypass CORS tự động.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CHI PHÍ ĐẦU TƯ -->
+        <section class="avoid-break">
+            <h2>3. Báo Giá Dịch Vụ</h2>
+            <div class="alert alert-note">
+                <strong>📝 Lưu ý:</strong> Phía Sora Japan đã có sẵn tên miền (Domain) và Hosting. Do đó, DanaExpert sẽ loại bỏ chi phí máy chủ, chỉ tập trung vào Chi phí Xúc tiến Công nghệ.
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Hạng mục thực hiện</th>
+                        <th width="20%" style="text-align: right;">Chi phí (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>
+                            <strong>Thiết lập Giao diện & Tư duy Trải nghiệm (UI/UX + Frontend)</strong><br>
+                            <span style="font-size: 8pt; color: #6b7280;">Bao gồm responsive, cấu trúc CSS tổng thể cho hơn 20 trang vệ tinh, Floating button, Menu Header.</span>
+                        </td>
+                        <td style="text-align: right; font-weight: 500;">6.000.000</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>
+                            <strong>Lập trình Xử lý Dữ liệu Nội bộ & Tích hợp (Backend Logic)</strong><br>
+                            <span style="font-size: 8pt; color: #6b7280;">Xây dựng cơ chế Hook Data vào Google Sheets, Fetch CSV tạo Modals/Card lọc Đơn hàng tức thì.</span>
+                        </td>
+                        <td style="text-align: right; font-weight: 500;">9.000.000</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>
+                            <strong>Hệ thống Server (Hosting & Domain)</strong><br>
+                            <span style="font-size: 8pt; color: #6b7280;">Khách hàng tự cung cấp và quản lý.</span>
+                        </td>
+                        <td style="text-align: right; font-weight: 500;">0</td>
+                    </tr>
+                    <tr class="price-row" style="background: #f0f4ff;">
+                        <td colspan="2" style="text-align: right;">TỔNG CỘNG:</td>
+                        <td style="text-align: right;">15.000.000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 4. BẢO HÀNH & BẢO TRÌ -->
+        <section class="avoid-break" style="margin-top: 25px;">
+            <h2>4. Chính sách Bảo hành & Bảo trì (Maintenance)</h2>
+            <table>
+                <tr>
+                    <th width="30%">Gói Hỗ trợ</th>
+                    <th>Nội dung Cam kết</th>
+                    <th width="20%">Chi phí</th>
+                </tr>
+                <tr>
+                    <td><strong>Bảo hành Kỹ thuật (Bug/Lỗi)</strong></td>
+                    <td>Bảo hành <strong>TRỌN ĐỜI</strong> đối với mọi lỗi phát sinh do sai sót từ phía mã nguồn do DanaExpert xây dựng.</td>
+                    <td><strong>Free</strong> (Trọn đời)</td>
+                </tr>
+                <tr>
+                    <td><strong>Maintain Miễn phí 6 Tháng</strong></td>
+                    <td>Hỗ trợ kỹ thuật tổng quát, theo dõi độ ổn định, cập nhật nội dung nhẹ qua Git không làm thay đổi cấu trúc cốt lõi.</td>
+                    <td><strong>Free</strong> (6 Tháng)</td>
+                </tr>
+                <tr>
+                     <td><strong>Yêu cầu Phát sinh (Sau 6 tháng)</strong></td>
+                    <td>Nếu có yêu cầu code thêm tính năng mới, thay đổi giao diện diện rộng, mức phí Maintain sẽ được tính theo giờ.</td>
+                    <td><strong>500.000đ / 1 giờ</strong></td>
+                </tr>
+            </table>
+        </section>
+
+        <div class="footer">
+            Tài liệu thống nhất Báo giá nội bộ giữa <strong>DanaExperts</strong> và <strong>Sora Japan</strong>.
+        </div>
     </div>
-
-    <div class="client-info">
-      <p><strong>Kính gửi:</strong> Ban Giám Đốc / Đối tác đại diện thương hiệu <strong>Sora Japan</strong></p>
-      <p>Cảm ơn Quý công ty đã tin tưởng giao phó dự án xây dựng hệ thống Website Du học và Kỹ sư Nhật Bản. Dưới đây là bảng dự toán chi phí chi tiết cho các hạng mục thiết kế (Design), lập trình (Code), và gói bảo trì công nghệ (Maintain).</p>
-    </div>
-
-    <h3>1. Hạng mục Phát triển Website (Design & Code)</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>STT</th>
-          <th>Hạng mục công việc / Tính năng</th>
-          <th class="price">Thành tiền (VNĐ)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>01</td>
-          <td>
-            <strong>Giao diện UI/UX Hiện đại (Design)</strong>
-            <ul class="features-list">
-              <li>Thiết kế hệ sinh thái chuẩn quy chuẩn (Tông màu xanh dương / cam).</li>
-              <li>Responsive 100% Mobile-first (tối ưu cho điện thoại).</li>
-              <li>Hơn 20 trang vệ tinh (Detail Pages) cho các chuyên ngành Kỹ sư, Khóa học Tiếng Nhật, và Du học.</li>
-              <li>Tối ưu hệ thống Menu động (Dropdown) mượt mà, Slider ảnh Hero Section, Animations CSS.</li>
-            </ul>
-          </td>
-          <td class="price">8.500.000</td>
-        </tr>
-        <tr>
-          <td>02</td>
-          <td>
-            <strong>Lập trình Frontend & Logic Nội bộ (Code)</strong>
-            <ul class="features-list">
-              <li>Lập trình bộ HTML/CSS/JS thuần không độ trễ, tối ưu hóa tốc độ tải trang (PageSpeed Insights 90+).</li>
-              <li>Tích hợp Form Đăng ký đổ dữ liệu Real-time về <strong>Google Sheets</strong> qua Webhook tự phát triển (Không cần Backend phức tạp).</li>
-              <li>Tạo cụm Floating liên hệ (Zalo, Messenger, Hotline).</li>
-              <li>Card lưới hiển thị Danh mục (Grid Link) cho điều hướng Dịch Vụ.</li>
-            </ul>
-          </td>
-          <td class="price">5.000.000</td>
-        </tr>
-        <tr>
-          <td>03</td>
-          <td>
-            <strong>Trình cắm Dữ liệu Động (Google Sheets Job Board CMS)</strong>
-            <ul class="features-list">
-              <li>Tự động lấy Data các Đơn Hàng Kỹ Sư từ "CSV Web Publication" của Google Sheet.</li>
-              <li>Áp dụng bộ lọc JS (Lọc trình độ JLPT N5-N1).</li>
-              <li>Hiển thị Đơn Hàng theo Nhóm ngành tự động vào Form Pop-up chi tiết (Modal).</li>
-            </ul>
-          </td>
-          <td class="price">6.500.000</td>
-        </tr>
-        <tr>
-          <td>04</td>
-          <td>
-            <strong>Triển khai Server & Tối ưu SEO Cơ bản</strong>
-            <ul class="features-list">
-              <li>Tối ưu thẻ H1-H6, Meta Titlte, Schema phục vụ Google Search.</li>
-              <li>Triển khai lên nền tảng máy chủ tốc độ cao (VD: GitHub Pages miễn phí băng thông).</li>
-              <li>Trỏ tên miền chính thức của Sora Japan vào Server.</li>
-            </ul>
-          </td>
-          <td class="price">2.000.000</td>
-        </tr>
-        <tr class="total-row">
-          <td colspan="2" style="text-align: right;">Tổng Ngân sách Setup Ban đầu:</td>
-          <td class="price">22.000.000</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h3>2. Hạng mục Bảo trì & Vận hành (Maintainer)</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Gói dịch vụ</th>
-          <th>Quyền lợi bao gồm</th>
-          <th class="price">Chi phí (VNĐ)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Bảo hành Kỹ thuật (1 Năm Tặng kèm)</strong></td>
-          <td>
-            <ul class="features-list" style="margin-left: 0;">
-              <li>Xử lý sự cố nếu website không truy cập được hoặc Form lỗi.</li>
-              <li>Đảm bảo hệ code tương thích với các trình duyệt mới nhất.</li>
-            </ul>
-          </td>
-          <td class="price">Miễn phí</td>
-        </tr>
-        <tr>
-          <td><strong>Gói Bảo trì Liên tục (Retainer Hàng tháng)</strong></td>
-          <td>
-            <ul class="features-list" style="margin-left: 0;">
-              <li>Cập nhật Nội dung, Baner ảnh, Bài viết Blog hàng tuần (Theo yêu cầu).</li>
-              <li>Thêm mới hoặc sửa đổi cấu trúc các trang Dịch vụ con (Tối đa 5h làm việc lập trình/tháng).</li>
-              <li>Theo dõi Traffic và Fix lỗi bảo mật API/Google Sheet nếu hãng thay đổi thuật toán.</li>
-            </ul>
-          </td>
-          <td class="price">1.500.000 / Tháng</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="terms">
-      <strong>Lưu ý chung:</strong>
-      <ul>
-        <li>Báo giá trên chưa bao gồm 10% thuế VAT.</li>
-        <li>Chi phí tên miền (Domain) do phía Sora Japan tự chi trả và sở hữu vĩnh viễn với nhà mạng (PA Việt Nam / Tenten).</li>
-        <li>Các tính năng Phát sinh ngoài Hạng mục (VD: Xây dựng cổng Đăng nhập tài khoản phức tạp, Cổng thanh toán) sẽ được làm rõ thông qua Phụ lục Hợp đồng bổ sung.</li>
-        <li>Thanh toán chia làm 2 giai đoạn: 50% khi ký hợp đồng và 50% khi triển khai hoàn tất nghiệm thu.</li>
-      </ul>
-    </div>
-
-    <div class="footer">
-      Tài liệu Báo giá nội bộ dự án Website Sora Japan. Mọi thắc mắc xin vui lòng liên hệ Kỹ sư phụ trách dự án.
-    </div>
-  </div>
-
 </body>
 </html>
