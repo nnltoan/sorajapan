@@ -60,7 +60,12 @@ function doGet(e) {
 function handleWrite(data) {
   const action = data.action || '';
 
-  // Auth check for all write operations
+  // Public actions (no auth required)
+  if (action === 'submitContact') {
+    return submitContact(data);
+  }
+
+  // Auth check for all other write operations
   if (!auth(data.password)) {
     return { error: 'Unauthorized' };
   }
@@ -666,6 +671,23 @@ function formatDateVN(d) {
          d.getFullYear();
 }
 
+// ─── CONTACTS ───
+
+function submitContact(data) {
+  const sheet = getSheet('Contacts');
+  if (!sheet) return { error: 'Contacts sheet not found. Run setupSheets first.' };
+
+  const row = [
+    new Date().toISOString(),
+    data.hoTen || '',
+    data.sdt || '',
+    data.email || '',
+    data.chuongTrinh || ''
+  ];
+  sheet.appendRow(row);
+  return { status: 'success', message: 'Cảm ơn! Thông tin đã được gửi.' };
+}
+
 // ─── STATS ───
 
 function getStats(password) {
@@ -718,15 +740,42 @@ function getStats(password) {
 
   // Jobs stats
   let totalJobs = 0, activeJobs = 0;
+  const jobsByNganh = {};
   const jobsSheet = getSheet('Jobs');
   if (jobsSheet && jobsSheet.getLastRow() > 1) {
     const jobsData = jobsSheet.getDataRange().getValues();
     const jHeaders = jobsData[0];
     const jStatusIdx = jHeaders.indexOf('Status');
+    const jNganhIdx = jHeaders.indexOf('Nganh');
     const jRows = jobsData.slice(1);
     totalJobs = jRows.length;
-    activeJobs = jRows.filter(r => r[jStatusIdx] === 'Active').length;
+    jRows.forEach(r => {
+      if (r[jStatusIdx] === 'Active') activeJobs++;
+      const nganh = r[jNganhIdx] || 'Khac';
+      jobsByNganh[nganh] = (jobsByNganh[nganh] || 0) + 1;
+    });
   }
+
+  // Contact form stats (last 3 months including current)
+  const contactStats = [];
+  const contactsSheet = getSheet('Contacts');
+  if (contactsSheet && contactsSheet.getLastRow() > 1) {
+    const cData = contactsSheet.getDataRange().getValues();
+    const cRows = cData.slice(1);
+    const now = new Date();
+    for (let m = 2; m >= 0; m--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+      const year = d.getFullYear();
+      const month = d.getMonth(); // 0-indexed
+      const label = String(month + 1).padStart(2, '0') + '/' + year;
+      const count = cRows.filter(r => {
+        const ts = new Date(r[0]);
+        return ts.getFullYear() === year && ts.getMonth() === month;
+      }).length;
+      contactStats.push({ label, count });
+    }
+  }
+  const totalContacts = contactsSheet ? Math.max(0, contactsSheet.getLastRow() - 1) : 0;
 
   return {
     status: 'success',
@@ -740,7 +789,10 @@ function getStats(password) {
       recentPosts: recent,
       monthlyCount,
       totalJobs,
-      activeJobs
+      activeJobs,
+      jobsByNganh,
+      totalContacts,
+      contactStats
     }
   };
 }
@@ -852,6 +904,14 @@ function setupSheets() {
       'HanNop', 'YeuCau', 'HinhAnh', 'NgayDang', 'Status'
     ]);
     jobsSheet.getRange(1, 1, 1, 18).setFontWeight('bold');
+  }
+
+  // Contacts sheet
+  let contactsSheet = ss.getSheetByName('Contacts');
+  if (!contactsSheet) {
+    contactsSheet = ss.insertSheet('Contacts');
+    contactsSheet.appendRow(['Timestamp', 'HoTen', 'SDT', 'Email', 'ChuongTrinh']);
+    contactsSheet.getRange(1, 1, 1, 5).setFontWeight('bold');
   }
 
   // Config sheet

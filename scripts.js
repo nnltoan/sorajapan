@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Config ---
   const CONFIG = {
-    FORM_ENDPOINT: 'https://script.google.com/macros/s/AKfycbx8586l5zFB1npOid1uC4io_k9lH-5BD_u2HPky_XYUsP7UKbFnnGNShTCx2H8iO65t/exec'
+    API_URL: 'https://script.google.com/macros/s/AKfycbwE1UrOdpMcRdMPN1kPGPjFacHHOBcgSHkhKCn0SqQfjIvWPZ2NvLZKdX5z8rBQSLyihg/exec'
   };
 
   // --- Scroll throttle utility ---
@@ -212,14 +212,23 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.textContent = 'Đang gửi...';
       submitBtn.disabled = true;
 
-      const formData = new FormData(contactForm);
+      const payload = JSON.stringify({
+        action: 'submitContact',
+        hoTen: contactForm.querySelector('[name="ho-ten"]').value,
+        sdt: contactForm.querySelector('[name="sdt"]').value,
+        email: contactForm.querySelector('[name="email"]').value,
+        chuongTrinh: contactForm.querySelector('[name="chuong-trinh"]').value
+      });
 
-      fetch(CONFIG.FORM_ENDPOINT, {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
+      // Use GET with payload param for small data (CORS-safe)
+      const url = new URL(CONFIG.API_URL);
+      url.searchParams.set('action', 'submitContact');
+      url.searchParams.set('payload', payload);
+
+      fetch(url.toString(), { redirect: 'follow' })
+      .then(response => response.text())
+      .then(text => {
+        const data = JSON.parse(text);
         if (data.result === 'success' || data.status === 'success') {
           if(messageDiv) messageDiv.innerHTML = '<p style="color:var(--color-success); font-weight: 500;"><i class="fas fa-check-circle"></i> Cảm ơn bạn! Thông tin đã được gửi thành công. Chúng tôi sẽ sớm liên hệ lại.</p>';
           contactForm.reset();

@@ -87,17 +87,29 @@ function navigateTo(page, data) {
 async function renderDashboard(el) {
   el.innerHTML = `
     <div class="admin-page-header"><h2>Dashboard</h2></div>
+
+    <h3 style="margin:0 0 10px;font-size:1rem;color:#64748b;">Bài viết</h3>
     <div class="stats-grid">
       <div class="stat-card"><div class="label">Tổng bài viết</div><div class="value" id="stat-total">-</div></div>
       <div class="stat-card"><div class="label">Đã xuất bản</div><div class="value" id="stat-published" style="color:#10b981">-</div></div>
       <div class="stat-card"><div class="label">Bản nháp</div><div class="value" id="stat-draft" style="color:#f59e0b">-</div></div>
       <div class="stat-card"><div class="label">Tổng lượt xem</div><div class="value" id="stat-views" style="color:#0ea5e9">-</div></div>
     </div>
-    <div class="stats-grid" style="margin-top:16px;">
-      <div class="stat-card"><div class="label">Tổng đơn tuyển dụng</div><div class="value" id="stat-jobs-total">-</div></div>
-      <div class="stat-card"><div class="label">Đơn đang tuyển</div><div class="value" id="stat-jobs-active" style="color:#10b981">-</div></div>
+
+    <h3 style="margin:20px 0 10px;font-size:1rem;color:#64748b;">Tuyển dụng</h3>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="label">Tổng đơn hàng</div><div class="value" id="stat-jobs-total">-</div></div>
+      <div class="stat-card"><div class="label">Đang tuyển</div><div class="value" id="stat-jobs-active" style="color:#10b981">-</div></div>
     </div>
-    <div class="admin-card">
+    <div id="jobs-by-nganh" style="margin-top:12px;"></div>
+
+    <h3 style="margin:20px 0 10px;font-size:1rem;color:#64748b;">Tư vấn (Contact Form)</h3>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="label">Tổng lượt gửi</div><div class="value" id="stat-contacts-total" style="color:#8b5cf6">-</div></div>
+      <div id="contact-monthly" class="stat-card" style="grid-column:span 3;padding:0;"></div>
+    </div>
+
+    <div class="admin-card" style="margin-top:20px;">
       <div class="admin-card-header"><h3>Bài viết gần nhất</h3></div>
       <div id="recent-posts-table">Đang tải...</div>
     </div>`;
@@ -112,7 +124,39 @@ async function renderDashboard(el) {
       document.getElementById('stat-views').textContent = s.totalViews.toLocaleString();
       document.getElementById('stat-jobs-total').textContent = s.totalJobs || 0;
       document.getElementById('stat-jobs-active').textContent = s.activeJobs || 0;
+      document.getElementById('stat-contacts-total').textContent = s.totalContacts || 0;
 
+      // Jobs by Nganh breakdown
+      const nganhLabels = { CNTT: 'CNTT', 'CơKhi': 'Cơ khí', Dien: 'Điện', KinhTe: 'Kinh tế', XayDung: 'Xây dựng', NongNghiep: 'Nông nghiệp', ThucPham: 'Thực phẩm', Khac: 'Khác' };
+      const jbn = s.jobsByNganh || {};
+      if (Object.keys(jbn).length > 0) {
+        let nganhHtml = '<div style="display:flex;flex-wrap:wrap;gap:8px;">';
+        Object.entries(jbn).forEach(([k, v]) => {
+          nganhHtml += `<span style="background:#f1f5f9;padding:6px 14px;border-radius:8px;font-size:0.85rem;"><strong>${nganhLabels[k] || k}</strong>: ${v}</span>`;
+        });
+        nganhHtml += '</div>';
+        document.getElementById('jobs-by-nganh').innerHTML = nganhHtml;
+      }
+
+      // Contact monthly chart (last 3 months)
+      const cs = s.contactStats || [];
+      if (cs.length > 0) {
+        const maxCount = Math.max(...cs.map(c => c.count), 1);
+        let chartHtml = '<div style="padding:16px;"><div style="font-weight:600;margin-bottom:12px;font-size:0.9rem;">Lượt tư vấn 3 tháng gần nhất</div>';
+        chartHtml += '<div style="display:flex;align-items:flex-end;gap:16px;height:100px;">';
+        cs.forEach(c => {
+          const h = Math.max(8, (c.count / maxCount) * 80);
+          chartHtml += `<div style="flex:1;text-align:center;">
+            <div style="font-weight:700;font-size:1.1rem;margin-bottom:4px;">${c.count}</div>
+            <div style="height:${h}px;background:linear-gradient(180deg,#8b5cf6,#a78bfa);border-radius:6px 6px 0 0;"></div>
+            <div style="font-size:0.75rem;color:#64748b;margin-top:4px;">${c.label}</div>
+          </div>`;
+        });
+        chartHtml += '</div></div>';
+        document.getElementById('contact-monthly').innerHTML = chartHtml;
+      }
+
+      // Recent posts table
       let tableHtml = '<table class="admin-table"><thead><tr><th>Tiêu đề</th><th>Trạng thái</th><th>Ngày tạo</th><th>Lượt xem</th></tr></thead><tbody>';
       (s.recentPosts || []).forEach(p => {
         tableHtml += `<tr>

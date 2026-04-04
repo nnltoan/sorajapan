@@ -44,7 +44,7 @@ function renderCards(data) {
 
     let html = "";
     data.forEach(item => {
-        const yeuCau = item.YeuCau ? item.YeuCau.replace(/\\n/g, '<br>') : '';
+        const yeuCau = item.YeuCau ? item.YeuCau.replace(/\n/g, '<br>').replace(/\\n/g, '<br>') : '';
         let hinhAnh = item.HinhAnh || 'https://images.unsplash.com/photo-1542051842813-c3561a07dfd8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
 
         // Chuyển đổi link share Google Drive thành link ảnh trực tiếp
@@ -119,7 +119,7 @@ function showDetail(id) {
         document.body.appendChild(modal);
     }
 
-    const yeuCau = item.YeuCau ? item.YeuCau.replace(/\\n/g, '<br>') : 'Theo yêu cầu công ty';
+    const yeuCau = item.YeuCau ? item.YeuCau.replace(/\n/g, '<br>').replace(/\\n/g, '<br>') : 'Theo yêu cầu công ty';
 
     modal.innerHTML = `
         <div class="modal-content">
