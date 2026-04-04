@@ -31,11 +31,13 @@ async function fetchAPI(params) {
 }
 
 async function postAPI(body) {
-  const res = await fetch(NEWS_CONFIG.API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' }, // Apps Script quirk
-    body: JSON.stringify(body)
-  });
+  // Google Apps Script redirects POST → opaque response with CORS issues
+  // Workaround: send write operations via GET with encoded payload
+  const url = new URL(NEWS_CONFIG.API_URL);
+  url.searchParams.set('action', body.action);
+  url.searchParams.set('payload', JSON.stringify(body));
+
+  const res = await fetch(url.toString());
   return res.json();
 }
 

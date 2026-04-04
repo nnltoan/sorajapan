@@ -19,21 +19,28 @@ function doGet(e) {
   let result;
 
   try {
-    switch (action) {
-      case 'getPosts':
-        result = getPosts(e.parameter);
-        break;
-      case 'getPost':
-        result = getPost(e.parameter.slug);
-        break;
-      case 'getCategories':
-        result = getCategories();
-        break;
-      case 'getStats':
-        result = getStats(e.parameter.password);
-        break;
-      default:
-        result = { error: 'Unknown action: ' + action };
+    // If payload parameter exists, this is a write operation sent via GET
+    // (workaround for Apps Script CORS issues with POST)
+    if (e.parameter.payload) {
+      const data = JSON.parse(e.parameter.payload);
+      result = handleWrite(data);
+    } else {
+      switch (action) {
+        case 'getPosts':
+          result = getPosts(e.parameter);
+          break;
+        case 'getPost':
+          result = getPost(e.parameter.slug);
+          break;
+        case 'getCategories':
+          result = getCategories();
+          break;
+        case 'getStats':
+          result = getStats(e.parameter.password);
+          break;
+        default:
+          result = { error: 'Unknown action: ' + action };
+      }
     }
   } catch (err) {
     result = { error: err.message };
@@ -41,6 +48,41 @@ function doGet(e) {
 
   return ContentService.createTextOutput(JSON.stringify(result))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Shared write handler used by both doGet (payload) and doPost
+function handleWrite(data) {
+  const action = data.action || '';
+
+  // Auth check for all write operations
+  if (!auth(data.password)) {
+    return { error: 'Unauthorized' };
+  }
+
+  switch (action) {
+    case 'login':
+      return { status: 'success', message: 'Đăng nhập thành công' };
+    case 'createPost':
+      return createPost(data);
+    case 'updatePost':
+      return updatePost(data);
+    case 'deletePost':
+      return deletePost(data.id);
+    case 'uploadImage':
+      return uploadImage(data);
+    case 'deleteImage':
+      return deleteImage(data.fileId);
+    case 'createCategory':
+      return manageCategory('create', data);
+    case 'updateCategory':
+      return manageCategory('update', data);
+    case 'deleteCategory':
+      return manageCategory('delete', data);
+    case 'updateConfig':
+      return updateConfig(data.key, data.value, data.password);
+    default:
+      return { error: 'Unknown action: ' + action };
+  }
 }
 
 function doPost(e) {
@@ -52,49 +94,9 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  const action = data.action || '';
   let result;
-
   try {
-    // Auth check for all write operations
-    if (!auth(data.password)) {
-      result = { error: 'Unauthorized' };
-    } else {
-      switch (action) {
-        case 'login':
-          result = { status: 'success', message: 'Đăng nhập thành công' };
-          break;
-        case 'createPost':
-          result = createPost(data);
-          break;
-        case 'updatePost':
-          result = updatePost(data);
-          break;
-        case 'deletePost':
-          result = deletePost(data.id);
-          break;
-        case 'uploadImage':
-          result = uploadImage(data);
-          break;
-        case 'deleteImage':
-          result = deleteImage(data.fileId);
-          break;
-        case 'createCategory':
-          result = manageCategory('create', data);
-          break;
-        case 'updateCategory':
-          result = manageCategory('update', data);
-          break;
-        case 'deleteCategory':
-          result = manageCategory('delete', data);
-          break;
-        case 'updateConfig':
-          result = updateConfig(data.key, data.value, data.password);
-          break;
-        default:
-          result = { error: 'Unknown action: ' + action };
-      }
-    }
+    result = handleWrite(data);
   } catch (err) {
     result = { error: err.message };
   }
@@ -686,4 +688,5 @@ function setupSheets() {
     samplePosts.forEach(p => postsSheet2.appendRow(p));
   }
 
-  Logger.log('Setup c
+  Logger.log('Setup completed successfully!');
+}
