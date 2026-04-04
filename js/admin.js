@@ -50,7 +50,8 @@ async function doLogin() {
       errEl.style.display = 'block';
     }
   } catch (e) {
-    errEl.textContent = 'Lỗi kết nối server';
+    console.error('Login error:', e);
+    errEl.textContent = 'Lỗi kết nối server: ' + e.message;
     errEl.style.display = 'block';
   }
 }

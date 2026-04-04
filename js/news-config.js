@@ -31,12 +31,23 @@ async function fetchAPI(params) {
 }
 
 async function postAPI(body) {
-  // Google Apps Script redirects POST → opaque response with CORS issues
-  // Workaround: send write operations via GET with encoded payload
+  // Try 1: standard POST with redirect follow
+  try {
+    const res = await fetch(NEWS_CONFIG.API_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok || res.type === 'basic') {
+      return await res.json();
+    }
+  } catch (_) { /* fall through to GET workaround */ }
+
+  // Try 2: GET with payload (Apps Script CORS workaround)
   const url = new URL(NEWS_CONFIG.API_URL);
   url.searchParams.set('action', body.action);
   url.searchParams.set('payload', JSON.stringify(body));
-
   const res = await fetch(url.toString());
   return res.json();
 }
@@ -70,4 +81,6 @@ function formatDateRelative(dateStr) {
 
 /* Utility: truncate text */
 function truncate(text, len) {
-  if (!text || text.length <= len) return text
+  if (!text || text.length <= len) return text;
+  return text.substring(0, len).trimEnd() + '...';
+}
