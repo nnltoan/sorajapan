@@ -228,16 +228,23 @@ document.addEventListener('DOMContentLoaded', () => {
       fetch(url.toString(), { redirect: 'follow' })
       .then(response => response.text())
       .then(text => {
-        const data = JSON.parse(text);
+        console.log('[Contact form] Response:', text.substring(0, 300));
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+          console.error('[Contact form] JSON parse error:', e, text.substring(0, 500));
+          if(messageDiv) messageDiv.innerHTML = '<p style="color:#ef4444; font-weight: 500;"><i class="fas fa-exclamation-circle"></i> Phản hồi không hợp lệ. Vui lòng thử lại sau.</p>';
+          return;
+        }
         if (data.result === 'success' || data.status === 'success') {
           if(messageDiv) messageDiv.innerHTML = '<p style="color:var(--color-success); font-weight: 500;"><i class="fas fa-check-circle"></i> Cảm ơn bạn! Thông tin đã được gửi thành công. Chúng tôi sẽ sớm liên hệ lại.</p>';
           contactForm.reset();
         } else {
+          console.warn('[Contact form] Server error:', data.error || data);
           if(messageDiv) messageDiv.innerHTML = '<p style="color:#ef4444; font-weight: 500;"><i class="fas fa-exclamation-circle"></i> Có lỗi xảy ra, vui lòng thử lại sau.</p>';
         }
       })
       .catch(error => {
-        console.error('Form submission error:', error);
+        console.error('[Contact form] Fetch error:', error);
         if(messageDiv) messageDiv.innerHTML = '<p style="color:#ef4444; font-weight: 500;"><i class="fas fa-exclamation-circle"></i> Không thể gửi thông tin. Vui lòng kiểm tra kết nối mạng và thử lại.</p>';
       })
       .finally(() => {
