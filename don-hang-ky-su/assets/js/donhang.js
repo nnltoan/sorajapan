@@ -6,48 +6,61 @@ let allData = [];
 document.addEventListener('DOMContentLoaded', () => {
     // Show loading state
     document.getElementById("card-container").innerHTML = '<div class="loading">Đang tải dữ liệu đơn hàng...</div>';
-    
+
     // Sử dụng link chính xác người dùng cung cấp
     const urlToFetch = SHEET_CSV_URL;
 
     Papa.parse(urlToFetch, {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
-      complete: function(results) {
-        // Robust filtering: handle cases with accidental spaces in target cells
-        allData = results.data.filter(row => 
-            row.Status && row.Status.trim() === "Active" && 
-            row.Nganh && row.Nganh.trim() === NGANH_HIEN_TAI
-        );
-        renderCards(allData);
-        initFilters();
-      },
-      error: function(err, file) {
-        let msg = "Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.";
-        if (window.location.protocol === "file:") {
-            msg = "Trình duyệt đang chặn lấy dữ liệu từ Google Sheet vì bạn đang mở dưới dạng file local (file:///). Vui lòng sử dụng Live Server hoặc xem trên link thực tế (http://...) để test!";
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results) {
+            // Robust filtering: handle cases with accidental spaces in target cells
+            allData = results.data.filter(row =>
+                row.Status && row.Status.trim() === "Active" &&
+                row.Nganh && row.Nganh.trim() === NGANH_HIEN_TAI
+            );
+            renderCards(allData);
+            initFilters();
+        },
+        error: function (err, file) {
+            let msg = "Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.";
+            if (window.location.protocol === "file:") {
+                msg = "Trình duyệt đang chặn lấy dữ liệu từ Google Sheet vì bạn đang mở dưới dạng file local (file:///). Vui lòng sử dụng Live Server hoặc xem trên link thực tế (http://...) để test!";
+            }
+            document.getElementById("card-container").innerHTML = `<div class="error" style="color:red; padding:20px; text-align:center;"><strong>Lỗi:</strong> ${msg}</div>`;
+            console.error("Parse Error:", err);
         }
-        document.getElementById("card-container").innerHTML = `<div class="error" style="color:red; padding:20px; text-align:center;"><strong>Lỗi:</strong> ${msg}</div>`;
-        console.error("Parse Error:", err);
-      }
     });
 });
 
 function renderCards(data) {
-  const container = document.getElementById("card-container");
-  if (data.length === 0) {
-      container.innerHTML = '<div class="no-data">Hiện tại chưa có đơn hàng nào cho ngành này.</div>';
-      return;
-  }
+    const container = document.getElementById("card-container");
+    if (data.length === 0) {
+        container.innerHTML = '<div class="no-data">Hiện tại chưa có đơn hàng nào cho ngành này.</div>';
+        return;
+    }
 
-  let html = "";
-  data.forEach(item => {
-    // Format description text
-    const quyenLoi = item.QuyenLoi ? item.QuyenLoi.replace(/\\n/g, '<br>') : 'Theo quy định của Nhật Bản';
-    const hinhAnh = item.HinhAnh || 'https://images.unsplash.com/photo-1542051842813-c3561a07dfd8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
-    
-    html += `
+    let html = "";
+    data.forEach(item => {
+        // Format description text
+        const quyenLoi = item.QuyenLoi ? item.QuyenLoi.replace(/\\n/g, '<br>') : 'Theo quy định của Nhật Bản';
+        let hinhAnh = item.HinhAnh || 'https://images.unsplash.com/photo-1542051842813-c3561a07dfd8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
+
+        // Chuyển đổi link share Google Drive thành link ảnh trực tiếp
+        if (hinhAnh.includes('drive.google.com/file/d/')) {
+            const match = hinhAnh.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) {
+                hinhAnh = `https://lh3.googleusercontent.com/d/${match[1]}`;
+            }
+        } else if (hinhAnh.includes('drive.google.com/uc?')) {
+            const match = hinhAnh.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) {
+                hinhAnh = `https://lh3.googleusercontent.com/d/${match[1]}`;
+            }
+        }
+
+        html += `
       <div class="job-card">
         <div class="job-card-image" style="background-image: url('${hinhAnh}')">
             <div class="job-card-badge">${item.MaDon}</div>
@@ -86,8 +99,8 @@ function renderCards(data) {
             <button class="btn job-btn" onclick="showDetail('${item.ID}')">Xem chi tiết <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>`;
-  });
-  container.innerHTML = html;
+    });
+    container.innerHTML = html;
 }
 
 function showDetail(id) {
@@ -102,9 +115,9 @@ function showDetail(id) {
         modal.className = 'modal';
         document.body.appendChild(modal);
     }
-    
+
     const quyenLoi = item.QuyenLoi ? item.QuyenLoi.replace(/\\n/g, '<br>') : '';
-    
+
     modal.innerHTML = `
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('jobModal').style.display='none'">&times;</span>
@@ -143,9 +156,9 @@ function initFilters() {
 }
 
 // Close modal when clicking outside
-window.onclick = function(event) {
-  const modal = document.getElementById('jobModal');
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
+window.onclick = function (event) {
+    const modal = document.getElementById('jobModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }
