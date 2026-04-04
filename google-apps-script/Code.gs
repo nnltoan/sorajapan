@@ -44,6 +44,9 @@ function doGet(e) {
         case 'getJob':
           result = getJob(e.parameter.id);
           break;
+        case 'getContacts':
+          result = getContacts(e.parameter);
+          break;
         default:
           result = { error: 'Unknown action: ' + action };
       }
@@ -97,6 +100,10 @@ function handleWrite(data) {
       return updateJob(data);
     case 'deleteJob':
       return deleteJob(data.id);
+    case 'updateContact':
+      return updateContact(data);
+    case 'deleteContact':
+      return deleteContact(data.id);
     default:
       return { error: 'Unknown action: ' + action };
   }
@@ -671,21 +678,121 @@ function formatDateVN(d) {
          d.getFullYear();
 }
 
-// ─── CONTACTS ───
+// ─── CONTACTS CRM ───
 
 function submitContact(data) {
   const sheet = getSheet('Contacts');
   if (!sheet) return { error: 'Contacts sheet not found. Run setupSheets first.' };
 
+  const id = 'CT-' + Date.now().toString(36).toUpperCase();
   const row = [
+    id,
     new Date().toISOString(),
     data.hoTen || '',
     data.sdt || '',
     data.email || '',
-    data.chuongTrinh || ''
+    data.chuongTrinh || '',
+    'Mới',          // Status
+    '',             // Note
+    '',             // AssignedTo
+    ''              // UpdatedAt
   ];
   sheet.appendRow(row);
   return { status: 'success', message: 'Cảm ơn! Thông tin đã được gửi.' };
+}
+
+function getContacts(params) {
+  const sheet = getSheet('Contacts');
+  if (!sheet) return { status: 'success', contacts: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1);
+
+  const page = parseInt(params.page) || 1;
+  const limit = parseInt(params.limit) || 20;
+  const status = params.status || '';
+  const chuongTrinh = params.chuongTrinh || '';
+  const search = (params.search || '').toLowerCase();
+
+  let contacts = rows.map(row => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = row[i]);
+    return obj;
+  });
+
+  contacts = contacts.filter(c => {
+    if (status && c.Status !== status) return false;
+    if (chuongTrinh && c.ChuongTrinh !== chuongTrinh) return false;
+    if (search) {
+      const haystack = (c.HoTen + ' ' + c.SDT + ' ' + c.Email + ' ' + c.Note).toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Sort by Timestamp desc (newest first)
+  contacts.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+
+  const total = contacts.length;
+  const totalPages = Math.ceil(total / limit);
+  const start = (page - 1) * limit;
+  const paginated = contacts.slice(start, start + limit);
+
+  // Pipeline summary (count per status)
+  const pipeline = {};
+  rows.forEach(row => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = row[i]);
+    const s = obj.Status || 'Mới';
+    pipeline[s] = (pipeline[s] || 0) + 1;
+  });
+
+  return { status: 'success', contacts: paginated, pagination: { page, limit, total, totalPages }, pipeline };
+}
+
+function updateContact(data) {
+  if (!data.ID) return { error: 'Missing contact ID' };
+
+  const sheet = getSheet('Contacts');
+  if (!sheet) return { error: 'Contacts sheet not found' };
+
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+
+  for (let i = 1; i < allData.length; i++) {
+    if (allData[i][0] === data.ID) {
+      const rowIndex = i + 1;
+      headers.forEach((h, colIdx) => {
+        if (h !== 'ID' && h !== 'Timestamp' && data[h] !== undefined) {
+          sheet.getRange(rowIndex, colIdx + 1).setValue(data[h]);
+        }
+      });
+      // Always update UpdatedAt
+      const updatedAtIdx = headers.indexOf('UpdatedAt');
+      if (updatedAtIdx >= 0) {
+        sheet.getRange(rowIndex, updatedAtIdx + 1).setValue(new Date().toISOString());
+      }
+      return { status: 'success', message: 'Cập nhật thành công' };
+    }
+  }
+  return { error: 'Contact not found' };
+}
+
+function deleteContact(id) {
+  if (!id) return { error: 'Missing contact ID' };
+
+  const sheet = getSheet('Contacts');
+  if (!sheet) return { error: 'Contacts sheet not found' };
+
+  const allData = sheet.getDataRange().getValues();
+  for (let i = 1; i < allData.length; i++) {
+    if (allData[i][0] === id) {
+      sheet.deleteRow(i + 1);
+      return { status: 'success', message: 'Đã xóa liên hệ' };
+    }
+  }
+  return { error: 'Contact not found' };
 }
 
 // ─── STATS ───
@@ -769,13 +876,25 @@ function getStats(password) {
       const month = d.getMonth(); // 0-indexed
       const label = String(month + 1).padStart(2, '0') + '/' + year;
       const count = cRows.filter(r => {
-        const ts = new Date(r[0]);
+        const ts = new Date(r[1]); // Timestamp is column index 1 (after ID)
         return ts.getFullYear() === year && ts.getMonth() === month;
       }).length;
       contactStats.push({ label, count });
     }
   }
   const totalContacts = contactsSheet ? Math.max(0, contactsSheet.getLastRow() - 1) : 0;
+
+  // Contact pipeline (count per status)
+  const contactPipeline = {};
+  if (contactsSheet && contactsSheet.getLastRow() > 1) {
+    const cpData = contactsSheet.getDataRange().getValues();
+    const cpHeaders = cpData[0];
+    const cpStatusIdx = cpHeaders.indexOf('Status');
+    cpData.slice(1).forEach(r => {
+      const s = r[cpStatusIdx] || 'Mới';
+      contactPipeline[s] = (contactPipeline[s] || 0) + 1;
+    });
+  }
 
   return {
     status: 'success',
@@ -792,7 +911,8 @@ function getStats(password) {
       activeJobs,
       jobsByNganh,
       totalContacts,
-      contactStats
+      contactStats,
+      contactPipeline
     }
   };
 }
@@ -906,12 +1026,12 @@ function setupSheets() {
     jobsSheet.getRange(1, 1, 1, 18).setFontWeight('bold');
   }
 
-  // Contacts sheet
+  // Contacts sheet (CRM)
   let contactsSheet = ss.getSheetByName('Contacts');
   if (!contactsSheet) {
     contactsSheet = ss.insertSheet('Contacts');
-    contactsSheet.appendRow(['Timestamp', 'HoTen', 'SDT', 'Email', 'ChuongTrinh']);
-    contactsSheet.getRange(1, 1, 1, 5).setFontWeight('bold');
+    contactsSheet.appendRow(['ID', 'Timestamp', 'HoTen', 'SDT', 'Email', 'ChuongTrinh', 'Status', 'Note', 'AssignedTo', 'UpdatedAt']);
+    contactsSheet.getRange(1, 1, 1, 10).setFontWeight('bold');
   }
 
   // Config sheet

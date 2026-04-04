@@ -78,6 +78,7 @@ function navigateTo(page, data) {
     case 'categories': renderCategories(main); break;
     case 'jobs': renderJobsList(main); break;
     case 'job-form': renderJobForm(main, data); break;
+    case 'contacts': renderContactsList(main); break;
     case 'media': renderMedia(main); break;
     case 'settings': renderSettings(main); break;
   }
@@ -103,11 +104,12 @@ async function renderDashboard(el) {
     </div>
     <div id="jobs-by-nganh" style="margin-top:12px;"></div>
 
-    <h3 style="margin:20px 0 10px;font-size:1rem;color:#64748b;">Tư vấn (Contact Form)</h3>
+    <h3 style="margin:20px 0 10px;font-size:1rem;color:#64748b;">Tư vấn (CRM)</h3>
     <div class="stats-grid">
       <div class="stat-card"><div class="label">Tổng lượt gửi</div><div class="value" id="stat-contacts-total" style="color:#8b5cf6">-</div></div>
       <div id="contact-monthly" class="stat-card" style="grid-column:span 3;padding:0;"></div>
     </div>
+    <div id="dashboard-pipeline" style="margin-top:12px;"></div>
 
     <div class="admin-card" style="margin-top:20px;">
       <div class="admin-card-header"><h3>Bài viết gần nhất</h3></div>
@@ -154,6 +156,21 @@ async function renderDashboard(el) {
         });
         chartHtml += '</div></div>';
         document.getElementById('contact-monthly').innerHTML = chartHtml;
+      }
+
+      // CRM pipeline on dashboard
+      const cp = s.contactPipeline || {};
+      if (Object.keys(cp).length > 0) {
+        const pipelineColors = { 'Mới': '#3b82f6', 'Đã liên hệ': '#f59e0b', 'Đang tư vấn': '#8b5cf6', 'Đã chốt đơn': '#10b981', 'Không tiềm năng': '#94a3b8' };
+        const totalC = Object.values(cp).reduce((a, b) => a + b, 0) || 1;
+        let pHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+        ['Mới', 'Đã liên hệ', 'Đang tư vấn', 'Đã chốt đơn', 'Không tiềm năng'].forEach(status => {
+          const cnt = cp[status] || 0;
+          const clr = pipelineColors[status];
+          pHtml += `<span style="background:white;border-left:3px solid ${clr};padding:8px 14px;border-radius:8px;font-size:0.85rem;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><strong style="color:${clr};">${cnt}</strong> ${status}</span>`;
+        });
+        pHtml += '</div>';
+        document.getElementById('dashboard-pipeline').innerHTML = pHtml;
       }
 
       // Recent posts table
@@ -983,6 +1000,236 @@ async function saveJob() {
     btn.disabled = false;
     btn.textContent = editingJobId ? 'Cập nhật' : 'Lưu đơn hàng';
   }
+}
+
+/* ─── CONTACTS CRM ─── */
+const CONTACT_STATUSES = ['Mới', 'Đã liên hệ', 'Đang tư vấn', 'Đã chốt đơn', 'Không tiềm năng'];
+const CONTACT_STATUS_COLORS = {
+  'Mới': '#3b82f6',
+  'Đã liên hệ': '#f59e0b',
+  'Đang tư vấn': '#8b5cf6',
+  'Đã chốt đơn': '#10b981',
+  'Không tiềm năng': '#94a3b8'
+};
+
+const CHUONG_TRINH_OPTIONS = ['Du học Nhật Bản', 'Kỹ sư', 'Tokutei (KNĐĐ)', 'Thực tập sinh', 'Điều dưỡng', 'Tiếng Nhật', 'Khác'];
+
+let contactsCurrentPage = 1;
+
+async function renderContactsList(el) {
+  el.innerHTML = `
+    <div class="admin-page-header">
+      <h2>Quản lý Tư vấn (CRM)</h2>
+    </div>
+    <div id="crm-pipeline" style="margin-bottom:20px;"></div>
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <select id="filter-contact-status" class="admin-search" style="width:150px;" onchange="filterContacts()">
+            <option value="">Tất cả trạng thái</option>
+            ${CONTACT_STATUSES.map(s => `<option value="${s}">${s}</option>`).join('')}
+          </select>
+          <select id="filter-contact-program" class="admin-search" style="width:170px;" onchange="filterContacts()">
+            <option value="">Tất cả chương trình</option>
+            ${CHUONG_TRINH_OPTIONS.map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+        </div>
+        <input type="text" class="admin-search" placeholder="Tìm tên, SĐT, email..." id="search-contacts" oninput="filterContacts()">
+      </div>
+      <div id="contacts-table-container">Đang tải...</div>
+      <div id="contacts-pagination" style="padding:12px 16px;text-align:center;"></div>
+    </div>`;
+
+  filterContacts();
+}
+
+async function filterContacts() {
+  const status = document.getElementById('filter-contact-status')?.value || '';
+  const chuongTrinh = document.getElementById('filter-contact-program')?.value || '';
+  const search = document.getElementById('search-contacts')?.value || '';
+
+  try {
+    const res = await fetchAPI({
+      action: 'getContacts', password: adminPassword,
+      page: contactsCurrentPage, limit: 20,
+      status, chuongTrinh, search
+    });
+    if (res.status === 'success') {
+      loadContactsTable(res.contacts, res.pagination);
+      renderCRMPipeline(res.pipeline);
+    }
+  } catch (e) {
+    document.getElementById('contacts-table-container').innerHTML = '<p style="padding:20px;color:#ef4444;">Lỗi tải dữ liệu</p>';
+  }
+}
+
+function renderCRMPipeline(pipeline) {
+  const el = document.getElementById('crm-pipeline');
+  if (!el || !pipeline) return;
+  const total = Object.values(pipeline).reduce((s, v) => s + v, 0) || 1;
+  let html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
+  CONTACT_STATUSES.forEach(s => {
+    const count = pipeline[s] || 0;
+    const color = CONTACT_STATUS_COLORS[s];
+    const pct = Math.round(count / total * 100);
+    html += `<div style="flex:1;min-width:140px;background:white;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.05);border-left:4px solid ${color};">
+      <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">${s}</div>
+      <div style="font-size:1.5rem;font-weight:700;color:${color};">${count}</div>
+      <div style="font-size:0.75rem;color:#94a3b8;">${pct}%</div>
+    </div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function loadContactsTable(contacts, pagination) {
+  const container = document.getElementById('contacts-table-container');
+  if (!contacts || contacts.length === 0) {
+    container.innerHTML = '<p style="padding:20px;text-align:center;color:#94a3b8;">Chưa có liên hệ nào</p>';
+    return;
+  }
+
+  let html = `<table class="admin-table"><thead><tr>
+    <th>Thời gian</th><th>Họ tên</th><th>SĐT</th><th>Chương trình</th>
+    <th>Trạng thái</th><th>Ghi chú</th><th>Thao tác</th>
+  </tr></thead><tbody>`;
+
+  contacts.forEach(c => {
+    const color = CONTACT_STATUS_COLORS[c.Status] || '#94a3b8';
+    const ts = c.Timestamp ? new Date(c.Timestamp) : null;
+    const timeStr = ts ? ts.toLocaleDateString('vi-VN') + ' ' + ts.toLocaleTimeString('vi-VN', {hour:'2-digit',minute:'2-digit'}) : '';
+    const note = c.Note ? (c.Note.length > 40 ? c.Note.substring(0,40) + '...' : c.Note) : '<span style="color:#cbd5e1;">—</span>';
+
+    html += `<tr>
+      <td style="font-size:0.8rem;white-space:nowrap;">${timeStr}</td>
+      <td><strong>${escHtml(c.HoTen || '')}</strong>${c.Email ? '<br><span style="font-size:0.8rem;color:#64748b;">' + escHtml(c.Email) + '</span>' : ''}</td>
+      <td><a href="tel:${c.SDT}" style="color:#0ea5e9;">${escHtml(c.SDT || '')}</a></td>
+      <td><span style="font-size:0.85rem;">${escHtml(c.ChuongTrinh || '')}</span></td>
+      <td>
+        <select onchange="updateContactStatus('${c.ID}', this.value)" style="padding:4px 8px;border-radius:6px;border:2px solid ${color};background:white;font-size:0.8rem;font-weight:600;color:${color};cursor:pointer;">
+          ${CONTACT_STATUSES.map(s => `<option value="${s}" ${c.Status === s ? 'selected' : ''} style="color:${CONTACT_STATUS_COLORS[s]}">${s}</option>`).join('')}
+        </select>
+      </td>
+      <td style="font-size:0.85rem;">${note}</td>
+      <td style="white-space:nowrap;">
+        <button class="admin-btn admin-btn-sm" onclick="showContactDetail('${c.ID}')" title="Xem/Sửa">✏️</button>
+        <button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deleteContactItem('${c.ID}')" title="Xóa">🗑️</button>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  // Pagination
+  const pagEl = document.getElementById('contacts-pagination');
+  if (pagination && pagination.totalPages > 1) {
+    let pagHtml = '';
+    for (let i = 1; i <= pagination.totalPages; i++) {
+      pagHtml += `<button class="admin-btn admin-btn-sm${i === pagination.page ? ' admin-btn-primary' : ''}" style="margin:0 2px;" onclick="contactsCurrentPage=${i};filterContacts();">${i}</button>`;
+    }
+    pagEl.innerHTML = pagHtml;
+  } else {
+    pagEl.innerHTML = '';
+  }
+}
+
+async function updateContactStatus(id, newStatus) {
+  try {
+    await postAPI({ action: 'updateContact', password: adminPassword, ID: id, Status: newStatus });
+    toast('Cập nhật trạng thái: ' + newStatus);
+    filterContacts();
+  } catch (e) { toast('Lỗi cập nhật', 'error'); }
+}
+
+function showContactDetail(id) {
+  // Find contact from table data — fetch fresh
+  fetchAPI({ action: 'getContacts', password: adminPassword, search: id, limit: 100 }).then(res => {
+    if (res.status !== 'success') return;
+    const c = (res.contacts || []).find(ct => ct.ID === id);
+    if (!c) { toast('Không tìm thấy', 'error'); return; }
+
+    const color = CONTACT_STATUS_COLORS[c.Status] || '#94a3b8';
+    const ts = c.Timestamp ? new Date(c.Timestamp) : null;
+    const timeStr = ts ? ts.toLocaleDateString('vi-VN') + ' ' + ts.toLocaleTimeString('vi-VN') : '';
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;';
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+    modal.innerHTML = `
+      <div style="background:white;border-radius:16px;padding:28px;max-width:560px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.15);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h3 style="margin:0;color:#0c4a6e;">Chi tiết liên hệ</h3>
+          <button onclick="this.closest('div[style*=fixed]').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#94a3b8;">&times;</button>
+        </div>
+
+        <div style="background:#f8fafc;border-radius:10px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:0.8rem;color:#64748b;">ID: ${c.ID} &bull; ${timeStr}</div>
+          <div style="font-size:1.2rem;font-weight:700;margin:6px 0;">${escHtml(c.HoTen || '')}</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
+            <a href="tel:${c.SDT}" style="color:#0ea5e9;text-decoration:none;">📞 ${escHtml(c.SDT || '')}</a>
+            ${c.Email ? `<a href="mailto:${c.Email}" style="color:#0ea5e9;text-decoration:none;">✉️ ${escHtml(c.Email)}</a>` : ''}
+          </div>
+          <div style="margin-top:8px;"><strong>Chương trình:</strong> ${escHtml(c.ChuongTrinh || 'Chưa chọn')}</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-weight:600;font-size:0.85rem;">Trạng thái</label>
+          <select id="modal-contact-status" style="width:100%;padding:10px;border:2px solid ${color};border-radius:8px;font-weight:600;color:${color};">
+            ${CONTACT_STATUSES.map(s => `<option value="${s}" ${c.Status === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-weight:600;font-size:0.85rem;">Người phụ trách</label>
+          <input type="text" id="modal-contact-assigned" value="${escHtml(c.AssignedTo || '')}" placeholder="Tên sale phụ trách" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;box-sizing:border-box;">
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="font-weight:600;font-size:0.85rem;">Ghi chú / Mong muốn khách hàng</label>
+          <textarea id="modal-contact-note" rows="4" placeholder="Ghi chú follow-up, mong muốn khách hàng..." style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;resize:vertical;box-sizing:border-box;">${escHtml(c.Note || '')}</textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button class="admin-btn admin-btn-primary" style="flex:1;" onclick="saveContactDetail('${c.ID}', this)">Lưu thay đổi</button>
+          <button class="admin-btn" onclick="this.closest('div[style*=fixed]').remove()">Đóng</button>
+        </div>
+      </div>`;
+
+    document.body.appendChild(modal);
+  });
+}
+
+async function saveContactDetail(id, btn) {
+  btn.textContent = 'Đang lưu...';
+  btn.disabled = true;
+  try {
+    const res = await postAPI({
+      action: 'updateContact', password: adminPassword,
+      ID: id,
+      Status: document.getElementById('modal-contact-status').value,
+      AssignedTo: document.getElementById('modal-contact-assigned').value,
+      Note: document.getElementById('modal-contact-note').value
+    });
+    if (res.status === 'success') {
+      toast('Đã lưu thay đổi');
+      btn.closest('div[style*="fixed"]').remove();
+      filterContacts();
+    } else {
+      toast(res.error || 'Lỗi lưu', 'error');
+    }
+  } catch (e) { toast('Lỗi kết nối', 'error'); }
+  btn.textContent = 'Lưu thay đổi';
+  btn.disabled = false;
+}
+
+async function deleteContactItem(id) {
+  if (!confirm('Xóa liên hệ này?')) return;
+  try {
+    const res = await postAPI({ action: 'deleteContact', password: adminPassword, id });
+    if (res.status === 'success') { toast('Đã xóa'); filterContacts(); }
+    else toast(res.error || 'Lỗi xóa', 'error');
+  } catch (e) { toast('Lỗi kết nối', 'error'); }
 }
 
 /* ─── MEDIA ─── */
