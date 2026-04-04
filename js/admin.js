@@ -79,6 +79,7 @@ function navigateTo(page, data) {
     case 'jobs': renderJobsList(main); break;
     case 'job-form': renderJobForm(main, data); break;
     case 'contacts': renderContactsList(main); break;
+    case 'contact-detail': renderContactDetail(main, data); break;
     case 'media': renderMedia(main); break;
     case 'settings': renderSettings(main); break;
   }
@@ -1112,7 +1113,7 @@ function loadContactsTable(contacts, pagination) {
       </td>
       <td style="font-size:0.85rem;">${note}</td>
       <td style="white-space:nowrap;">
-        <button class="admin-btn admin-btn-sm" onclick="showContactDetail('${c.ID}')" title="Xem/Sửa">✏️</button>
+        <button class="admin-btn admin-btn-sm admin-btn-primary" onclick="navigateTo('contact-detail','${c.ID}')" title="Xem/Sửa">✏️ Chi tiết</button>
         <button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deleteContactItem('${c.ID}')" title="Xóa">🗑️</button>
       </td>
     </tr>`;
@@ -1141,80 +1142,149 @@ async function updateContactStatus(id, newStatus) {
   } catch (e) { toast('Lỗi cập nhật', 'error'); }
 }
 
-function showContactDetail(id) {
-  // Find contact from table data — fetch fresh
-  fetchAPI({ action: 'getContacts', password: adminPassword, search: id, limit: 100 }).then(res => {
-    if (res.status !== 'success') return;
-    const c = (res.contacts || []).find(ct => ct.ID === id);
-    if (!c) { toast('Không tìm thấy', 'error'); return; }
+let editingContactId = null;
 
-    const color = CONTACT_STATUS_COLORS[c.Status] || '#94a3b8';
-    const ts = c.Timestamp ? new Date(c.Timestamp) : null;
-    const timeStr = ts ? ts.toLocaleDateString('vi-VN') + ' ' + ts.toLocaleTimeString('vi-VN') : '';
+async function renderContactDetail(el, contactId) {
+  editingContactId = contactId || null;
+  el.innerHTML = '<div style="padding:40px;text-align:center;color:#94a3b8;">Đang tải...</div>';
 
-    const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;';
-    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+  if (!editingContactId) {
+    el.innerHTML = '<p style="padding:20px;color:#ef4444;">Thiếu ID liên hệ</p>';
+    return;
+  }
 
-    modal.innerHTML = `
-      <div style="background:white;border-radius:16px;padding:28px;max-width:560px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.15);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-          <h3 style="margin:0;color:#0c4a6e;">Chi tiết liên hệ</h3>
-          <button onclick="this.closest('div[style*=fixed]').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#94a3b8;">&times;</button>
+  try {
+    const res = await fetchAPI({ action: 'getContact', password: adminPassword, id: editingContactId });
+    if (res.status !== 'success' || !res.contact) {
+      el.innerHTML = `<p style="padding:20px;color:#ef4444;">${res.error || 'Không tìm thấy liên hệ'}</p>`;
+      return;
+    }
+    buildContactDetailUI(el, res.contact);
+  } catch (e) {
+    el.innerHTML = '<p style="padding:20px;color:#ef4444;">Lỗi tải dữ liệu</p>';
+  }
+}
+
+function buildContactDetailUI(el, c) {
+  const color = CONTACT_STATUS_COLORS[c.Status] || '#94a3b8';
+  const ts = c.Timestamp ? new Date(c.Timestamp) : null;
+  const timeStr = ts ? ts.toLocaleDateString('vi-VN') + ' ' + ts.toLocaleTimeString('vi-VN') : '';
+  const updatedAt = c.UpdatedAt ? new Date(c.UpdatedAt).toLocaleDateString('vi-VN') + ' ' + new Date(c.UpdatedAt).toLocaleTimeString('vi-VN', {hour:'2-digit',minute:'2-digit'}) : '';
+
+  el.innerHTML = `
+    <div class="admin-page-header">
+      <h2>Chi tiết liên hệ</h2>
+      <button class="admin-btn" onclick="navigateTo('contacts')">← Quay lại</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <!-- LEFT: Customer Info -->
+      <div class="admin-card" style="padding:0;">
+        <div style="padding:20px;border-bottom:1px solid #e2e8f0;">
+          <h3 style="margin:0 0 4px;color:#0c4a6e;">Thông tin khách hàng</h3>
+          <div style="font-size:0.8rem;color:#94a3b8;">ID: ${c.ID} &bull; Gửi lúc: ${timeStr}</div>
         </div>
-
-        <div style="background:#f8fafc;border-radius:10px;padding:16px;margin-bottom:16px;">
-          <div style="font-size:0.8rem;color:#64748b;">ID: ${c.ID} &bull; ${timeStr}</div>
-          <div style="font-size:1.2rem;font-weight:700;margin:6px 0;">${escHtml(c.HoTen || '')}</div>
-          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
-            <a href="tel:${c.SDT}" style="color:#0ea5e9;text-decoration:none;">📞 ${escHtml(c.SDT || '')}</a>
-            ${c.Email ? `<a href="mailto:${c.Email}" style="color:#0ea5e9;text-decoration:none;">✉️ ${escHtml(c.Email)}</a>` : ''}
+        <div style="padding:20px;">
+          <div style="display:grid;gap:16px;">
+            <div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Họ và tên</div>
+              <div style="font-size:1.15rem;font-weight:700;">${escHtml(c.HoTen || '')}</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div>
+                <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Số điện thoại</div>
+                <a href="tel:${c.SDT}" style="color:#0ea5e9;font-weight:600;font-size:1.05rem;text-decoration:none;">${escHtml(c.SDT || '')}</a>
+              </div>
+              <div>
+                <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Email</div>
+                ${c.Email ? `<a href="mailto:${c.Email}" style="color:#0ea5e9;text-decoration:none;">${escHtml(c.Email)}</a>` : '<span style="color:#cbd5e1;">—</span>'}
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Chương trình quan tâm</div>
+              <span style="background:#eff6ff;color:#1d4ed8;padding:4px 12px;border-radius:6px;font-weight:600;font-size:0.9rem;">${escHtml(c.ChuongTrinh || 'Chưa chọn')}</span>
+            </div>
           </div>
-          <div style="margin-top:8px;"><strong>Chương trình:</strong> ${escHtml(c.ChuongTrinh || 'Chưa chọn')}</div>
         </div>
+      </div>
 
-        <div class="form-group" style="margin-bottom:12px;">
-          <label style="font-weight:600;font-size:0.85rem;">Trạng thái</label>
-          <select id="modal-contact-status" style="width:100%;padding:10px;border:2px solid ${color};border-radius:8px;font-weight:600;color:${color};">
-            ${CONTACT_STATUSES.map(s => `<option value="${s}" ${c.Status === s ? 'selected' : ''}>${s}</option>`).join('')}
-          </select>
+      <!-- RIGHT: CRM Actions -->
+      <div class="admin-card" style="padding:0;">
+        <div style="padding:20px;border-bottom:1px solid #e2e8f0;">
+          <h3 style="margin:0;color:#0c4a6e;">Quản lý tư vấn</h3>
+          ${updatedAt ? `<div style="font-size:0.8rem;color:#94a3b8;margin-top:2px;">Cập nhật lần cuối: ${updatedAt}</div>` : ''}
         </div>
+        <div style="padding:20px;">
+          <div class="form-group" style="margin-bottom:16px;">
+            <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:6px;">Trạng thái</label>
+            <div id="status-buttons" style="display:flex;flex-wrap:wrap;gap:8px;">
+              ${CONTACT_STATUSES.map(s => {
+                const clr = CONTACT_STATUS_COLORS[s];
+                const active = c.Status === s;
+                return `<button onclick="selectContactStatus(this, '${s}')"
+                  class="crm-status-btn${active ? ' active' : ''}"
+                  style="padding:8px 16px;border-radius:8px;border:2px solid ${clr};background:${active ? clr : 'white'};color:${active ? 'white' : clr};font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.15s;"
+                  data-status="${s}">${s}</button>`;
+              }).join('')}
+            </div>
+            <input type="hidden" id="cd-status" value="${escHtml(c.Status || 'Mới')}">
+          </div>
 
-        <div class="form-group" style="margin-bottom:12px;">
-          <label style="font-weight:600;font-size:0.85rem;">Người phụ trách</label>
-          <input type="text" id="modal-contact-assigned" value="${escHtml(c.AssignedTo || '')}" placeholder="Tên sale phụ trách" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;box-sizing:border-box;">
+          <div class="form-group" style="margin-bottom:16px;">
+            <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:6px;">Người phụ trách (Sale)</label>
+            <input type="text" id="cd-assigned" value="${escHtml(c.AssignedTo || '')}" placeholder="Tên sale phụ trách khách này"
+              style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.95rem;box-sizing:border-box;">
+          </div>
+
+          <div class="form-group" style="margin-bottom:20px;">
+            <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:6px;">Ghi chú / Mong muốn khách hàng</label>
+            <textarea id="cd-note" rows="6" placeholder="VD: Khách muốn du học kỳ tháng 4/2027, cần tư vấn học bổng, đã có N4..."
+              style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.95rem;resize:vertical;box-sizing:border-box;line-height:1.5;">${escHtml(c.Note || '')}</textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="admin-btn admin-btn-primary" style="flex:1;padding:12px;" onclick="saveContactDetail('${c.ID}')" id="save-contact-btn">Lưu thay đổi</button>
+            <button class="admin-btn" style="padding:12px;" onclick="navigateTo('contacts')">Hủy</button>
+          </div>
         </div>
+      </div>
+    </div>`;
+}
 
-        <div class="form-group" style="margin-bottom:16px;">
-          <label style="font-weight:600;font-size:0.85rem;">Ghi chú / Mong muốn khách hàng</label>
-          <textarea id="modal-contact-note" rows="4" placeholder="Ghi chú follow-up, mong muốn khách hàng..." style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;resize:vertical;box-sizing:border-box;">${escHtml(c.Note || '')}</textarea>
-        </div>
-
-        <div style="display:flex;gap:10px;">
-          <button class="admin-btn admin-btn-primary" style="flex:1;" onclick="saveContactDetail('${c.ID}', this)">Lưu thay đổi</button>
-          <button class="admin-btn" onclick="this.closest('div[style*=fixed]').remove()">Đóng</button>
-        </div>
-      </div>`;
-
-    document.body.appendChild(modal);
+function selectContactStatus(btn, status) {
+  // Update hidden input
+  document.getElementById('cd-status').value = status;
+  // Update button styles
+  document.querySelectorAll('#status-buttons .crm-status-btn').forEach(b => {
+    const s = b.dataset.status;
+    const clr = CONTACT_STATUS_COLORS[s];
+    if (s === status) {
+      b.style.background = clr;
+      b.style.color = 'white';
+      b.classList.add('active');
+    } else {
+      b.style.background = 'white';
+      b.style.color = clr;
+      b.classList.remove('active');
+    }
   });
 }
 
-async function saveContactDetail(id, btn) {
+async function saveContactDetail(id) {
+  const btn = document.getElementById('save-contact-btn');
   btn.textContent = 'Đang lưu...';
   btn.disabled = true;
   try {
     const res = await postAPI({
       action: 'updateContact', password: adminPassword,
       ID: id,
-      Status: document.getElementById('modal-contact-status').value,
-      AssignedTo: document.getElementById('modal-contact-assigned').value,
-      Note: document.getElementById('modal-contact-note').value
+      Status: document.getElementById('cd-status').value,
+      AssignedTo: document.getElementById('cd-assigned').value,
+      Note: document.getElementById('cd-note').value
     });
     if (res.status === 'success') {
       toast('Đã lưu thay đổi');
-      btn.closest('div[style*="fixed"]').remove();
-      filterContacts();
+      navigateTo('contacts');
     } else {
       toast(res.error || 'Lỗi lưu', 'error');
     }

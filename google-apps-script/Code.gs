@@ -47,6 +47,9 @@ function doGet(e) {
         case 'getContacts':
           result = getContacts(e.parameter);
           break;
+        case 'getContact':
+          result = getContact(e.parameter.id);
+          break;
         default:
           result = { error: 'Unknown action: ' + action };
       }
@@ -699,6 +702,23 @@ function submitContact(data) {
   ];
   sheet.appendRow(row);
   return { status: 'success', message: 'Cảm ơn! Thông tin đã được gửi.' };
+}
+
+function getContact(id) {
+  if (!id) return { error: 'Missing contact ID' };
+  const sheet = getSheet('Contacts');
+  if (!sheet) return { error: 'Contacts sheet not found' };
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === id) {
+      let obj = {};
+      headers.forEach((h, j) => obj[h] = data[i][j]);
+      return { status: 'success', contact: obj };
+    }
+  }
+  return { error: 'Contact not found' };
 }
 
 function getContacts(params) {
