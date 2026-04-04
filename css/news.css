@@ -20,6 +20,19 @@
   opacity: 0.15;
 }
 
+/* Gradient overlay at top — makes fixed header text readable */
+.news-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, transparent 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .news-hero > * {
   position: relative;
   z-index: 1;
