@@ -76,6 +76,8 @@ function navigateTo(page, data) {
     case 'posts': renderPostsList(main); break;
     case 'post-form': renderPostForm(main, data); break;
     case 'categories': renderCategories(main); break;
+    case 'jobs': renderJobsList(main); break;
+    case 'job-form': renderJobForm(main, data); break;
     case 'media': renderMedia(main); break;
     case 'settings': renderSettings(main); break;
   }
@@ -91,6 +93,10 @@ async function renderDashboard(el) {
       <div class="stat-card"><div class="label">Bản nháp</div><div class="value" id="stat-draft" style="color:#f59e0b">-</div></div>
       <div class="stat-card"><div class="label">Tổng lượt xem</div><div class="value" id="stat-views" style="color:#0ea5e9">-</div></div>
     </div>
+    <div class="stats-grid" style="margin-top:16px;">
+      <div class="stat-card"><div class="label">Tổng đơn tuyển dụng</div><div class="value" id="stat-jobs-total">-</div></div>
+      <div class="stat-card"><div class="label">Đơn đang tuyển</div><div class="value" id="stat-jobs-active" style="color:#10b981">-</div></div>
+    </div>
     <div class="admin-card">
       <div class="admin-card-header"><h3>Bài viết gần nhất</h3></div>
       <div id="recent-posts-table">Đang tải...</div>
@@ -104,6 +110,8 @@ async function renderDashboard(el) {
       document.getElementById('stat-published').textContent = s.published;
       document.getElementById('stat-draft').textContent = s.draft;
       document.getElementById('stat-views').textContent = s.totalViews.toLocaleString();
+      document.getElementById('stat-jobs-total').textContent = s.totalJobs || 0;
+      document.getElementById('stat-jobs-active').textContent = s.activeJobs || 0;
 
       let tableHtml = '<table class="admin-table"><thead><tr><th>Tiêu đề</th><th>Trạng thái</th><th>Ngày tạo</th><th>Lượt xem</th></tr></thead><tbody>';
       (s.recentPosts || []).forEach(p => {
@@ -559,6 +567,377 @@ async function deleteCategory(id) {
     }
   } catch (e) {
     toast('Lỗi', 'error');
+  }
+}
+
+/* ─── JOBS LIST ─── */
+let jobsCache = [];
+
+const JOB_NGANH_OPTIONS = ['CNTT', 'CơKhi', 'Dien', 'KinhTe', 'XayDung', 'NongNghiep', 'ThucPham', 'Khac'];
+const JOB_NGANH_LABELS = { CNTT: 'Công nghệ thông tin', 'CơKhi': 'Cơ khí', Dien: 'Điện / Điện tử', KinhTe: 'Kinh tế', XayDung: 'Xây dựng', NongNghiep: 'Nông nghiệp', ThucPham: 'Thực phẩm', Khac: 'Khác' };
+const JOB_GIOITINH = ['Nam', 'Nữ', 'Nam/Nữ'];
+const JOB_JLPT = ['N1', 'N2', 'N3', 'N4', 'N5', 'Không yêu cầu'];
+const JOB_DIADIEM = ['Tokyo', 'Osaka', 'Aichi', 'Gunma', 'Saitama', 'Chiba', 'Kanagawa', 'Fukuoka', 'Hokkaido', 'Khác'];
+const JOB_STATUS = ['Active', 'Draft', 'Closed'];
+
+async function renderJobsList(el) {
+  el.innerHTML = `
+    <div class="admin-page-header">
+      <h2>Quản lý Tuyển dụng</h2>
+      <button class="admin-btn admin-btn-primary" onclick="navigateTo('job-form')">+ Thêm đơn hàng</button>
+    </div>
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <select id="filter-job-nganh" class="admin-search" style="width:160px;" onchange="filterJobs()">
+            <option value="">Tất cả ngành</option>
+            ${JOB_NGANH_OPTIONS.map(n => `<option value="${n}">${JOB_NGANH_LABELS[n] || n}</option>`).join('')}
+          </select>
+          <select id="filter-job-status" class="admin-search" style="width:130px;" onchange="filterJobs()">
+            <option value="">Tất cả</option>
+            <option value="Active">Active</option>
+            <option value="Draft">Draft</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+        <input type="text" class="admin-search" placeholder="Tìm tiêu đề, mã đơn..." id="search-jobs" oninput="filterJobs()">
+      </div>
+      <div id="jobs-table-container">Đang tải...</div>
+    </div>`;
+
+  await loadJobsList();
+}
+
+async function loadJobsList() {
+  try {
+    const res = await fetchAPI({ action: 'getJobs', password: adminPassword });
+    if (res.status === 'success') {
+      jobsCache = res.jobs || [];
+      filterJobs();
+    } else {
+      document.getElementById('jobs-table-container').innerHTML = '<p style="padding:20px;color:#ef4444;">Lỗi: ' + (res.error || 'Không tải được') + '</p>';
+    }
+  } catch (e) {
+    document.getElementById('jobs-table-container').innerHTML = '<p style="padding:20px;color:#ef4444;">Lỗi kết nối server</p>';
+  }
+}
+
+function filterJobs() {
+  const nganh = document.getElementById('filter-job-nganh')?.value || '';
+  const status = document.getElementById('filter-job-status')?.value || '';
+  const search = (document.getElementById('search-jobs')?.value || '').toLowerCase();
+
+  let filtered = jobsCache;
+  if (nganh) filtered = filtered.filter(j => j.Nganh === nganh);
+  if (status) filtered = filtered.filter(j => j.Status === status);
+  if (search) filtered = filtered.filter(j =>
+    (j.TieuDe || '').toLowerCase().includes(search) ||
+    (j.MaDon || '').toLowerCase().includes(search) ||
+    (j.CongTy || '').toLowerCase().includes(search)
+  );
+
+  const container = document.getElementById('jobs-table-container');
+  if (!container) return;
+
+  let html = `<table class="admin-table"><thead><tr>
+    <th>Mã đơn</th><th>Tiêu đề</th><th>Ngành</th><th>Công ty</th><th>SL</th><th>Hạn nộp</th><th>Trạng thái</th><th>Thao tác</th>
+  </tr></thead><tbody>`;
+
+  if (filtered.length === 0) {
+    html += '<tr><td colspan="8" style="text-align:center;color:#94a3b8;padding:40px;">Không có đơn hàng nào</td></tr>';
+  }
+
+  filtered.forEach(j => {
+    const statusClass = j.Status === 'Active' ? 'status-published' : j.Status === 'Draft' ? 'status-draft' : 'status-archived';
+    html += `<tr>
+      <td><strong>${escHtml(j.MaDon)}</strong></td>
+      <td style="max-width:220px;">${escHtml(j.TieuDe)}</td>
+      <td>${JOB_NGANH_LABELS[j.Nganh] || j.Nganh}</td>
+      <td>${escHtml(j.CongTy)}</td>
+      <td>${j.SoLuong || '-'}</td>
+      <td>${escHtml(j.HanNop)}</td>
+      <td><span class="status-badge ${statusClass}">${j.Status}</span></td>
+      <td class="actions-cell">
+        <button class="admin-btn admin-btn-sm" onclick="editJob('${j.ID}')">Sửa</button>
+        ${j.Status !== 'Closed' ? `<button class="admin-btn admin-btn-sm admin-btn-danger" onclick="deleteJob('${j.ID}')">Xóa</button>` : ''}
+      </td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function editJob(id) {
+  const job = jobsCache.find(j => j.ID === id);
+  if (job) {
+    navigateTo('job-form', job);
+  } else {
+    toast('Không tìm thấy đơn hàng', 'error');
+  }
+}
+
+async function deleteJob(id) {
+  if (!confirm('Bạn có chắc muốn xóa đơn hàng này?')) return;
+  try {
+    const res = await postAPI({ action: 'deleteJob', id, password: adminPassword });
+    if (res.status === 'success') {
+      toast('Đã xóa đơn hàng');
+      jobsCache = jobsCache.filter(j => j.ID !== id);
+      filterJobs();
+    } else {
+      toast(res.error || 'Lỗi xóa', 'error');
+    }
+  } catch (e) {
+    toast('Lỗi kết nối', 'error');
+  }
+}
+
+/* ─── JOB FORM ─── */
+let editingJobId = null;
+
+function renderJobForm(el, job) {
+  editingJobId = job ? job.ID : null;
+  const isEdit = !!job;
+
+  el.innerHTML = `
+    <div class="admin-page-header">
+      <h2>${isEdit ? 'Sửa đơn hàng' : 'Thêm đơn hàng mới'}</h2>
+      <button class="admin-btn" onclick="navigateTo('jobs')">← Quay lại</button>
+    </div>
+    <div class="admin-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mã đơn hàng</label>
+          <input type="text" id="job-madon" value="${job ? escHtml(job.MaDon) : ''}" placeholder="Tự động tạo nếu để trống" ${isEdit ? 'readonly style="background:#f1f5f9;"' : ''}>
+        </div>
+        <div class="form-group">
+          <label>Trạng thái</label>
+          <select id="job-status">
+            ${JOB_STATUS.map(s => `<option value="${s}" ${job && job.Status === s ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tiêu đề đơn hàng *</label>
+        <input type="text" id="job-tieude" value="${job ? escHtml(job.TieuDe) : ''}" placeholder="VD: Kỹ sư cơ khí làm việc tại Aichi">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ngành nghề *</label>
+          <select id="job-nganh">
+            <option value="">Chọn ngành</option>
+            ${JOB_NGANH_OPTIONS.map(n => `<option value="${n}" ${job && job.Nganh === n ? 'selected' : ''}>${JOB_NGANH_LABELS[n] || n}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Công ty</label>
+          <input type="text" id="job-congty" value="${job ? escHtml(job.CongTy) : ''}" placeholder="Tên công ty Nhật">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Số lượng</label>
+          <input type="number" id="job-soluong" value="${job ? job.SoLuong || '' : ''}" min="1" placeholder="VD: 10">
+        </div>
+        <div class="form-group">
+          <label>Giới tính</label>
+          <select id="job-gioitinh">
+            <option value="">Chọn</option>
+            ${JOB_GIOITINH.map(g => `<option value="${g}" ${job && job.GioiTinh === g ? 'selected' : ''}>${g}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tuổi từ</label>
+          <input type="number" id="job-tuoitu" value="${job ? job.TuoiTu || '' : ''}" min="18" max="55" placeholder="18">
+        </div>
+        <div class="form-group">
+          <label>Tuổi đến</label>
+          <input type="number" id="job-tuoiden" value="${job ? job.TuoiDen || '' : ''}" min="18" max="55" placeholder="35">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Trình độ JLPT</label>
+          <select id="job-jlpt">
+            <option value="">Chọn</option>
+            ${JOB_JLPT.map(j => `<option value="${j}" ${job && job.JLPT === j ? 'selected' : ''}>${j}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Kinh nghiệm</label>
+          <input type="text" id="job-kinhnghiem" value="${job ? escHtml(job.KinhNghiem) : ''}" placeholder="VD: 1 năm, Không yêu cầu">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Lương (¥/tháng)</label>
+          <input type="text" id="job-luong" value="${job ? escHtml(job.Luong) : ''}" placeholder="VD: 180,000 ~ 250,000">
+        </div>
+        <div class="form-group">
+          <label>Địa điểm làm việc</label>
+          <select id="job-diadiem">
+            <option value="">Chọn</option>
+            ${JOB_DIADIEM.map(d => `<option value="${d}" ${job && job.DiaDiem === d ? 'selected' : ''}>${d}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Hạn nộp hồ sơ</label>
+        <input type="date" id="job-hannop" value="${job && job.HanNop ? formatDateForInput(job.HanNop) : ''}">
+      </div>
+
+      <div class="form-group">
+        <label>Yêu cầu chi tiết</label>
+        <textarea id="job-yeucau" rows="5" placeholder="Mô tả chi tiết yêu cầu công việc, điều kiện...">${job ? escHtml(job.YeuCau) : ''}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Hình ảnh đơn hàng</label>
+        <div class="upload-area ${job && job.HinhAnh ? 'has-image' : ''}" id="job-thumb-area" onclick="document.getElementById('job-thumb-input').click()">
+          ${job && job.HinhAnh
+            ? `<img src="${job.HinhAnh}" id="job-thumb-preview">`
+            : '<p style="color:#94a3b8;">Nhấn để chọn ảnh hoặc kéo thả vào đây</p><p class="upload-hint">JPG, PNG < 2MB</p>'}
+        </div>
+        <input type="file" id="job-thumb-input" accept="image/*" style="display:none" onchange="handleJobImageUpload(this)">
+        <input type="hidden" id="job-hinhanh" value="${job ? (job.HinhAnh || '') : ''}">
+      </div>
+
+      <div class="form-actions">
+        <button class="admin-btn admin-btn-primary" onclick="saveJob()" id="save-job-btn">${isEdit ? 'Cập nhật' : 'Lưu đơn hàng'}</button>
+        <button class="admin-btn" onclick="navigateTo('jobs')">Hủy</button>
+      </div>
+    </div>`;
+
+  // Drag & drop for job thumbnail
+  setTimeout(() => {
+    const area = document.getElementById('job-thumb-area');
+    if (!area) return;
+    area.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); area.classList.add('dragover'); });
+    area.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); area.classList.remove('dragover'); });
+    area.addEventListener('drop', (e) => {
+      e.preventDefault(); e.stopPropagation(); area.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (!file || !file.type.startsWith('image/')) { toast('Vui lòng kéo thả file ảnh', 'error'); return; }
+      const dt = new DataTransfer(); dt.items.add(file);
+      const fakeInput = document.createElement('input'); fakeInput.type = 'file'; fakeInput.files = dt.files;
+      handleJobImageUpload(fakeInput);
+    });
+  }, 150);
+}
+
+async function handleJobImageUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('Ảnh phải nhỏ hơn 2MB', 'error'); return; }
+
+  const area = document.getElementById('job-thumb-area');
+  area.innerHTML = '<p style="color:#0ea5e9;">Đang upload...</p>';
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64 = reader.result.split(',')[1];
+    try {
+      const res = await postAPI({
+        action: 'uploadImage', password: adminPassword,
+        base64, filename: file.name, mimeType: file.type
+      });
+      if (res.status === 'success') {
+        document.getElementById('job-hinhanh').value = res.url;
+        area.classList.add('has-image');
+        area.innerHTML = `<img src="${res.url}" id="job-thumb-preview">`;
+        toast('Upload thành công');
+      } else {
+        area.innerHTML = '<p style="color:#ef4444;">Upload thất bại. Thử lại.</p>';
+        toast(res.error || 'Upload thất bại', 'error');
+      }
+    } catch (e) {
+      area.innerHTML = '<p style="color:#ef4444;">Lỗi kết nối</p>';
+      toast('Lỗi kết nối', 'error');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function formatDateForInput(dateStr) {
+  if (!dateStr) return '';
+  // Handle dd/mm/yyyy format
+  const parts = dateStr.split('/');
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+  }
+  // Handle yyyy-mm-dd format
+  if (dateStr.includes('-')) return dateStr.substring(0, 10);
+  return '';
+}
+
+function formatInputToVN(dateStr) {
+  if (!dateStr) return '';
+  // Convert yyyy-mm-dd to dd/mm/yyyy
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return dateStr;
+}
+
+async function saveJob() {
+  const tieude = document.getElementById('job-tieude').value.trim();
+  const nganh = document.getElementById('job-nganh').value;
+
+  if (!tieude) { toast('Vui lòng nhập tiêu đề đơn hàng', 'error'); return; }
+  if (!nganh) { toast('Vui lòng chọn ngành nghề', 'error'); return; }
+
+  const btn = document.getElementById('save-job-btn');
+  btn.disabled = true;
+  btn.textContent = 'Đang lưu...';
+
+  const hannopInput = document.getElementById('job-hannop').value;
+
+  const payload = {
+    action: editingJobId ? 'updateJob' : 'createJob',
+    password: adminPassword,
+    MaDon: document.getElementById('job-madon').value.trim(),
+    TieuDe: tieude,
+    Nganh: nganh,
+    CongTy: document.getElementById('job-congty').value.trim(),
+    SoLuong: document.getElementById('job-soluong').value || '',
+    GioiTinh: document.getElementById('job-gioitinh').value,
+    TuoiTu: document.getElementById('job-tuoitu').value || '',
+    TuoiDen: document.getElementById('job-tuoiden').value || '',
+    JLPT: document.getElementById('job-jlpt').value,
+    KinhNghiem: document.getElementById('job-kinhnghiem').value.trim(),
+    Luong: document.getElementById('job-luong').value.trim(),
+    DiaDiem: document.getElementById('job-diadiem').value,
+    HanNop: hannopInput ? formatInputToVN(hannopInput) : '',
+    YeuCau: document.getElementById('job-yeucau').value.trim(),
+    HinhAnh: document.getElementById('job-hinhanh').value,
+    Status: document.getElementById('job-status').value
+  };
+  if (editingJobId) payload.id = editingJobId;
+
+  try {
+    const res = await postAPI(payload);
+    if (res.status === 'success') {
+      toast(editingJobId ? 'Đã cập nhật đơn hàng' : 'Đã tạo đơn hàng mới');
+      navigateTo('jobs');
+    } else {
+      toast(res.error || 'Lỗi lưu đơn hàng', 'error');
+    }
+  } catch (e) {
+    toast('Lỗi kết nối server', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = editingJobId ? 'Cập nhật' : 'Lưu đơn hàng';
   }
 }
 

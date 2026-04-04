@@ -31,25 +31,25 @@ async function fetchAPI(params) {
 }
 
 async function postAPI(body) {
-  // Try 1: standard POST with redirect follow
-  try {
-    const res = await fetch(NEWS_CONFIG.API_URL, {
-      method: 'POST',
-      redirect: 'follow',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(body)
-    });
-    if (res.ok || res.type === 'basic') {
-      return await res.json();
-    }
-  } catch (_) { /* fall through to GET workaround */ }
-
-  // Try 2: GET with payload (Apps Script CORS workaround)
+  // Google Apps Script blocks POST due to CORS redirect
+  // Use GET with payload parameter instead
   const url = new URL(NEWS_CONFIG.API_URL);
   url.searchParams.set('action', body.action);
   url.searchParams.set('payload', JSON.stringify(body));
-  const res = await fetch(url.toString());
-  return res.json();
+
+  console.log('[postAPI] Calling:', url.toString());
+  const res = await fetch(url.toString(), { redirect: 'follow' });
+  console.log('[postAPI] Response status:', res.status, 'type:', res.type);
+
+  const text = await res.text();
+  console.log('[postAPI] Response body:', text.substring(0, 200));
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error('[postAPI] JSON parse failed:', text.substring(0, 500));
+    throw new Error('Invalid response from server');
+  }
 }
 
 /* Utility: format date to Vietnamese */

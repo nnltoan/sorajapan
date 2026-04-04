@@ -38,6 +38,12 @@ function doGet(e) {
         case 'getStats':
           result = getStats(e.parameter.password);
           break;
+        case 'getJobs':
+          result = getJobs(e.parameter);
+          break;
+        case 'getJob':
+          result = getJob(e.parameter.id);
+          break;
         default:
           result = { error: 'Unknown action: ' + action };
       }
@@ -80,6 +86,12 @@ function handleWrite(data) {
       return manageCategory('delete', data);
     case 'updateConfig':
       return updateConfig(data.key, data.value, data.password);
+    case 'createJob':
+      return createJob(data);
+    case 'updateJob':
+      return updateJob(data);
+    case 'deleteJob':
+      return deleteJob(data.id);
     default:
       return { error: 'Unknown action: ' + action };
   }
@@ -484,6 +496,176 @@ function getMedia(params) {
   };
 }
 
+// ─── JOBS: READ ───
+
+function getJobs(params) {
+  const sheet = getSheet('Jobs');
+  if (!sheet) return { status: 'success', jobs: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1);
+
+  const page = parseInt(params.page) || 1;
+  const limit = parseInt(params.limit) || 20;
+  const nganh = params.nganh || '';
+  const status = params.status || 'all';
+  const search = (params.search || '').toLowerCase();
+
+  let jobs = rows.map(row => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = row[i]);
+    return obj;
+  });
+
+  jobs = jobs.filter(j => {
+    if (status && status !== 'all' && j.Status !== status) return false;
+    if (nganh && j.Nganh !== nganh) return false;
+    if (search && !j.TieuDe.toLowerCase().includes(search) && !j.CongTy.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  // Sort by NgayDang desc
+  jobs.sort((a, b) => {
+    const dA = parseVNDate(a.NgayDang);
+    const dB = parseVNDate(b.NgayDang);
+    return dB - dA;
+  });
+
+  const total = jobs.length;
+  const totalPages = Math.ceil(total / limit);
+  const start = (page - 1) * limit;
+  const paginated = jobs.slice(start, start + limit);
+
+  return { status: 'success', jobs: paginated, pagination: { page, limit, total, totalPages } };
+}
+
+function getJob(id) {
+  if (!id) return { error: 'Missing job ID' };
+
+  const sheet = getSheet('Jobs');
+  if (!sheet) return { error: 'Jobs sheet not found' };
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1);
+
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i][0] === id) {
+      let obj = {};
+      headers.forEach((h, j) => obj[h] = rows[i][j]);
+      return { status: 'success', job: obj };
+    }
+  }
+  return { error: 'Job not found' };
+}
+
+// ─── JOBS: WRITE ───
+
+function createJob(data) {
+  const sheet = getSheet('Jobs');
+  if (!sheet) return { error: 'Jobs sheet not found. Run setupSheets first.' };
+
+  const id = data.ID || generateJobId();
+  const maDon = data.MaDon || generateMaDon(data.Nganh);
+  const ngayDang = data.NgayDang || formatDateVN(new Date());
+
+  const row = [
+    id, maDon, data.TieuDe || '', data.Nganh || '', data.CongTy || '',
+    parseInt(data.SoLuong) || 0, data.GioiTinh || 'Nam/Nữ',
+    parseInt(data.TuoiTu) || 20, parseInt(data.TuoiDen) || 30,
+    data.JLPT || 'N3', parseInt(data.KinhNghiem) || 0,
+    parseInt(data.Luong) || 0, data.DiaDiem || '',
+    data.HanNop || '', data.YeuCau || '', data.HinhAnh || '',
+    ngayDang, data.Status || 'Active'
+  ];
+
+  sheet.appendRow(row);
+  return { status: 'success', message: 'Tin tuyển dụng đã được tạo', id: id };
+}
+
+function updateJob(data) {
+  if (!data.ID) return { error: 'Missing job ID' };
+
+  const sheet = getSheet('Jobs');
+  if (!sheet) return { error: 'Jobs sheet not found' };
+
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+
+  for (let i = 1; i < allData.length; i++) {
+    if (allData[i][0] === data.ID) {
+      const rowIndex = i + 1;
+      // Update each column based on header name
+      headers.forEach((h, colIdx) => {
+        if (h !== 'ID' && data[h] !== undefined && data[h] !== '') {
+          let val = data[h];
+          // Convert numeric fields
+          if (['SoLuong', 'TuoiTu', 'TuoiDen', 'KinhNghiem', 'Luong'].includes(h)) {
+            val = parseInt(val) || 0;
+          }
+          sheet.getRange(rowIndex, colIdx + 1).setValue(val);
+        }
+      });
+      return { status: 'success', message: 'Tin tuyển dụng đã được cập nhật' };
+    }
+  }
+  return { error: 'Job not found' };
+}
+
+function deleteJob(id) {
+  if (!id) return { error: 'Missing job ID' };
+
+  const sheet = getSheet('Jobs');
+  if (!sheet) return { error: 'Jobs sheet not found' };
+
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const statusIdx = headers.indexOf('Status');
+
+  for (let i = 1; i < allData.length; i++) {
+    if (allData[i][0] === id) {
+      sheet.getRange(i + 1, statusIdx + 1).setValue('Closed');
+      return { status: 'success', message: 'Tin tuyển dụng đã được đóng' };
+    }
+  }
+  return { error: 'Job not found' };
+}
+
+// ─── JOBS: HELPERS ───
+
+function generateJobId() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const seq = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+  return 'SJ-' + y + m + d + seq;
+}
+
+function generateMaDon(nganh) {
+  const map = { 'CNTT': 'CNTT', 'CơKhi': 'CK', 'CoKhi': 'CK', 'Dien': 'DIEN', 'KinhTe': 'KE', 'XayDung': 'XD' };
+  const prefix = map[nganh] || 'OT';
+  const seq = String(Math.floor(Math.random() * 900) + 100);
+  return 'SJ-' + prefix + '-' + seq;
+}
+
+function parseVNDate(str) {
+  if (!str) return new Date(0);
+  // Format: dd/mm/yyyy
+  const parts = String(str).split('/');
+  if (parts.length === 3) {
+    return new Date(parts[2], parts[1] - 1, parts[0]);
+  }
+  return new Date(str) || new Date(0);
+}
+
+function formatDateVN(d) {
+  return String(d.getDate()).padStart(2, '0') + '/' +
+         String(d.getMonth() + 1).padStart(2, '0') + '/' +
+         d.getFullYear();
+}
+
 // ─── STATS ───
 
 function getStats(password) {
@@ -534,6 +716,18 @@ function getStats(password) {
   const mediaSheet = getSheet('Media');
   const mediaCount = Math.max(0, mediaSheet.getLastRow() - 1);
 
+  // Jobs stats
+  let totalJobs = 0, activeJobs = 0;
+  const jobsSheet = getSheet('Jobs');
+  if (jobsSheet && jobsSheet.getLastRow() > 1) {
+    const jobsData = jobsSheet.getDataRange().getValues();
+    const jHeaders = jobsData[0];
+    const jStatusIdx = jHeaders.indexOf('Status');
+    const jRows = jobsData.slice(1);
+    totalJobs = jRows.length;
+    activeJobs = jRows.filter(r => r[jStatusIdx] === 'Active').length;
+  }
+
   return {
     status: 'success',
     stats: {
@@ -544,7 +738,9 @@ function getStats(password) {
       totalViews,
       mediaCount,
       recentPosts: recent,
-      monthlyCount
+      monthlyCount,
+      totalJobs,
+      activeJobs
     }
   };
 }
@@ -644,6 +840,18 @@ function setupSheets() {
     mediaSheet = ss.insertSheet('Media');
     mediaSheet.appendRow(['id', 'filename', 'driveFileId', 'url', 'size', 'uploadedAt', 'usedIn']);
     mediaSheet.getRange(1, 1, 1, 7).setFontWeight('bold');
+  }
+
+  // Jobs sheet
+  let jobsSheet = ss.getSheetByName('Jobs');
+  if (!jobsSheet) {
+    jobsSheet = ss.insertSheet('Jobs');
+    jobsSheet.appendRow([
+      'ID', 'MaDon', 'TieuDe', 'Nganh', 'CongTy', 'SoLuong', 'GioiTinh',
+      'TuoiTu', 'TuoiDen', 'JLPT', 'KinhNghiem', 'Luong', 'DiaDiem',
+      'HanNop', 'YeuCau', 'HinhAnh', 'NgayDang', 'Status'
+    ]);
+    jobsSheet.getRange(1, 1, 1, 18).setFontWeight('bold');
   }
 
   // Config sheet
