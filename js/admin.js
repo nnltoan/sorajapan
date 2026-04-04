@@ -985,7 +985,7 @@ async function saveJob() {
     HinhAnh: document.getElementById('job-hinhanh').value,
     Status: document.getElementById('job-status').value
   };
-  if (editingJobId) payload.id = editingJobId;
+  if (editingJobId) payload.ID = editingJobId;
 
   try {
     const res = await postAPI(payload);
