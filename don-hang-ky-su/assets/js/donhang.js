@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show loading state
     document.getElementById("card-container").innerHTML = '<div class="loading">Đang tải dữ liệu đơn hàng...</div>';
 
-    // Sử dụng link chính xác người dùng cung cấp
-    const urlToFetch = SHEET_CSV_URL;
+    // Thêm tham số chống cache để tránh tình trạng Google Sheets mất 5 phút mới cập nhật thay đổi
+    const urlToFetch = SHEET_CSV_URL + "&t=" + new Date().getTime();
 
     Papa.parse(urlToFetch, {
         download: true,
@@ -48,16 +48,18 @@ function renderCards(data) {
         let hinhAnh = item.HinhAnh || 'https://images.unsplash.com/photo-1542051842813-c3561a07dfd8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
 
         // Chuyển đổi link share Google Drive thành link ảnh trực tiếp
+        let driveId = null;
         if (hinhAnh.includes('drive.google.com/file/d/')) {
             const match = hinhAnh.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-            if (match && match[1]) {
-                hinhAnh = `https://lh3.googleusercontent.com/d/${match[1]}`;
-            }
-        } else if (hinhAnh.includes('drive.google.com/uc?')) {
+            if (match && match[1]) driveId = match[1];
+        } else if (hinhAnh.includes('drive.google.com/uc?') || hinhAnh.includes('drive.google.com/open?')) {
             const match = hinhAnh.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-            if (match && match[1]) {
-                hinhAnh = `https://lh3.googleusercontent.com/d/${match[1]}`;
-            }
+            if (match && match[1]) driveId = match[1];
+        }
+        
+        if (driveId) {
+            // Dùng Google Drive Thumbnail API để lấy ảnh trực tiếp (fix lỗi 403 của lh3.googleusercontent.com)
+            hinhAnh = `https://drive.google.com/thumbnail?id=${driveId}&sz=w1000`;
         }
 
         html += `

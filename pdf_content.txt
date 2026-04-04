@@ -1,0 +1,319 @@
+ 
+ DanaExperts 
+   toan.nguyen@danaexperts.com | (+84) 868-996-897 
+ 
+ 
+ 
+ 
+ 
+ 
+BÁO GIÁ PHÁT TRIỂN ỨNG DỤNG 
+FAMILY GUARDIAN 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+1 | Page 
+ 
+BÁO GIÁ PHÁT TRIỂN ỨNG DỤNG FAMILY GUARDIAN 
+1. Thông tin dự án 
+● Tên sản phẩm: Family Guardian 
+● Mô tả: Ứng dụng theo dõi vị trí GPS theo thời gian thực, hỗ trợ kết nối giữa các 
+thành viên trong gia đình. 
+● Mô hình kinh doanh: Freemium với các tính năng cao cấp có trả phí. 
+● Giai đoạn phát triển: MVP (Phase 1) 
+ 
+2. Công nghệ dự tính: 
+Hạng mục 
+Công nghệ đề xuất 
+Backend 
+Nodejs 
+PHP/Lavarel 
+Golang 
+Architecture 
+ 
+Server-Client 
+Serverless (Microservices) 
+Message Queue 
+Database 
+FireBase 
+Redis (Memcached) 
+SQL 
+NoSQL 
+Cloud provider 
+ 
+FireBase(GCP) 
+AWS 
+Azure 
+Own hosting 
+Communication 
+REST 
+MQTT 
+TCP/protobuf 
+UDP 
+iOS 
+React Native 
+Swift 
+Objective-C 
+Flutter 
+ 
+Chi phí vận hành một số kiến trúc theo tháng: 
+ 
+■ 1 update / phút (43,200 req/tháng) 
+Hạng mục 
+Firebase 
+AWS 
+No of users 
+50k 
+100k 
+1M 
+50k 
+100K 
+1M 
+Cost of users 
+Free 
+460$ 
+2500$ 
+750$ 
+1,500$ 
+15,000$ 
+
+ 
+2 | Page 
+ 
+No of Requests 
+2.16B 
+4.320B 
+43.2B 
+2.16B 
+4.32B 
+43.2B 
+Cloud Calls 
+860$ 
+1720$ 
+17,200$ 
+7,624$  
+15,200$ 
+129,000$ 
+Cloud Storage (RTDB) 540$ 
+1080$ 
+10,800$ 
+~40$ 
+~80$ 
+~800$ 
+ 
+■ 1 update / 15 phút (3,072 req/tháng) 
+Hạng mục 
+Firebase 
+AWS 
+No of users 
+50k 
+100k 
+1M 
+50k 
+100K 
+1M 
+Cost of users 
+Free 
+460$ 
+2500$ 
+750$ 
+1,500$ 
+15,000$ 
+No of Requests 
+153M 
+307M 
+3B 
+153M 
+307M 
+3B 
+Cloud Calls 
+61.2$ 
+122$ 
+1224$ 
+650$  
+1300$ 
+~10,000$ 
+Cloud Storage (RTDB) 38.4$ 
+76.8$ 
+768$ 
+~4$ 
+~8$ 
+~80$ 
+Team gợi ý: 
+● Update rate on idle: 1 update /15 phút 
+● Update rate on emergency: 1 update /1 phút -> 1 update /15 giây 
+● Có thể sử dụng realtime API cho emergency (MQTT, Websocket, UDP, Send SMS 
+message, etc). 
+3. Phạm vi công việc cho team outsource 
+Hạng mục 
+Nội dung công việc 
+Phát triển Backend 
+- Thiết kế và phát triển API, cơ sở dữ liệu 
+- Triển khai hệ thống backend 
+- Tích hợp API RevenueCat cho IAP 
+Phát triển Mobile App 
+ 
+- Xây dựng giao diện theo thiết kế UI/UX 
+- Tích hợp bản đồ và theo dõi vị trí thời gian thực 
+- Chức năng chia sẻ vị trí, xem lịch sử vị trí 
+- Xây dựng tính năng cảnh báo và bảo mật 
+Cơ sở hạ tầng & Triển khai 
+ 
+- Cấu hình và triển khai cloud infrastructure 
+- Thiết lập hệ thống logging, monitoring, bảo mật dữ liệu 
+Kiểm thử & Tối ưu 
+- Kiểm thử tính năng, bảo mật, hiệu suất 
+- Tối ưu hiệu suất GPS, pin, API rate limit 
+Bàn giao & Hỗ trợ 
+- Fix bug sau kiểm thử, chuẩn bị phát hành App Store 
+ 
+4. Estimate các theo tính năng 
+Dự án được thực hiện theo phương pháp Scrum, với mỗi ngày tương ứng 2 points. Các tính 
+năng sẽ được phát triển với số điểm phù hợp theo quy tắc Scrum. 
+ 
+ 
+
+ 
+3 | Page 
+ 
+ 
+Tính năng 
+Screen 
+Backend 
+Frontend 
+Authentication 
+Login 
+8 points 
+8 points 
+Register Subscription 
+8 points 
+8 points 
+Home 
+Add member 
+13 points 
+13 points 
+Main Page 
+SOS 
+8 points 
+8 points 
+Share my location 
+8 points 
+8 points 
+History 
+History 
+13 points 
+8 points 
+Security Zone 
+Security Control 
+8 points 
+8 points 
+Detail Security Zone 
+13 points 
+8 points 
+CRUD Security Zone 
+8 points 
+8 points 
+Devices 
+Scan Bluetooth 
+8 points 
+8 points 
+CRUD devices 
+8 points 
+8 points 
+Settings 
+Settings 
+16 points 
+20 points 
+Tổng số points 
+ 
+105 points 
+103 points 
+ 
+5. Time line của dự án 
+Mỗi sprint sẽ có 2 tuần để burn task. 
+Giai đoạn 
+Nội dung công việc 
+Số points 
+Sprint 1 
+Authentication, Home, Main Page 
+74 points 
+Sprint 2 
+History, Security Zone 
+74 points 
+Sprint 3 
+Devices, Settings 
+68 points 
+Sprint 4 
+Kiểm thử, tối ưu, triển khai release 
+60 points 
+ 
+6. Chi phí dự kiến 
+Hạng mục 
+Chi phí (VNĐ) 
+Backend Development 
+90,000,000 
+Mobile App (iOS) 
+105,000,000 
+Cloud Infrastructure 
+45,000,000 
+QA & Testing 
+60,000,000 
+Tổng chi phí (ước tính) 
+300,000,000 
+ 
+Chi phí bổ sung: 
+
+ 
+4 | Page 
+ 
+ 
+● Chi phí dự phòng (20%): 60,000,000 VND (bao gồm rủi ro kỹ thuật, tối ưu bổ sung). 
+● Tổng chi phí báo giá: 360,000,000 VND (~14,040 USD, tỷ giá 1 USD = 25,535 VND). 
+Lưu ý: 
+● Báo giá chưa bao gồm phí server, dịch vụ cloud. 
+● Chi phí có thể thay đổi tùy theo yêu cầu bổ sung. 
+● Thanh toán theo tiến độ milestone. 
+ 
+7. Tiến độ thanh toán 
+● Đặt cọc: 20% khi ký hợp đồng 
+● Sau khi hoàn thành Backend & API: 30% 
+● Sau khi hoàn thành App & Tích hợp: 30% 
+● Bàn giao & hoàn tất kiểm thử: 20% 
+ 
+8 Điều kiện hợp tác 
+● Thời gian phát triển: 8 tuần. 
+● Đảm bảo bảo mật thông tin người dùng, tuân thủ GDPR & CCPA. 
+● Hỗ trợ bảo trì và fix bug sau triển khai 6 tháng. 
+ 
+9. Giả định & Điều kiện 
+● Đội nội bộ cung cấp thiết kế UI/UX hoàn chỉnh trước Tuần 1. 
+● Yêu cầu cụ thể về cloud provider (AWS/GCP) được xác nhận trước khi bắt đầu. 
+● Không bao gồm chi phí license API bên thứ ba (nếu có). 
+● Hỗ trợ sau bàn giao (nếu cần) sẽ được tính phí riêng theo giờ (500,000 VND/giờ). 
+ 
+10. Cam kết của đội outsource 
+● Thời gian bàn giao: MVP hoàn thiện trong 8 tuần kể từ ngày bắt đầu. 
+● Công nghệ sử dụng: Như mục 2. 
+
+ 
+5 | Page 
+ 
+● Hỗ trợ: 
+o Phối hợp với đội UI/UX nội bộ để đảm bảo giao diện đúng thiết kế. 
+o Hỗ trợ tích hợp và kiểm thử cùng đội QA trong Tuần 8-10. 
+● Bảo mật: Mã hóa dữ liệu vị trí (AES-256), tuân thủ GDPR/CCPA. 
+ 
+DanaExperts trân trọng gửi báo giá này đến quý đối tác. Chúng tôi sẵn sàng trao đổi để tinh 
+chỉnh kế hoạch phù hợp nhất với nhu cầu của dự án.  
+DanaExperts Co., Ltd.  
+Người liên hệ: Toàn 
+Email: toan.nguyen@danaexperts.com 
+ 
