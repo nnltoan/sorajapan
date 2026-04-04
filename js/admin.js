@@ -88,33 +88,92 @@ function navigateTo(page, data) {
 /* ─── DASHBOARD ─── */
 async function renderDashboard(el) {
   el.innerHTML = `
-    <div class="admin-page-header"><h2>Dashboard</h2></div>
-
-    <h3 style="margin:0 0 10px;font-size:1rem;color:#64748b;">Bài viết</h3>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="label">Tổng bài viết</div><div class="value" id="stat-total">-</div></div>
-      <div class="stat-card"><div class="label">Đã xuất bản</div><div class="value" id="stat-published" style="color:#10b981">-</div></div>
-      <div class="stat-card"><div class="label">Bản nháp</div><div class="value" id="stat-draft" style="color:#f59e0b">-</div></div>
-      <div class="stat-card"><div class="label">Tổng lượt xem</div><div class="value" id="stat-views" style="color:#0ea5e9">-</div></div>
+    <div class="admin-page-header">
+      <div>
+        <h2>Dashboard</h2>
+        <p class="page-subtitle">Tổng quan hoạt động hệ thống</p>
+      </div>
     </div>
 
-    <h3 style="margin:20px 0 10px;font-size:1rem;color:#64748b;">Tuyển dụng</h3>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="label">Tổng đơn hàng</div><div class="value" id="stat-jobs-total">-</div></div>
-      <div class="stat-card"><div class="label">Đang tuyển</div><div class="value" id="stat-jobs-active" style="color:#10b981">-</div></div>
+    <!-- KPI Cards Row -->
+    <div class="dash-kpi-row">
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-icon" style="background:#eff6ff;color:#3b82f6;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="dash-kpi-info">
+          <span class="dash-kpi-value" id="stat-total">-</span>
+          <span class="dash-kpi-label">Bài viết</span>
+        </div>
+        <div class="dash-kpi-extra"><span id="stat-published" class="dash-kpi-tag tag-green">-</span> xuất bản &nbsp;<span id="stat-draft" class="dash-kpi-tag tag-amber">-</span> nháp</div>
+      </div>
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-icon" style="background:#fef3c7;color:#f59e0b;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="dash-kpi-info">
+          <span class="dash-kpi-value" id="stat-views">-</span>
+          <span class="dash-kpi-label">Lượt xem</span>
+        </div>
+      </div>
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-icon" style="background:#ecfdf5;color:#10b981;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <div class="dash-kpi-info">
+          <span class="dash-kpi-value" id="stat-jobs-total">-</span>
+          <span class="dash-kpi-label">Đơn tuyển dụng</span>
+        </div>
+        <div class="dash-kpi-extra"><span id="stat-jobs-active" class="dash-kpi-tag tag-green">-</span> đang tuyển</div>
+      </div>
+      <div class="dash-kpi-card">
+        <div class="dash-kpi-icon" style="background:#f3e8ff;color:#8b5cf6;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div class="dash-kpi-info">
+          <span class="dash-kpi-value" id="stat-contacts-total">-</span>
+          <span class="dash-kpi-label">Lượt tư vấn</span>
+        </div>
+      </div>
     </div>
-    <div id="jobs-by-nganh" style="margin-top:12px;"></div>
 
-    <h3 style="margin:20px 0 10px;font-size:1rem;color:#64748b;">Tư vấn (CRM)</h3>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="label">Tổng lượt gửi</div><div class="value" id="stat-contacts-total" style="color:#8b5cf6">-</div></div>
-      <div id="contact-monthly" class="stat-card" style="grid-column:span 3;padding:0;"></div>
+    <!-- Two-column layout: Recent Posts + CRM Pipeline -->
+    <div class="dash-grid-2col">
+      <div class="admin-card dash-card">
+        <div class="admin-card-header">
+          <h3>Bài viết gần nhất</h3>
+          <button class="admin-btn admin-btn-sm" onclick="navigateTo('posts')">Xem tất cả →</button>
+        </div>
+        <div id="recent-posts-table">
+          <div class="dash-loading"><div class="dash-spinner"></div> Đang tải...</div>
+        </div>
+      </div>
+
+      <div class="dash-right-col">
+        <div class="admin-card dash-card">
+          <div class="admin-card-header"><h3>CRM Pipeline</h3></div>
+          <div id="dashboard-pipeline" style="padding:16px;">
+            <div class="dash-loading"><div class="dash-spinner"></div></div>
+          </div>
+        </div>
+        <div class="admin-card dash-card">
+          <div class="admin-card-header"><h3>Lượt tư vấn 3 tháng</h3></div>
+          <div id="contact-monthly" style="padding:16px;">
+            <div class="dash-loading"><div class="dash-spinner"></div></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="dashboard-pipeline" style="margin-top:12px;"></div>
 
-    <div class="admin-card" style="margin-top:20px;">
-      <div class="admin-card-header"><h3>Bài viết gần nhất</h3></div>
-      <div id="recent-posts-table">Đang tải...</div>
+    <!-- Jobs by Nganh -->
+    <div class="admin-card dash-card" style="margin-top:20px;">
+      <div class="admin-card-header">
+        <h3>Tuyển dụng theo ngành</h3>
+        <button class="admin-btn admin-btn-sm" onclick="navigateTo('jobs')">Xem tất cả →</button>
+      </div>
+      <div id="jobs-by-nganh" style="padding:20px;">
+        <div class="dash-loading"><div class="dash-spinner"></div></div>
+      </div>
     </div>`;
 
   try {
@@ -124,68 +183,92 @@ async function renderDashboard(el) {
       document.getElementById('stat-total').textContent = s.totalPosts;
       document.getElementById('stat-published').textContent = s.published;
       document.getElementById('stat-draft').textContent = s.draft;
-      document.getElementById('stat-views').textContent = s.totalViews.toLocaleString();
+      document.getElementById('stat-views').textContent = (s.totalViews || 0).toLocaleString();
       document.getElementById('stat-jobs-total').textContent = s.totalJobs || 0;
       document.getElementById('stat-jobs-active').textContent = s.activeJobs || 0;
       document.getElementById('stat-contacts-total').textContent = s.totalContacts || 0;
 
-      // Jobs by Nganh breakdown
+      // Jobs by Nganh breakdown — horizontal bar chart
       const nganhLabels = { CNTT: 'CNTT', 'CơKhi': 'Cơ khí', Dien: 'Điện', KinhTe: 'Kinh tế', XayDung: 'Xây dựng', NongNghiep: 'Nông nghiệp', ThucPham: 'Thực phẩm', Khac: 'Khác' };
+      const nganhColors = { CNTT: '#3b82f6', 'CơKhi': '#ef4444', Dien: '#f59e0b', KinhTe: '#10b981', XayDung: '#8b5cf6', NongNghiep: '#06b6d4', ThucPham: '#ec4899', Khac: '#94a3b8' };
       const jbn = s.jobsByNganh || {};
+      const jbnEl = document.getElementById('jobs-by-nganh');
       if (Object.keys(jbn).length > 0) {
-        let nganhHtml = '<div style="display:flex;flex-wrap:wrap;gap:8px;">';
+        const maxVal = Math.max(...Object.values(jbn), 1);
+        let nganhHtml = '<div class="dash-bar-chart">';
         Object.entries(jbn).forEach(([k, v]) => {
-          nganhHtml += `<span style="background:#f1f5f9;padding:6px 14px;border-radius:8px;font-size:0.85rem;"><strong>${nganhLabels[k] || k}</strong>: ${v}</span>`;
-        });
-        nganhHtml += '</div>';
-        document.getElementById('jobs-by-nganh').innerHTML = nganhHtml;
-      }
-
-      // Contact monthly chart (last 3 months)
-      const cs = s.contactStats || [];
-      if (cs.length > 0) {
-        const maxCount = Math.max(...cs.map(c => c.count), 1);
-        let chartHtml = '<div style="padding:16px;"><div style="font-weight:600;margin-bottom:12px;font-size:0.9rem;">Lượt tư vấn 3 tháng gần nhất</div>';
-        chartHtml += '<div style="display:flex;align-items:flex-end;gap:16px;height:100px;">';
-        cs.forEach(c => {
-          const h = Math.max(8, (c.count / maxCount) * 80);
-          chartHtml += `<div style="flex:1;text-align:center;">
-            <div style="font-weight:700;font-size:1.1rem;margin-bottom:4px;">${c.count}</div>
-            <div style="height:${h}px;background:linear-gradient(180deg,#8b5cf6,#a78bfa);border-radius:6px 6px 0 0;"></div>
-            <div style="font-size:0.75rem;color:#64748b;margin-top:4px;">${c.label}</div>
+          const pct = Math.max(4, (v / maxVal) * 100);
+          const clr = nganhColors[k] || '#94a3b8';
+          nganhHtml += `<div class="dash-bar-row">
+            <span class="dash-bar-label">${nganhLabels[k] || k}</span>
+            <div class="dash-bar-track"><div class="dash-bar-fill" style="width:${pct}%;background:${clr};"></div></div>
+            <span class="dash-bar-value">${v}</span>
           </div>`;
         });
-        chartHtml += '</div></div>';
-        document.getElementById('contact-monthly').innerHTML = chartHtml;
+        nganhHtml += '</div>';
+        jbnEl.innerHTML = nganhHtml;
+      } else {
+        jbnEl.innerHTML = '<p style="color:#94a3b8;font-size:0.9rem;">Chưa có dữ liệu</p>';
       }
 
-      // CRM pipeline on dashboard
+      // Contact monthly chart (last 3 months) — vertical bars
+      const cs = s.contactStats || [];
+      const cmEl = document.getElementById('contact-monthly');
+      if (cs.length > 0) {
+        const maxCount = Math.max(...cs.map(c => c.count), 1);
+        let chartHtml = '<div style="display:flex;align-items:flex-end;gap:20px;height:110px;padding-top:8px;">';
+        cs.forEach(c => {
+          const h = Math.max(10, (c.count / maxCount) * 88);
+          chartHtml += `<div style="flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">
+            <div style="font-weight:700;font-size:1.15rem;color:#334155;margin-bottom:6px;">${c.count}</div>
+            <div style="width:100%;max-width:56px;height:${h}px;background:linear-gradient(180deg,#8b5cf6,#c4b5fd);border-radius:8px 8px 4px 4px;transition:height 0.5s;"></div>
+            <div style="font-size:0.78rem;color:#64748b;margin-top:8px;font-weight:500;">${c.label}</div>
+          </div>`;
+        });
+        chartHtml += '</div>';
+        cmEl.innerHTML = chartHtml;
+      } else {
+        cmEl.innerHTML = '<p style="color:#94a3b8;font-size:0.9rem;">Chưa có dữ liệu</p>';
+      }
+
+      // CRM pipeline on dashboard — funnel cards
       const cp = s.contactPipeline || {};
+      const cpEl = document.getElementById('dashboard-pipeline');
       if (Object.keys(cp).length > 0) {
         const pipelineColors = { 'Mới': '#3b82f6', 'Đã liên hệ': '#f59e0b', 'Đang tư vấn': '#8b5cf6', 'Đã chốt đơn': '#10b981', 'Không tiềm năng': '#94a3b8' };
-        const totalC = Object.values(cp).reduce((a, b) => a + b, 0) || 1;
-        let pHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+        const pipelineIcons = { 'Mới': '✦', 'Đã liên hệ': '📞', 'Đang tư vấn': '💬', 'Đã chốt đơn': '✅', 'Không tiềm năng': '—' };
+        let pHtml = '<div class="dash-pipeline-grid">';
         ['Mới', 'Đã liên hệ', 'Đang tư vấn', 'Đã chốt đơn', 'Không tiềm năng'].forEach(status => {
           const cnt = cp[status] || 0;
           const clr = pipelineColors[status];
-          pHtml += `<span style="background:white;border-left:3px solid ${clr};padding:8px 14px;border-radius:8px;font-size:0.85rem;box-shadow:0 1px 2px rgba(0,0,0,0.05);"><strong style="color:${clr};">${cnt}</strong> ${status}</span>`;
+          pHtml += `<div class="dash-pipeline-item" style="border-top:3px solid ${clr};">
+            <div class="dash-pipeline-count" style="color:${clr};">${cnt}</div>
+            <div class="dash-pipeline-label">${status}</div>
+          </div>`;
         });
         pHtml += '</div>';
-        document.getElementById('dashboard-pipeline').innerHTML = pHtml;
+        cpEl.innerHTML = pHtml;
+      } else {
+        cpEl.innerHTML = '<p style="color:#94a3b8;font-size:0.9rem;padding:8px 0;">Chưa có dữ liệu</p>';
       }
 
       // Recent posts table
-      let tableHtml = '<table class="admin-table"><thead><tr><th>Tiêu đề</th><th>Trạng thái</th><th>Ngày tạo</th><th>Lượt xem</th></tr></thead><tbody>';
-      (s.recentPosts || []).forEach(p => {
-        tableHtml += `<tr>
-          <td>${p.title}</td>
-          <td><span class="status-badge status-${p.status}">${p.status}</span></td>
-          <td>${formatDate(p.createdAt)}</td>
-          <td>${p.viewCount || 0}</td>
-        </tr>`;
-      });
-      tableHtml += '</tbody></table>';
-      document.getElementById('recent-posts-table').innerHTML = tableHtml;
+      const posts = s.recentPosts || [];
+      if (posts.length > 0) {
+        let tableHtml = '<table class="admin-table"><thead><tr><th>Tiêu đề</th><th>Trạng thái</th><th>Ngày tạo</th><th>Lượt xem</th></tr></thead><tbody>';
+        posts.forEach(p => {
+          tableHtml += `<tr>
+            <td><span style="font-weight:500;">${p.title}</span></td>
+            <td><span class="status-badge status-${p.status}">${p.status === 'published' ? 'Xuất bản' : p.status === 'draft' ? 'Nháp' : p.status}</span></td>
+            <td style="color:#64748b;">${formatDate(p.createdAt)}</td>
+            <td style="font-weight:600;">${p.viewCount || 0}</td>
+          </tr>`;
+        });
+        tableHtml += '</tbody></table>';
+        document.getElementById('recent-posts-table').innerHTML = tableHtml;
+      } else {
+        document.getElementById('recent-posts-table').innerHTML = '<p style="padding:24px;color:#94a3b8;text-align:center;">Chưa có bài viết nào</p>';
+      }
     }
   } catch (e) {
     console.error(e);
@@ -1068,15 +1151,15 @@ function renderCRMPipeline(pipeline) {
   const el = document.getElementById('crm-pipeline');
   if (!el || !pipeline) return;
   const total = Object.values(pipeline).reduce((s, v) => s + v, 0) || 1;
-  let html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
+  let html = '<div class="dash-pipeline-grid" style="grid-template-columns:repeat(5,1fr);">';
   CONTACT_STATUSES.forEach(s => {
     const count = pipeline[s] || 0;
     const color = CONTACT_STATUS_COLORS[s];
     const pct = Math.round(count / total * 100);
-    html += `<div style="flex:1;min-width:140px;background:white;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.05);border-left:4px solid ${color};">
-      <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">${s}</div>
-      <div style="font-size:1.5rem;font-weight:700;color:${color};">${count}</div>
-      <div style="font-size:0.75rem;color:#94a3b8;">${pct}%</div>
+    html += `<div class="dash-pipeline-item" style="border-top:3px solid ${color};background:white;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+      <div class="dash-pipeline-count" style="color:${color};">${count}</div>
+      <div class="dash-pipeline-label">${s}</div>
+      <div style="font-size:0.72rem;color:#94a3b8;margin-top:2px;">${pct}%</div>
     </div>`;
   });
   html += '</div>';
@@ -1178,46 +1261,54 @@ function buildContactDetailUI(el, c) {
 
   el.innerHTML = `
     <div class="admin-page-header">
-      <h2>Chi tiết liên hệ</h2>
+      <div>
+        <h2>Chi tiết liên hệ</h2>
+        <p class="page-subtitle">ID: ${c.ID}</p>
+      </div>
       <button class="admin-btn" onclick="navigateTo('contacts')">← Quay lại</button>
+    </div>
+
+    <!-- Status bar -->
+    <div class="admin-card" style="padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <span style="font-size:0.85rem;color:#64748b;">Trạng thái hiện tại:</span>
+      <span style="background:${color};color:white;padding:5px 16px;border-radius:20px;font-weight:600;font-size:0.88rem;">${escHtml(c.Status || 'Mới')}</span>
+      <span style="font-size:0.82rem;color:#94a3b8;margin-left:auto;">Gửi lúc: ${timeStr}${updatedAt ? ' &bull; Cập nhật: ' + updatedAt : ''}</span>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
       <!-- LEFT: Customer Info -->
-      <div class="admin-card" style="padding:0;">
+      <div class="admin-card dash-card" style="padding:0;">
         <div style="padding:20px;border-bottom:1px solid #e2e8f0;">
-          <h3 style="margin:0 0 4px;color:#0c4a6e;">Thông tin khách hàng</h3>
-          <div style="font-size:0.8rem;color:#94a3b8;">ID: ${c.ID} &bull; Gửi lúc: ${timeStr}</div>
+          <h3 style="margin:0;color:#0c4a6e;font-size:1rem;">Thông tin khách hàng</h3>
         </div>
         <div style="padding:20px;">
-          <div style="display:grid;gap:16px;">
+          <div style="display:grid;gap:18px;">
             <div>
-              <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Họ và tên</div>
-              <div style="font-size:1.15rem;font-weight:700;">${escHtml(c.HoTen || '')}</div>
+              <div style="font-size:0.78rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Họ và tên</div>
+              <div style="font-size:1.2rem;font-weight:700;color:#0f172a;">${escHtml(c.HoTen || '')}</div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Số điện thoại</div>
+                <div style="font-size:0.78rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Số điện thoại</div>
                 <a href="tel:${c.SDT}" style="color:#0ea5e9;font-weight:600;font-size:1.05rem;text-decoration:none;">${escHtml(c.SDT || '')}</a>
               </div>
               <div>
-                <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Email</div>
+                <div style="font-size:0.78rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Email</div>
                 ${c.Email ? `<a href="mailto:${c.Email}" style="color:#0ea5e9;text-decoration:none;">${escHtml(c.Email)}</a>` : '<span style="color:#cbd5e1;">—</span>'}
               </div>
             </div>
             <div>
-              <div style="font-size:0.8rem;color:#64748b;margin-bottom:4px;">Chương trình quan tâm</div>
-              <span style="background:#eff6ff;color:#1d4ed8;padding:4px 12px;border-radius:6px;font-weight:600;font-size:0.9rem;">${escHtml(c.ChuongTrinh || 'Chưa chọn')}</span>
+              <div style="font-size:0.78rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Chương trình quan tâm</div>
+              <span style="background:#eff6ff;color:#1d4ed8;padding:5px 14px;border-radius:8px;font-weight:600;font-size:0.9rem;display:inline-block;">${escHtml(c.ChuongTrinh || 'Chưa chọn')}</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- RIGHT: CRM Actions -->
-      <div class="admin-card" style="padding:0;">
+      <div class="admin-card dash-card" style="padding:0;">
         <div style="padding:20px;border-bottom:1px solid #e2e8f0;">
-          <h3 style="margin:0;color:#0c4a6e;">Quản lý tư vấn</h3>
-          ${updatedAt ? `<div style="font-size:0.8rem;color:#94a3b8;margin-top:2px;">Cập nhật lần cuối: ${updatedAt}</div>` : ''}
+          <h3 style="margin:0;color:#0c4a6e;font-size:1rem;">Quản lý tư vấn</h3>
         </div>
         <div style="padding:20px;">
           <div class="form-group" style="margin-bottom:16px;">
@@ -1247,8 +1338,8 @@ function buildContactDetailUI(el, c) {
               style="width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:0.95rem;resize:vertical;box-sizing:border-box;line-height:1.5;">${escHtml(c.Note || '')}</textarea>
           </div>
 
-          <div style="display:flex;gap:10px;">
-            <button class="admin-btn admin-btn-primary" style="flex:1;padding:12px;" onclick="saveContactDetail('${c.ID}')" id="save-contact-btn">Lưu thay đổi</button>
+          <div style="display:flex;gap:10px;padding-top:10px;border-top:1px solid #f1f5f9;">
+            <button class="admin-btn admin-btn-primary" style="flex:1;padding:12px;font-size:0.95rem;" onclick="saveContactDetail('${c.ID}')" id="save-contact-btn">Lưu thay đổi</button>
             <button class="admin-btn" style="padding:12px;" onclick="navigateTo('contacts')">Hủy</button>
           </div>
         </div>
