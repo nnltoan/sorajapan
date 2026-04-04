@@ -248,10 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Inject Floating Contact Buttons ---
-  // Detect subfolder depth: count path segments after the site root
-  const pathSegments = window.location.pathname.replace(/\/[^/]*$/, '').split('/').filter(Boolean);
-  const siteRoot = ''; // adjust if site is hosted in a subfolder
-  const depth = pathSegments.length - (siteRoot ? siteRoot.split('/').filter(Boolean).length : 0);
+  // Detect subfolder depth relative to site root (GitHub Pages: /sorajapan/)
+  const siteRoot = '/sorajapan/';
+  const currentDir = window.location.pathname.replace(/\/[^/]*$/, '/');
+  // How many directories deep from siteRoot?
+  const relPath = currentDir.startsWith(siteRoot) ? currentDir.slice(siteRoot.length) : currentDir;
+  const depth = relPath.split('/').filter(Boolean).length;
   const basePath = depth > 0 ? '../'.repeat(depth) : './';
   const floatingHTML = `
     <!-- Floating Contact Buttons -->
