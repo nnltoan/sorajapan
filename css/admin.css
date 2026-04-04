@@ -249,8 +249,11 @@ body.admin-body {
 .status-archived { background: #f1f5f9; color: #64748b; }
 
 .actions-cell {
-  display: flex;
-  gap: 6px;
+  white-space: nowrap;
+}
+
+.actions-cell .admin-btn {
+  margin-right: 6px;
 }
 
 /* ─── Form ─── */
