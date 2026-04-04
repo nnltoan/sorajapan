@@ -31,23 +31,57 @@ async function fetchAPI(params) {
 }
 
 async function postAPI(body) {
-  // Google Apps Script blocks POST due to CORS redirect
-  // Use GET with payload parameter instead
+  const jsonStr = JSON.stringify(body);
+
+  // For large payloads (e.g. image uploads with base64 data),
+  // use POST with Content-Type: text/plain to avoid CORS preflight
+  // and bypass URL length limits (GET URLs max ~8KB).
+  // For small payloads, keep using GET with payload param (proven to work).
+  const USE_POST_THRESHOLD = 5000; // bytes
+
+  if (jsonStr.length > USE_POST_THRESHOLD) {
+    console.log('[postAPI] Large payload (' + jsonStr.length + ' chars), using POST');
+    return await _postViaPost(jsonStr);
+  }
+
+  // Small payload → GET with payload param (original approach)
   const url = new URL(NEWS_CONFIG.API_URL);
   url.searchParams.set('action', body.action);
-  url.searchParams.set('payload', JSON.stringify(body));
+  url.searchParams.set('payload', jsonStr);
 
-  console.log('[postAPI] Calling:', url.toString());
+  console.log('[postAPI] GET:', body.action);
   const res = await fetch(url.toString(), { redirect: 'follow' });
-  console.log('[postAPI] Response status:', res.status, 'type:', res.type);
 
   const text = await res.text();
-  console.log('[postAPI] Response body:', text.substring(0, 200));
-
   try {
     return JSON.parse(text);
   } catch (e) {
     console.error('[postAPI] JSON parse failed:', text.substring(0, 500));
+    throw new Error('Invalid response from server');
+  }
+}
+
+async function _postViaPost(jsonStr) {
+  // Google Apps Script web apps redirect 302 on both GET and POST.
+  // Using Content-Type: text/plain makes it a "simple" CORS request
+  // (no preflight), so the browser follows the redirect transparently.
+  const url = NEWS_CONFIG.API_URL;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: jsonStr,
+    redirect: 'follow'
+  });
+
+  console.log('[postAPI:POST] status:', res.status, 'type:', res.type);
+  const text = await res.text();
+  console.log('[postAPI:POST] body:', text.substring(0, 200));
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error('[postAPI:POST] JSON parse failed:', text.substring(0, 500));
     throw new Error('Invalid response from server');
   }
 }
