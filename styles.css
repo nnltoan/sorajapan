@@ -201,7 +201,7 @@ h6 {
   z-index: 1000;
   transition: all var(--transition);
   padding: 0 16px;
-  background: linear-gradient(to bottom, rgba(12, 74, 110, 0.75) 0%, rgba(12, 74, 110, 0.4) 60%, transparent 100%);
+  background: transparent;
 }
 
 .header.scrolled {
@@ -252,7 +252,7 @@ h6 {
   width: auto;
   object-fit: contain;
   transition: all var(--transition);
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
 }
 
 .header.scrolled .nav-logo img {
@@ -286,20 +286,22 @@ h6 {
 .nav-links a {
   font-family: var(--font-heading);
   font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
   padding: 8px 4px;
   position: relative;
   cursor: pointer;
-  transition: color var(--transition);
+  transition: color var(--transition), text-shadow var(--transition);
   white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 4px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .header.scrolled .nav-links a {
   color: var(--color-text-light);
+  text-shadow: none;
 }
 
 .nav-links a:hover,
