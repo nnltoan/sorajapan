@@ -298,7 +298,7 @@ function updatePost(data) {
   const rows = allData.slice(1);
 
   for (let i = 0; i < rows.length; i++) {
-    if (rows[i][0] === data.id) {
+    if (String(rows[i][0]) === String(data.id)) {
       const rowIndex = i + 2; // +2: 1-indexed + header row
       const now = new Date().toISOString();
 
@@ -347,7 +347,7 @@ function deletePost(id) {
   const headers = allData[0];
 
   for (let i = 1; i < allData.length; i++) {
-    if (allData[i][0] === id) {
+    if (String(allData[i][0]) === String(id)) {
       // Soft delete: change status to "archived"
       const statusColIndex = headers.indexOf('status');
       sheet.getRange(i + 1, statusColIndex + 1).setValue('archived');
@@ -392,7 +392,7 @@ function manageCategory(action, data) {
   if (action === 'update') {
     const allData = sheet.getDataRange().getValues();
     for (let i = 1; i < allData.length; i++) {
-      if (allData[i][0] === data.id) {
+      if (String(allData[i][0]) === String(data.id)) {
         if (data.name) sheet.getRange(i + 1, 2).setValue(data.name);
         if (data.slug) sheet.getRange(i + 1, 3).setValue(data.slug);
         if (data.description !== undefined) sheet.getRange(i + 1, 4).setValue(data.description);
@@ -407,7 +407,7 @@ function manageCategory(action, data) {
   if (action === 'delete') {
     const allData = sheet.getDataRange().getValues();
     for (let i = 1; i < allData.length; i++) {
-      if (allData[i][0] === data.id) {
+      if (String(allData[i][0]) === String(data.id)) {
         sheet.deleteRow(i + 1);
         return { status: 'success', message: 'Danh mục đã được xóa' };
       }
@@ -565,8 +565,9 @@ function getJob(id) {
   const headers = data[0];
   const rows = data.slice(1);
 
+  const idStr = String(id);
   for (let i = 0; i < rows.length; i++) {
-    if (rows[i][0] === id) {
+    if (String(rows[i][0]) === idStr) {
       let obj = {};
       headers.forEach((h, j) => obj[h] = rows[i][j]);
       return { status: 'success', job: obj };
@@ -607,9 +608,10 @@ function updateJob(data) {
 
   const allData = sheet.getDataRange().getValues();
   const headers = allData[0];
+  const idStr = String(data.ID);
 
   for (let i = 1; i < allData.length; i++) {
-    if (allData[i][0] === data.ID) {
+    if (String(allData[i][0]) === idStr) {
       const rowIndex = i + 1;
       // Update each column based on header name
       headers.forEach((h, colIdx) => {
@@ -639,12 +641,12 @@ function deleteJob(id) {
   const statusIdx = headers.indexOf('Status');
 
   for (let i = 1; i < allData.length; i++) {
-    if (allData[i][0] === id) {
+    if (String(allData[i][0]) === String(id)) {
       sheet.getRange(i + 1, statusIdx + 1).setValue('Closed');
       return { status: 'success', message: 'Tin tuyển dụng đã được đóng' };
     }
   }
-  return { error: 'Job not found' };
+  return { error: 'Job not found: ' + String(id) };
 }
 
 // ─── JOBS: HELPERS ───
@@ -780,9 +782,10 @@ function updateContact(data) {
 
   const allData = sheet.getDataRange().getValues();
   const headers = allData[0];
+  const idStr = String(data.ID);
 
   for (let i = 1; i < allData.length; i++) {
-    if (allData[i][0] === data.ID) {
+    if (String(allData[i][0]) === idStr) {
       const rowIndex = i + 1;
       headers.forEach((h, colIdx) => {
         if (h !== 'ID' && h !== 'Timestamp' && data[h] !== undefined) {
@@ -807,8 +810,9 @@ function deleteContact(id) {
   if (!sheet) return { error: 'Contacts sheet not found' };
 
   const allData = sheet.getDataRange().getValues();
+  const idStr = String(id);
   for (let i = 1; i < allData.length; i++) {
-    if (allData[i][0] === id) {
+    if (String(allData[i][0]) === idStr) {
       sheet.deleteRow(i + 1);
       return { status: 'success', message: 'Đã xóa liên hệ' };
     }

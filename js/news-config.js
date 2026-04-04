@@ -9,6 +9,9 @@ const NEWS_CONFIG = {
 
 /* Simple in-memory cache */
 const _cache = {};
+function clearCache() {
+  Object.keys(_cache).forEach(k => delete _cache[k]);
+}
 async function fetchAPI(params) {
   const url = new URL(NEWS_CONFIG.API_URL);
   Object.entries(params).forEach(([k, v]) => {
@@ -54,7 +57,9 @@ async function postAPI(body) {
 
   const text = await res.text();
   try {
-    return JSON.parse(text);
+    const result = JSON.parse(text);
+    clearCache(); // Xóa cache sau mỗi write để data luôn mới
+    return result;
   } catch (e) {
     console.error('[postAPI] JSON parse failed:', text.substring(0, 500));
     throw new Error('Invalid response from server');
@@ -79,7 +84,9 @@ async function _postViaPost(jsonStr) {
   console.log('[postAPI:POST] body:', text.substring(0, 200));
 
   try {
-    return JSON.parse(text);
+    const result = JSON.parse(text);
+    clearCache(); // Xóa cache sau mỗi write để data luôn mới
+    return result;
   } catch (e) {
     console.error('[postAPI:POST] JSON parse failed:', text.substring(0, 500));
     throw new Error('Invalid response from server');
