@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Học viện Quốc tế SUN-A OEDO - Trường Nhật ngữ tại Tokyo với giáo dục hiện đại">
+  <title>Học viện Quốc tế SUN-A OEDO (Tokyo) | Sora Japan</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .hero-school {
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.35)), url('images/truong-suna_00f77c9e9ad9439a80e0b3fa6f513a41_grande.jpg') center/cover;
+      color: white;
+      padding: 120px 20px 60px;
+      text-align: center;
+    }
+
+    .hero-school h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #38BDF8;
+    
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .hero-school p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .school-content {
+      padding: 80px 20px;
+      background: #fff;
+    }
+
+    .section-school {
+      margin-bottom: 60px;
+    }
+
+    .section-school h2 {
+      color: var(--color-primary);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      border-bottom: 3px solid var(--color-cta);
+      padding-bottom: 15px;
+      display: inline-block;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+      border-left: 4px solid var(--color-primary);
+      padding: 25px;
+      margin: 0;
+      border-radius: 8px;
+    }
+
+    .highlight-box h3 {
+      color: var(--color-primary);
+      margin-bottom: 15px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin: 0;
+    }
+
+    .info-card {
+      background: #f8fafc;
+      padding: 25px;
+      border-radius: 12px;
+      border-top: 4px solid var(--color-cta);
+    }
+
+    .info-card h3 {
+      color: var(--color-text);
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+
+    .info-card p {
+      color: var(--color-text-light);
+      line-height: 1.7;
+    }
+
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .pricing-table th {
+      background: var(--color-primary);
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .pricing-table td {
+      padding: 15px;
+      border-bottom: 1px solid #e2e8f0;
+      color: var(--color-text-light);
+    }
+
+    .pricing-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pricing-value {
+      font-weight: 600;
+      color: var(--color-cta);
+      font-size: 1.1rem;
+    }
+
+    .cta-section {
+      text-align: center;
+      padding: 50px 20px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 12px;
+      margin: 60px 0;
+    }
+
+    .cta-section h2 {
+      color: white;
+      border-bottom: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .cta-section p {
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
+
+    .btn-primary {
+      background: var(--color-cta);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-cta-hover);
+      transform: translateY(-2px);
+    }
+
+    .course-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .course-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+      color: var(--color-text-light);
+    }
+
+    .course-list li:before {
+      content: "✓ ";
+      color: var(--color-success);
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-school h1 {
+        font-size: 1.8rem;
+      }
+
+      .section-school h2 {
+        font-size: 1.4rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-table {
+        font-size: 0.9rem;
+      }
+
+      .pricing-table th, .pricing-table td {
+        padding: 10px;
+      }
+    }
+  
+    .location-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .location-container .info-box {
+      padding: 22px 25px;
+      border-bottom: 1px solid var(--color-border);
+      border-radius: 0;
+      margin: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .location-container .info-box:last-child {
+      border-bottom: none;
+    }
+
+    .location-container .info-card {
+      padding: 22px 25px;
+      border-bottom: 1px solid var(--color-border);
+      border-top: none;
+      border-radius: 0;
+      margin: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .location-container .info-card:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="nav">
+      <a href="index.html" class="nav-logo" style="display: flex; align-items: center; gap: 8px;">
+        <img src="images/logo_transparent.png" alt="Sora Japan">
+      </a>
+      <button class="nav-toggle" aria-label="Menu" style="flex-shrink: 0; margin-left: auto;">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="index.html#home">Trang chủ</a>
+
+        <div class="dropdown">
+          <a href="service-du-hoc.html" class="dropbtn">Du học <svg width="12" height="12" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="du-hoc-bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
+            <a href="du-hoc-bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
+            <a href="du-hoc-bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
+            <a href="du-hoc-tu-tuc.html">Du học tự túc</a>
+            <a href="du-hoc-du-bi.html">Du học dự bị</a>
+            <a href="du-hoc-chuyen-doi-visa.html">Du học chuyển đổi visa</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="service-ky-su.html" class="dropbtn">Kỹ sư <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="ky-su-cntt.html">Kỹ sư CNTT</a>
+            <a href="ky-su-co-khi.html">Kỹ sư Cơ khí</a>
+            <a href="ky-su-xay-dung.html">Kỹ sư Xây dựng</a>
+            <a href="ky-su-dien.html">Kỹ sư Điện</a>
+            <a href="ky-su-kinh-te.html">Kỹ sư Kinh tế</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="service-tieng-nhat.html" class="dropbtn">Đào tạo tiếng Nhật <svg width="12" height="12"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="tieng-nhat-basic.html">Shinjigen Basic (N5-N4)</a>
+            <a href="tieng-nhat-intermediate.html">Shinjigen Intermediate (N3)</a>
+            <a href="tieng-nhat-master.html">Shinjigen Master (N2-N1)</a>
+          </div>
+        </div>
+
+        <a href="doi-tac.html">Đối tác</a>
+        <a href="index.html#cases">Case Study</a>
+        <a href="#">Tin tức</a>
+        <a href="index.html#contact">Liên hệ</a>
+      </nav>
+      <div class="nav-cta-wrapper hide-on-mobile">
+        <a href="index.html#contact" class="nav-cta">Tư vấn miễn phí</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero-school">
+    <h1>Học viện Quốc tế SUN-A OEDO</h1>
+    <p>Trường Nhật ngữ hiện đại tại Tokyo - Ứng dụng công nghệ, vị trí thuận lợi gần trung tâm</p>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="school-content">
+
+      <!-- OVERVIEW SECTION -->
+      <section class="section-school">
+        <h2>Tổng Quan Trường Học</h2>
+        <p style="color: var(--color-text-light); line-height: 1.8; margin-top: 20px;">
+          Học viện Quốc tế SUN-A OEDO là một trong những trường Nhật ngữ uy tín nhất tại Tokyo, được công nhận bởi Nisshinkyo (Hiệp hội các trường Nhật ngữ tư). Trường nổi bật với môi trường giáo dục hiện đại, ứng dụng công nghệ cao, và vị trí thuận lợi ngay gần trung tâm Tokyo.
+        </p>
+
+        <div class="highlight-box">
+          <h3>Điểm Nổi Bật</h3>
+          <ul class="course-list">
+            <li>Công nhận bởi Nisshinkyo - hiệp hội trường Nhật ngữ hàng đầu</li>
+            <li>Vị trí tuyệt vời - Shinkoiwa, Katsushika-ku, gần trung tâm Tokyo</li>
+            <li>Áp dụng công nghệ giáo dục hiện đại</li>
+            <li>Hỗ trợ toàn diện: ký túc xá, nơi ở, việc làm thêm</li>
+            <li>Chương trình đa dạng từ cơ bản đến nâng cao</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- LOCATION SECTION -->
+      <section class="section-school">
+        <h2>Địa Điểm & Giao Thông</h2>
+        <div class="highlight-box">
+          <h3>Thông Tin Địa Chỉ</h3>
+          <p style="margin-top: 15px;"><strong>Tỉnh Shinkoiwa, Katsushika-ku, Tokyo 124-0024, Nhật Bản</strong></p>
+        </div>
+
+        <div class="location-container">
+          <div class="info-card">
+            <h3>Vị Trí Trường</h3>
+            <p>Khu vực Shinkoiwa - Katsushika-ku với hạ tầng phát triển và tiện ích đầy đủ. Gần các siêu thị, nhà hàng và quán cà phê.</p>
+          </div>
+          <div class="info-card">
+            <h3>Phương Tiện Giao Thông</h3>
+            <p>Dễ dàng di chuyển đến các ga tàu chính tại Tokyo. Kết nối tốt với hệ thống tàu điện, tàu lửa và sân bay.</p>
+          </div>
+          <div class="info-card">
+            <h3>Tiện Ích Xung Quanh</h3>
+            <p>Gần trung tâm mua sắm, công viên, bến cảng, các trung tâm thương mại sầm uất.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COURSES SECTION -->
+      <section class="section-school">
+        <h2>Chương Trình Học Tập</h2>
+        <p style="color: var(--color-text-light); margin-top: 20px;">Học viện SUN-A OEDO cung cấp các chương trình đào tạo tiếng Nhật đa dạng:</p>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Khóa 2 Năm</h3>
+            <p>1,600 giờ học - Chương trình toàn diện từ cơ bản đến nâng cao, chuẩn bị cho đại học hoặc tìm việc.</p>
+          </div>
+          <div class="info-card">
+            <h3>Khóa 1.75 Năm</h3>
+            <p>Chương trình cấp tốc dành cho những sinh viên có nền tảng hoặc muốn học nhanh hơn.</p>
+          </div>
+          <div class="info-card">
+            <h3>Khóa 1.5 Năm</h3>
+            <p>Khóa ngắn nhất nhưng vẫn đầy đủ, phù hợp với học viên có trình độ cơ bản.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TUITION SECTION -->
+      <section class="section-school">
+        <h2>Học Phí & Chi Phí Chi Tiết</h2>
+
+        <div class="highlight-box">
+          <h3>Bảng Học Phí Tham Khảo</h3>
+        </div>
+
+        <table class="pricing-table">
+          <thead>
+            <tr>
+              <th>Chương Trình</th>
+              <th>Thời Gian</th>
+              <th>Giờ Học</th>
+              <th>Học Phí</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Khóa Đầy Đủ</td>
+              <td>2 năm</td>
+              <td>1,600 giờ</td>
+              <td class="pricing-value">¥1,246,000</td>
+            </tr>
+            <tr>
+              <td>Khóa Cấp Tốc</td>
+              <td>1.75 năm</td>
+              <td>~1,400 giờ</td>
+              <td class="pricing-value">¥1,029,000</td>
+            </tr>
+            <tr>
+              <td>Khóa Ngắn</td>
+              <td>1.5 năm</td>
+              <td>~1,200 giờ</td>
+              <td class="pricing-value">¥882,000</td>
+            </tr>
+            <tr>
+              <td colspan="3"><strong>Phí Nhập Học</strong></td>
+              <td class="pricing-value">¥50,000</td>
+            </tr>
+            <tr>
+              <td colspan="3"><strong>Phí Dự Bị Kỳ Thi</strong></td>
+              <td class="pricing-value">¥20,000</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Hỗ Trợ Tài Chính</h3>
+            <p>Trường cung cấp các chương trình học bổng cho học viên xuất sắc. Liên hệ trực tiếp để biết chi tiết các chương trình hỗ trợ.</p>
+          </div>
+          <div class="info-card">
+            <h3>Phương Thức Thanh Toán</h3>
+            <p>Có thể thanh toán toàn bộ hoặc chia thành nhiều đợt. Cần chuẩn bị sẵn tài chính khi nộp đơn.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STUDENT SUPPORT SECTION -->
+      <section class="section-school">
+        <h2>Hỗ Trợ Sinh Viên</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Ký Túc Xá & Nhà Trọ</h3>
+            <p>Cung cấp cả ký túc xá trường và giới thiệu nhà trọ với giá hợp lý, đủ tiện nghi cho sinh viên quốc tế.</p>
+          </div>
+          <div class="info-card">
+            <h3>Hỗ Trợ Nơi Ở (Homestay)</h3>
+            <p>Chương trình homestay giúp sinh viên thích nghi với đời sống Nhật Bản, cải thiện tiếng Nhật ngoài lớp học.</p>
+          </div>
+          <div class="info-card">
+            <h3>Việc Làm Thêm</h3>
+            <p>Sau 6 tháng học, sinh viên được hỗ trợ tìm việc làm thêm với các công ty đối tác uy tín.</p>
+          </div>
+          <div class="info-card">
+            <h3>Tư Vấn Sinh Viên</h3>
+            <p>Có đội tư vấn viên hỗ trợ 24/7 cho các vấn đề học tập, sinh hoạt và thích nghi tại Nhật Bản.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMISSION SECTION -->
+      <section class="section-school">
+        <h2>Thông Tin Nhập Học</h2>
+        <div class="highlight-box">
+          <h3>Điều Kiện Nhập Học</h3>
+          <ul class="course-list">
+            <li>Hoàn thành bậc học trung học phổ thông hoặc cao hơn</li>
+            <li>Có visa du học được cấp bởi trường (Nisshinkyo recognized)</li>
+            <li>Sức khỏe tốt, đủ sức khỏe để học tập tại Nhật Bản</li>
+            <li>Cam kết học tập nghiêm túc và tuân thủ nội quy trường</li>
+          </ul>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Thời Gian Nhập Học</h3>
+            <p>Nhập học thường vào các thời điểm cố định trong năm. Liên hệ trường để biết lịch tuyển sinh cụ thể.</p>
+          </div>
+          <div class="info-card">
+            <h3>Thủ Tục Đăng Ký</h3>
+            <p>Chuẩn bị hồ sơ, thi tuyển trực tuyến, phỏng vấn, cấp thư mời, xin visa du học.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY CHOOSE SECTION -->
+      <section class="section-school">
+        <h2>Tại Sao Chọn SUN-A OEDO?</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Công Nhận Chính Thức</h3>
+            <p>Công nhận bởi Nisshinkyo - hiệp hội các trường Nhật ngữ tư đáng tin cậy nhất tại Nhật Bản.</p>
+          </div>
+          <div class="info-card">
+            <h3>Vị Trí Tuyệt Vời</h3>
+            <p>Nằm gần trung tâm Tokyo nhưng vẫn giữ không khí yên tĩnh, thuận lợi cho học tập và công việc.</p>
+          </div>
+          <div class="info-card">
+            <h3>Công Nghệ Hiện Đại</h3>
+            <p>Ứng dụng công nghệ giáo dục mới nhất, phương pháp giảng dạy hiệu quả và phù hợp với nhu cầu thực tiễn.</p>
+          </div>
+          <div class="info-card">
+            <h3>Hỗ Trợ Toàn Diện</h3>
+            <p>Từ ở xứ, cấp visa, tìm việc làm thêm đến tư vấn sinh viên - tất cả đều được hỗ trợ chu đáo.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA SECTION -->
+      <div class="cta-section">
+        <h2>Sẵn Sàng Bắt Đầu Hành Trình Du Học?</h2>
+        <p>Liên hệ với Sora Japan ngay hôm nay để nhận tư vấn miễn phí về học phí, điều kiện nhập học và thủ tục xin visa tại Học viện Quốc tế SUN-A OEDO</p>
+        <a href="index.html#contact" class="btn-primary">Đăng Ký Tư Vấn Miễn Phí</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid reveal">
+        <div class="footer-brand">
+          <a href="#" class="footer-logo" style="display: inline-block; margin-bottom: 16px;">
+            <img src="images/logo_transparent.png" alt="Sora Japan"
+              style="height: 60px; width: auto; object-fit: contain;">
+          </a>
+          <p class="footer-desc">Công ty Cổ phần Quốc tế Sora Japan chuyên tư vấn đào tạo tiếng Nhật, du học, và tuyển
+            dụng lao động có tay nghề chất lượng cao sang Nhật Bản. Với phương châm "Chắp cánh ước mơ", chúng tôi cam
+            kết mang lại chất lượng và sự hài lòng tuyệt đối.</p>
+          <div class="footer-social">
+            <a href="https://www.facebook.com/61568999725231" target="_blank" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+            <a href="#" aria-label="Tiktok">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-5-1.5z" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </a>
+            <a href="#" aria-label="Youtube">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29.01 29.01 0 0 0 1 11.75a29.01 29.01 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29.01 29.01 0 0 0 .46-5.33 29.01 29.01 0 0 0-.46-5.33z"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Liên Kết Nhanh</h4>
+          <ul class="footer-links">
+            <li><a href="index.html#home">Trang chủ</a></li>
+            <li><a href="index.html#about">Về Sora Japan</a></li>
+            <li><a href="index.html#services">Dịch vụ tuyển dụng</a></li>
+            <li><a href="doi-tac.html">Danh sách đối tác</a></li>
+            <li><a href="index.html#cases">Thành tựu học viên</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Chương Trình Nổi Bật</h4>
+          <ul class="footer-links">
+            <li><a href="index.html#services">Du học Nhật Bản Tự Túc</a></li>
+            <li><a href="index.html#services">Học Bổng Toàn Phần</a></li>
+            <li><a href="index.html#services">Kỹ sư Cơ khí / CNTT</a></li>
+            <li><a href="index.html#services">Điều dưỡng Bệnh Viện</a></li>
+            <li><a href="index.html#services">Khóa Luyện thi JLPT N5-N2</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        &copy; 2026 Sora Japan JSC. Bản quyền thuộc về Công ty Cổ phần Quốc tế Sora Japan. (Bản demo website)
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+
+</html>

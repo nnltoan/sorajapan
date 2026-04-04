@@ -9,15 +9,31 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     .hero-partners {
-      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero-bg.png') center/cover;
+      background: url('images/hero-bg.png') center/cover;
       color: white;
       padding: 120px 20px 60px;
       text-align: center;
+      position: relative;
+    }
+
+    .hero-partners::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 0;
+    }
+
+    .hero-partners > * {
+      position: relative;
+      z-index: 1;
     }
 
     .hero-partners h1 {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       margin-bottom: 15px;
+      color: #38BDF8;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
     }
 
     .hero-partners p {
@@ -25,6 +41,7 @@
       max-width: 700px;
       margin: 0 auto;
       line-height: 1.6;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
     }
 
     .partners-section {
@@ -103,6 +120,32 @@
       align-items: center;
       gap: 5px;
       margin-top: auto;
+    }
+
+    .card .detail-link {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .card .detail-link:hover {
+      background: var(--color-cta);
+      transform: translateY(-2px);
+    }
+
+    .card-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      gap: 10px;
     }
 
     .cta-partners {
@@ -221,7 +264,10 @@
               </svg> Tokyo – Osaka – Nagoya</div>
             <p>Tập đoàn y tế – dưỡng lão lớn nhất Nhật Bản với hơn 500 cơ sở trên toàn quốc. Chuyên tuyển dụng điều
               dưỡng Việt Nam với mức lương 30–40 triệu VND/tháng, phúc lợi cao và đơn hàng 0 đồng.</p>
-            <a href="http://www.care21.co.jp" class="website" target="_blank">Website &rarr;</a>
+            <div class="card-links">
+              <a href="http://www.care21.co.jp" class="website" target="_blank">Website &rarr;</a>
+              <a href="doi-tac-care21.html" class="detail-link">Xem chi tiết &rarr;</a>
+            </div>
           </div>
         </div>
         <!-- Card 2 -->
@@ -236,7 +282,10 @@
               </svg> Osaka</div>
             <p>Bệnh viện uy tín tại Osaka, hợp tác chặt chẽ với Sora Japan trong đào tạo tiếng Nhật và cung cấp thực tập
               sinh (TTS) điều dưỡng chất lượng cao.</p>
-            <a href="http://www.seichokai.or.jp" class="website" target="_blank">Website &rarr;</a>
+            <div class="card-links">
+              <a href="http://www.seichokai.or.jp" class="website" target="_blank">Website &rarr;</a>
+              <a href="doi-tac-seichoukai.html" class="detail-link">Xem chi tiết &rarr;</a>
+            </div>
           </div>
         </div>
         <!-- Card 3 -->
@@ -251,7 +300,10 @@
               </svg> Shizuoka</div>
             <p>Cơ sở y tế hiện đại tại Shizuoka, chuyên tiếp nhận TTS điều dưỡng từ Việt Nam với chương trình đào tạo
               tiếng Nhật bài bản.</p>
-            <a href="http://www.hokuyuukai.or.jp" class="website" target="_blank">Website &rarr;</a>
+            <div class="card-links">
+              <a href="http://www.hokuyuukai.or.jp" class="website" target="_blank">Website &rarr;</a>
+              <a href="doi-tac-hokuyuukai.html" class="detail-link">Xem chi tiết &rarr;</a>
+            </div>
           </div>
         </div>
         <!-- Card 4 -->
@@ -266,7 +318,10 @@
               </svg> Saitama</div>
             <p>Tập đoàn cung cấp TTS và Tokutei (kỹ năng đặc định) điều dưỡng tại Saitama. Tập trung đào tạo tiếng Nhật
               và kỹ năng chuyên môn cao.</p>
-            <a href="http://universal.tums.jp" class="website" target="_blank">Website &rarr;</a>
+            <div class="card-links">
+              <a href="http://universal.tums.jp" class="website" target="_blank">Website &rarr;</a>
+              <a href="doi-tac-tums.html" class="detail-link">Xem chi tiết &rarr;</a>
+            </div>
           </div>
         </div>
         <!-- Card 5 -->
@@ -281,7 +336,10 @@
               </svg> Saitama</div>
             <p>Một trong những tập đoàn điều dưỡng lớn nhất Nhật Bản, hợp tác lâu năm với Sora Japan trong việc tuyển
               dụng và đào tạo TTS/Tokutei điều dưỡng.</p>
-            <a href="http://www.nichiigakkan.co.jp" class="website" target="_blank">Website &rarr;</a>
+            <div class="card-links">
+              <a href="http://www.nichiigakkan.co.jp" class="website" target="_blank">Website &rarr;</a>
+              <a href="doi-tac-nichii.html" class="detail-link">Xem chi tiết &rarr;</a>
+            </div>
           </div>
         </div>
       </div>
@@ -306,6 +364,7 @@
             <h3>Học viện Đàm thoại Quốc tế ICA</h3>
             <div class="meta">Tokyo, Saitama, Hokkaido, Kumamoto</div>
             <p>Học viện hàng đầu với chương trình tiếng Nhật chuyên sâu, hỗ trợ du học sinh Việt Nam toàn diện.</p>
+            <a href="truong-ica.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 2 -->
@@ -315,6 +374,7 @@
             <h3>Nhật Ngữ Asahi (Saitama)</h3>
             <div class="meta">Saitama</div>
             <p>Trường Nhật ngữ lâu năm tại Saitama, mang đến môi trường học tập thân thiện và hiệu quả.</p>
+            <a href="truong-asahi.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 3 -->
@@ -324,6 +384,7 @@
             <h3>Nhật Ngữ Jin Tokyo</h3>
             <div class="meta">Tokyo</div>
             <p>Trường tại trung tâm Tokyo, nổi tiếng với chương trình luyện thi JLPT và du học tự túc.</p>
+            <a href="truong-jin-tokyo.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 4 -->
@@ -333,6 +394,7 @@
             <h3>Nhật ngữ Loop (Osaka)</h3>
             <div class="meta">Osaka</div>
             <p>Trường hiện đại tại Osaka, tập trung mạnh vào đào tạo kỹ năng giao tiếp tiếng Nhật thực tế.</p>
+            <a href="truong-loop.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 5 -->
@@ -342,6 +404,7 @@
             <h3>Học viện Ngôn ngữ Quốc tế OJI</h3>
             <div class="meta">Saitama</div>
             <p>Cơ sở vật chất đầu tư bài bản, chất lượng tốt, đặc biệt hỗ trợ visa và ký túc xá cho sinh viên.</p>
+            <a href="truong-oji.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 6 -->
@@ -351,15 +414,17 @@
             <h3>Nhật ngữ Waseda edu (Tokyo)</h3>
             <div class="meta">Tokyo</div>
             <p>Liên kết chặt chẽ với Đại học danh tiếng Waseda, đảm bảo chất lượng giảng dạy và đào tạo cực cao.</p>
+            <a href="truong-waseda-edu.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 7 -->
         <div class="card">
-          <img src="images/Bên-ngoài-trường-học-8.jpeg" alt="Học viện Nhật ngữ TOKYO YOHOKU">
+          <img src="images/Ben-ngoai-truong-hoc-8.jpeg" alt="Học viện Nhật ngữ TOKYO YOHOKU">
           <div class="card-content">
             <h3>Học viện Nhật ngữ TOKYO YOHOKU</h3>
             <div class="meta">Tokyo</div>
             <p>Ngôi trường uy tín tại khu vực trung tâm, luôn có nhiều chính sách học bổng cho sinh viên Việt Nam.</p>
+            <a href="truong-tokyo-yohoku.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 8 -->
@@ -370,6 +435,7 @@
             <div class="meta">Tokyo</div>
             <p>Một trong những trường Nhật ngữ theo hệ thống lớn nhất tại Tokyo, hỗ trợ toàn diện cuộc sống sinh viên.
             </p>
+            <a href="truong-kyoritsu.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 9 -->
@@ -379,6 +445,7 @@
             <h3>Nhật ngữ TOP-A 21 (Tokyo)</h3>
             <div class="meta">Tokyo</div>
             <p>Chương trình học tập linh hoạt, phù hợp với định hướng hệ du học sinh "vừa học vừa làm".</p>
+            <a href="truong-topa21.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 10 -->
@@ -388,6 +455,7 @@
             <h3>Học viện Quốc tế SUN-A OEDO</h3>
             <div class="meta">Tokyo</div>
             <p>Môi trường giáo dục hiện đại, ứng dụng công nghệ, vị trí cực kỳ thuận lợi ngay gần trung tâm Tokyo.</p>
+            <a href="truong-suna-oedo.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 11 -->
@@ -398,6 +466,7 @@
             <div class="meta">Saitama</div>
             <p>Ngôi trường sở hữu lịch sử lâu đời với uy tín hàng đầu, ưu tiên hỗ trợ cho học sinh Việt Nam có thành
               tích.</p>
+            <a href="truong-eikou.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 12 -->
@@ -407,6 +476,7 @@
             <h3>Học viện Nhật ngữ MUSASHI URA</h3>
             <div class="meta">Saitama</div>
             <p>Trường tự hào có cơ sở vật chất đẹp và tiện nghi nhất, giao thông lợi thế gần các ga lớn.</p>
+            <a href="truong-musashi-ura.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 13 -->
@@ -417,6 +487,7 @@
             <div class="meta">Saitama</div>
             <p>Chuyên biệt về việc giảng dạy giáo án tiếng Nhật dành riêng cho đối tượng du học sinh thuộc khu vực châu
               Á.</p>
+            <a href="truong-nichigo.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 14 -->
@@ -427,6 +498,7 @@
             <div class="meta">Osaka</div>
             <p>Môi trường thân thiện ở Osaka, triển khai nhiều chương trình học chú trọng tính ứng dụng và thực tế cao.
             </p>
+            <a href="truong-jvc.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 15 -->
@@ -436,6 +508,7 @@
             <h3>Học viện OSAKA KOKUSAI</h3>
             <div class="meta">Osaka</div>
             <p>Thuộc quy mô học viện giao lưu quốc tế lớn tại Osaka, sinh viên cơ hội học và làm việc đa văn hóa.</p>
+            <a href="truong-osaka-kokusai.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 16 -->
@@ -445,6 +518,7 @@
             <h3>Học viện Nhật ngữ SYONAN</h3>
             <div class="meta">Shizuoka</div>
             <p>Cung cấp một sinh thái môi trường yên bình cho học tập và đặc biệt mức chi phí sinh hoạt thấp.</p>
+            <a href="truong-syonan.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 17 -->
@@ -455,6 +529,7 @@
             <div class="meta">Kobe</div>
             <p>Trường tọa lạc tại khu phố sầm uất Kobe, dễ dàng kết nối gần cảng biển và nhiều trung tâm thương mại lớn.
             </p>
+            <a href="truong-kuraku.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 18 -->
@@ -465,6 +540,7 @@
             <div class="meta">Fukuoka</div>
             <p>Hoạt động năng động tại khu vực Fukuoka miền Nam Nhật Bản, liên kết rất tốt về mảng việc làm cho sinh
               viên.</p>
+            <a href="truong-kyorin.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 19 -->
@@ -474,6 +550,7 @@
             <h3>Học viện Nhật ngữ OSAFUNE</h3>
             <div class="meta">Okayama</div>
             <p>Tọa lạc yên bình tại quận Okayama với mức học phí cực kỳ hợp lý với gia cảnh học sinh khá.</p>
+            <a href="truong-osafune.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 20 -->
@@ -483,6 +560,7 @@
             <h3>Học viện quốc tế SOPHIA</h3>
             <div class="meta">Yokohama</div>
             <p>Môi trường trường lớp cao cấp tại Yokohama, thuận lợi trong việc di chuyển tàu nhanh gần Tokyo.</p>
+            <a href="truong-sophia.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 21 -->
@@ -493,6 +571,7 @@
             <div class="meta">Tokyo</div>
             <p>Được biết đến trong cộng đồng là một trong các Học viện giao lưu quốc tế uy tín bậc nhất tại thành phố
               Tokyo.</p>
+            <a href="truong-tokyo-kokusai.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 22 -->
@@ -502,6 +581,7 @@
             <h3>セントラルジャパン日本語学校</h3>
             <div class="meta">Nagoya</div>
             <p>Đơn vị trường giáo dục sở hữu vị trí ngay khu trung tâm sầm uất Nagoya.</p>
+            <a href="truong-central-japan.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
         <!-- School 23 -->
@@ -512,6 +592,7 @@
             <div class="meta">Osaka</div>
             <p>Trường Meric danh tiếng ở Osaka, mang lại một không gian quy trình học tập hết sức năng động và nhộn
               nhịp.</p>
+            <a href="truong-meric.html" class="detail-link">Xem chi tiết &rarr;</a>
           </div>
         </div>
 
