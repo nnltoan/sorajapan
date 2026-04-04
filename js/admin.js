@@ -294,19 +294,98 @@ function renderPostForm(el, post) {
       theme: 'snow',
       placeholder: 'Viết nội dung bài viết tại đây...',
       modules: {
-        toolbar: [
-          [{ header: [2, 3, false] }],
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['blockquote', 'link', 'image'],
-          ['clean']
-        ]
+        toolbar: {
+          container: [
+            [{ header: [2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['blockquote', 'link', 'image'],
+            ['clean']
+          ],
+          handlers: {
+            image: function () {
+              const input = document.createElement('input');
+              input.setAttribute('type', 'file');
+              input.setAttribute('accept', 'image/*');
+              input.click();
+              input.onchange = async () => {
+                const file = input.files[0];
+                if (!file) return;
+                if (file.size > 2 * 1024 * 1024) { toast('Ảnh phải nhỏ hơn 2MB', 'error'); return; }
+                const reader = new FileReader();
+                reader.onload = async () => {
+                  const base64 = reader.result.split(',')[1];
+                  try {
+                    const res = await postAPI({
+                      action: 'uploadImage', password: adminPassword,
+                      base64, filename: file.name, mimeType: file.type
+                    });
+                    if (res.status === 'success') {
+                      const range = quillEditor.getSelection(true);
+                      quillEditor.insertEmbed(range.index, 'image', res.url);
+                      quillEditor.setSelection(range.index + 1);
+                      toast('Chèn ảnh thành công');
+                    } else {
+                      toast(res.error || 'Upload thất bại', 'error');
+                    }
+                  } catch (e) { toast('Lỗi upload ảnh', 'error'); }
+                };
+                reader.readAsDataURL(file);
+              };
+            }
+          }
+        }
       }
     });
+
+    // Allow paste/drop HTML tables into Quill — preserve table markup
+    quillEditor.root.addEventListener('paste', (e) => {
+      const html = e.clipboardData.getData('text/html');
+      if (html && html.includes('<table')) {
+        e.preventDefault();
+        const range = quillEditor.getSelection(true);
+        quillEditor.clipboard.dangerouslyPasteHTML(range.index, html);
+      }
+    });
+
     if (post && post.content) {
       quillEditor.root.innerHTML = post.content;
     }
   }, 100);
+
+  // Drag & drop for thumbnail area
+  setTimeout(() => {
+    const area = document.getElementById('thumbnail-area');
+    if (!area) return;
+
+    area.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      area.classList.add('dragover');
+    });
+    area.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      area.classList.remove('dragover');
+    });
+    area.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      area.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (!file || !file.type.startsWith('image/')) {
+        toast('Vui lòng kéo thả file ảnh', 'error');
+        return;
+      }
+      // Reuse handleThumbnailUpload by creating a fake input
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const fakeInput = document.createElement('input');
+      fakeInput.type = 'file';
+      fakeInput.files = dt.files;
+      handleThumbnailUpload(fakeInput);
+    });
+  }, 150);
 }
 
 async function savePost() {

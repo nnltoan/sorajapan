@@ -358,9 +358,15 @@ body.admin-body {
   background: #fafbfc;
 }
 
-.upload-area:hover {
+.upload-area:hover,
+.upload-area.dragover {
   border-color: #0ea5e9;
   background: #f0f9ff;
+}
+
+.upload-area.dragover {
+  border-width: 3px;
+  background: #e0f2fe;
 }
 
 .upload-area.has-image {
@@ -379,6 +385,45 @@ body.admin-body {
   color: #94a3b8;
   font-size: 0.85rem;
   margin-top: 8px;
+}
+
+/* ─── Quill Editor Overrides ─── */
+#quill-editor {
+  min-height: 350px;
+}
+
+.ql-editor {
+  min-height: 300px;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.ql-editor table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+}
+
+.ql-editor table td,
+.ql-editor table th {
+  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.ql-editor table th {
+  background: #f1f5f9;
+  font-weight: 600;
+}
+
+.ql-editor table tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
 }
 
 /* ─── Media Grid ─── */

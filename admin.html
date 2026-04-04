@@ -91,6 +91,75 @@
   <!-- DOMPurify -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
   <!-- App Scripts -->
+  <script>
+    // Register table-related formats so Quill preserves them on paste
+    document.addEventListener('DOMContentLoaded', () => {
+      const Block = Quill.import('blots/block');
+      const Container = Quill.import('blots/container');
+      const Inline = Quill.import('blots/inline');
+
+      class TableCell extends Block {
+        static create(value) {
+          const node = super.create();
+          return node;
+        }
+      }
+      TableCell.blotName = 'table-cell';
+      TableCell.tagName = 'TD';
+
+      class TableHeader extends Block {
+        static create(value) {
+          const node = super.create();
+          return node;
+        }
+      }
+      TableHeader.blotName = 'table-header';
+      TableHeader.tagName = 'TH';
+
+      class TableRow extends Container {
+        static create(value) {
+          return super.create();
+        }
+      }
+      TableRow.blotName = 'table-row';
+      TableRow.tagName = 'TR';
+      TableRow.allowedChildren = [TableCell, TableHeader];
+
+      class TableBody extends Container {
+        static create(value) {
+          return super.create();
+        }
+      }
+      TableBody.blotName = 'table-body';
+      TableBody.tagName = 'TBODY';
+      TableBody.allowedChildren = [TableRow];
+
+      class TableHead extends Container {
+        static create(value) {
+          return super.create();
+        }
+      }
+      TableHead.blotName = 'table-head';
+      TableHead.tagName = 'THEAD';
+      TableHead.allowedChildren = [TableRow];
+
+      class TableContainer extends Container {
+        static create(value) {
+          return super.create();
+        }
+      }
+      TableContainer.blotName = 'table-container';
+      TableContainer.tagName = 'TABLE';
+      TableContainer.allowedChildren = [TableHead, TableBody, TableRow];
+
+      Quill.register(TableCell);
+      Quill.register(TableHeader);
+      Quill.register(TableRow);
+      Quill.register(TableBody);
+      Quill.register(TableHead);
+      Quill.register(TableContainer);
+    });
+  </script>
   <script src="js/news-config.js"></script>
   <script src="js/admin.js"></script>
 </body>
