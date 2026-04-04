@@ -1154,14 +1154,19 @@ async function renderContactDetail(el, contactId) {
   }
 
   try {
+    console.log('[CRM] Loading contact:', editingContactId);
     const res = await fetchAPI({ action: 'getContact', password: adminPassword, id: editingContactId });
+    console.log('[CRM] Response:', res);
     if (res.status !== 'success' || !res.contact) {
-      el.innerHTML = `<p style="padding:20px;color:#ef4444;">${res.error || 'Không tìm thấy liên hệ'}</p>`;
+      el.innerHTML = `<p style="padding:20px;color:#ef4444;">${res.error || 'Không tìm thấy liên hệ'}</p>
+        <button class="admin-btn" style="margin:0 20px;" onclick="navigateTo('contacts')">← Quay lại</button>`;
       return;
     }
     buildContactDetailUI(el, res.contact);
   } catch (e) {
-    el.innerHTML = '<p style="padding:20px;color:#ef4444;">Lỗi tải dữ liệu</p>';
+    console.error('[CRM] Error:', e);
+    el.innerHTML = `<p style="padding:20px;color:#ef4444;">Lỗi tải dữ liệu: ${e.message}</p>
+      <button class="admin-btn" style="margin:0 20px;" onclick="navigateTo('contacts')">← Quay lại</button>`;
   }
 }
 

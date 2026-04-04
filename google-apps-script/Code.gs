@@ -711,14 +711,15 @@ function getContact(id) {
 
   const data = sheet.getDataRange().getValues();
   const headers = data[0];
+  const idStr = String(id);
   for (let i = 1; i < data.length; i++) {
-    if (data[i][0] === id) {
+    if (String(data[i][0]) === idStr) {
       let obj = {};
       headers.forEach((h, j) => obj[h] = data[i][j]);
       return { status: 'success', contact: obj };
     }
   }
-  return { error: 'Contact not found' };
+  return { error: 'Contact not found: ' + idStr };
 }
 
 function getContacts(params) {
