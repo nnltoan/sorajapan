@@ -3,16 +3,37 @@
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // --- Config ---
+  const CONFIG = {
+    FORM_ENDPOINT: 'https://script.google.com/macros/s/AKfycbx8586l5zFB1npOid1uC4io_k9lH-5BD_u2HPky_XYUsP7UKbFnnGNShTCx2H8iO65t/exec'
+  };
+
+  // --- Scroll throttle utility ---
+  const throttleRAF = (fn) => {
+    let ticking = false;
+    return () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          fn();
+          ticking = false;
+        });
+      }
+    };
+  };
+
   // --- Scroll-based header styling ---
   const header = document.querySelector('.header');
   const handleScroll = () => {
+    if (!header) return;
     if (window.scrollY > 60) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
   };
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('scroll', throttleRAF(handleScroll), { passive: true });
   handleScroll();
 
   // --- Mobile nav toggle ---
@@ -80,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   };
-  window.addEventListener('scroll', highlightNav, { passive: true });
+  window.addEventListener('scroll', throttleRAF(highlightNav), { passive: true });
 
   // --- Scroll Reveal (IntersectionObserver) ---
   const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .stagger-children');
@@ -160,10 +181,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Smooth scroll for all anchor links ---
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
+      const href = this.getAttribute('href');
+      // Skip bare "#" links (e.g. logo) — let them scroll to top naturally
+      if (!href || href === '#') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      try {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      } catch (_) {
+        // Invalid selector — let the browser handle it normally
       }
     });
   });
@@ -182,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const formData = new FormData(contactForm);
 
-      fetch('https://script.google.com/macros/s/AKfycbx8586l5zFB1npOid1uC4io_k9lH-5BD_u2HPky_XYUsP7UKbFnnGNShTCx2H8iO65t/exec', {
+      fetch(CONFIG.FORM_ENDPOINT, {
         method: 'POST',
         body: formData
       })
@@ -192,15 +224,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if(messageDiv) messageDiv.innerHTML = '<p style="color:var(--color-success); font-weight: 500;"><i class="fas fa-check-circle"></i> Cảm ơn bạn! Thông tin đã được gửi thành công. Chúng tôi sẽ sớm liên hệ lại.</p>';
           contactForm.reset();
         } else {
-          // If the script returns another structure or error
-          if(messageDiv) messageDiv.innerHTML = '<p style="color:#ef4444; font-weight: 500;">Cảm ơn bạn! Thông tin đã được gửi.</p>';
-          contactForm.reset();
+          if(messageDiv) messageDiv.innerHTML = '<p style="color:#ef4444; font-weight: 500;"><i class="fas fa-exclamation-circle"></i> Có lỗi xảy ra, vui lòng thử lại sau.</p>';
         }
       })
       .catch(error => {
-        // Since no-cors or some proxy issues usually trigger catch, we can still show success if it's sent.
-        if(messageDiv) messageDiv.innerHTML = '<p style="color:var(--color-success); font-weight: 500;"><i class="fas fa-check-circle"></i> Đã gửi thông tin thành công!</p>';
-        contactForm.reset();
+        console.error('Form submission error:', error);
+        if(messageDiv) messageDiv.innerHTML = '<p style="color:#ef4444; font-weight: 500;"><i class="fas fa-exclamation-circle"></i> Không thể gửi thông tin. Vui lòng kiểm tra kết nối mạng và thử lại.</p>';
       })
       .finally(() => {
         submitBtn.textContent = originalText;
@@ -210,7 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Inject Floating Contact Buttons ---
-  const basePath = window.location.pathname.includes('/don-hang-ky-su/') ? '../' : './';
+  // Detect subfolder depth: count path segments after the site root
+  const pathSegments = window.location.pathname.replace(/\/[^/]*$/, '').split('/').filter(Boolean);
+  const siteRoot = ''; // adjust if site is hosted in a subfolder
+  const depth = pathSegments.length - (siteRoot ? siteRoot.split('/').filter(Boolean).length : 0);
+  const basePath = depth > 0 ? '../'.repeat(depth) : './';
   const floatingHTML = `
     <!-- Floating Contact Buttons -->
     <div class="floating-contact">
