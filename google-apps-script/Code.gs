@@ -230,13 +230,10 @@ function getPost(slug) {
     headers.forEach((h, j) => obj[h] = rows[i][j]);
 
     if (obj.slug === slug && obj.status === 'published') {
-      // Increment view count
+      // Increment view count (non-blocking — do after building response)
       const viewColIndex = headers.indexOf('viewCount');
-      if (viewColIndex !== -1) {
-        const currentViews = parseInt(rows[i][viewColIndex]) || 0;
-        sheet.getRange(i + 2, viewColIndex + 1).setValue(currentViews + 1);
-        obj.viewCount = currentViews + 1;
-      }
+      const currentViews = parseInt(obj.viewCount) || 0;
+      obj.viewCount = currentViews + 1;
 
       // Get related posts (same category, newest, exclude current)
       const relatedPosts = [];
@@ -251,10 +248,29 @@ function getPost(slug) {
       }
       relatedPosts.sort((a, b) => new Date(b.publishedAt || b.createdAt) - new Date(a.publishedAt || a.createdAt));
 
+      // Include categories so frontend doesn't need a 2nd call
+      let categories = [];
+      try {
+        const catSheet = getSheet('Categories');
+        const catData = catSheet.getDataRange().getValues();
+        const catHeaders = catData[0];
+        categories = catData.slice(1).map(row => {
+          let c = {};
+          catHeaders.forEach((h, idx) => c[h] = row[idx]);
+          return c;
+        }).sort((a, b) => (a.order || 0) - (b.order || 0));
+      } catch (e) { /* ignore */ }
+
+      // Write viewCount AFTER building response (deferred)
+      if (viewColIndex !== -1) {
+        sheet.getRange(i + 2, viewColIndex + 1).setValue(currentViews + 1);
+      }
+
       return {
         status: 'success',
         post: obj,
-        related: relatedPosts.slice(0, 4)
+        related: relatedPosts.slice(0, 4),
+        categories: categories
       };
     }
   }

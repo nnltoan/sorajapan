@@ -3,25 +3,58 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwE1UrOdpMcRdMPN1kPGPjF
 
 let allData = [];
 
-// ── Simple in-memory cache (shared pattern with news-config.js) ──
-const _jobCache = {};
-const JOB_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+// ── Persistent cache (sessionStorage + memory) with stale-while-revalidate ──
+const _jobMem = {};
+const JOB_CACHE_TTL = 5 * 60 * 1000;   // 5 min fresh
+const JOB_STALE_TTL = 30 * 60 * 1000;  // 30 min stale-but-usable
 
-async function fetchJobAPI(params) {
+function _jobStoreKey(url) {
+    return 'sj_job_' + url.replace(/[^a-zA-Z0-9]/g, '').slice(-80);
+}
+
+function _jobGetCache(url) {
+    if (_jobMem[url]) return _jobMem[url];
+    try {
+        const raw = sessionStorage.getItem(_jobStoreKey(url));
+        if (raw) { const p = JSON.parse(raw); _jobMem[url] = p; return p; }
+    } catch (e) {}
+    return null;
+}
+
+function _jobSetCache(url, data) {
+    const entry = { data, time: Date.now() };
+    _jobMem[url] = entry;
+    try { sessionStorage.setItem(_jobStoreKey(url), JSON.stringify(entry)); } catch (e) {}
+}
+
+async function fetchJobAPI(params, onUpdate) {
     const url = new URL(API_URL);
     Object.entries(params).forEach(([k, v]) => {
         if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v);
     });
 
     const cacheKey = url.toString();
-    const cached = _jobCache[cacheKey];
-    if (cached && Date.now() - cached.time < JOB_CACHE_TTL) {
+    const cached = _jobGetCache(cacheKey);
+    const now = Date.now();
+
+    // FRESH — return immediately
+    if (cached && (now - cached.time < JOB_CACHE_TTL)) {
         return cached.data;
     }
 
+    // STALE — return immediately + revalidate in background
+    if (cached && (now - cached.time < JOB_STALE_TTL)) {
+        fetch(url.toString()).then(r => r.json()).then(fresh => {
+            _jobSetCache(cacheKey, fresh);
+            if (onUpdate) onUpdate(fresh);
+        }).catch(() => {});
+        return cached.data;
+    }
+
+    // EXPIRED — must wait
     const res = await fetch(url.toString());
     const data = await res.json();
-    _jobCache[cacheKey] = { data, time: Date.now() };
+    _jobSetCache(cacheKey, data);
     return data;
 }
 
@@ -52,13 +85,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById("card-container");
     showSkeletons(container, 4);
 
+    const apiParams = {
+        action: 'getJobsPage',
+        nganh: NGANH_HIEN_TAI,
+        status: 'Active',
+        limit: '100'
+    };
+
+    // onUpdate callback: re-render if background revalidation gets newer data
+    const onUpdate = (freshResult) => {
+        if (freshResult.status === 'success') {
+            allData = freshResult.jobs || [];
+            renderCards(allData);
+        }
+    };
+
     try {
-        const result = await fetchJobAPI({
-            action: 'getJobsPage',
-            nganh: NGANH_HIEN_TAI,
-            status: 'Active',
-            limit: '100'
-        });
+        const result = await fetchJobAPI(apiParams, onUpdate);
 
         if (result.status === 'success') {
             allData = result.jobs || [];

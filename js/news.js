@@ -256,12 +256,10 @@ async function initNewsDetail() {
   if (mainEl) mainEl.innerHTML = '<div class="news-loading"><div class="spinner"></div></div>';
 
   try {
-    const [postRes, catRes] = await Promise.all([
-      fetchAPI({ action: 'getPost', slug }),
-      fetchAPI({ action: 'getCategories' })
-    ]);
+    // Single API call — getPost now includes categories
+    const postRes = await fetchAPI({ action: 'getPost', slug });
 
-    if (catRes.status === 'success') categoriesData = catRes.categories;
+    if (postRes.categories) categoriesData = postRes.categories;
 
     if (postRes.status === 'success' && postRes.post) {
       renderDetail(postRes.post);

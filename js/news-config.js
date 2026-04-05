@@ -2,52 +2,107 @@
    NEWS CMS — Config
    ============================================ */
 const NEWS_CONFIG = {
-  API_URL: 'https://script.google.com/macros/s/AKfycbwE1UrOdpMcRdMPN1kPGPjFacHHOBcgSHkhKCn0SqQfjIvWPZ2NvLZKdX5z8rBQSLyihg/exec', // ← Thay sau khi deploy
+  API_URL: 'https://script.google.com/macros/s/AKfycbwE1UrOdpMcRdMPN1kPGPjFacHHOBcgSHkhKCn0SqQfjIvWPZ2NvLZKdX5z8rBQSLyihg/exec',
   POSTS_PER_PAGE: 9,
-  CACHE_TTL: 5 * 60 * 1000, // 5 minutes
+  CACHE_TTL: 5 * 60 * 1000,       // 5 min — data considered "fresh"
+  STALE_TTL: 30 * 60 * 1000,      // 30 min — data still usable while revalidating
 };
 
-/* Simple in-memory cache */
-const _cache = {};
-function clearCache() {
-  Object.keys(_cache).forEach(k => delete _cache[k]);
+/* ─── Persistent Cache (sessionStorage + memory) ─── */
+const _memCache = {};
+
+function _storageKey(url) {
+  return 'sj_' + url.replace(/[^a-zA-Z0-9]/g, '').slice(-80);
 }
-async function fetchAPI(params) {
+
+function _getCache(url) {
+  // 1. Memory (fastest)
+  const mem = _memCache[url];
+  if (mem) return mem;
+  // 2. sessionStorage (persists across page navigations)
+  try {
+    const raw = sessionStorage.getItem(_storageKey(url));
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      _memCache[url] = parsed; // promote to memory
+      return parsed;
+    }
+  } catch (e) { /* ignore */ }
+  return null;
+}
+
+function _setCache(url, data) {
+  const entry = { data, time: Date.now() };
+  _memCache[url] = entry;
+  try {
+    sessionStorage.setItem(_storageKey(url), JSON.stringify(entry));
+  } catch (e) { /* quota exceeded — memory cache still works */ }
+}
+
+function clearCache() {
+  // Clear memory
+  Object.keys(_memCache).forEach(k => delete _memCache[k]);
+  // Clear sessionStorage cache entries
+  try {
+    const keys = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const k = sessionStorage.key(i);
+      if (k && k.startsWith('sj_')) keys.push(k);
+    }
+    keys.forEach(k => sessionStorage.removeItem(k));
+  } catch (e) { /* ignore */ }
+}
+
+/* ─── Fetch with stale-while-revalidate ───
+   - If cache is FRESH (< CACHE_TTL): return cached, no network call
+   - If cache is STALE (< STALE_TTL): return cached immediately, fetch in background
+   - If cache is EXPIRED or missing: fetch and wait
+   - Optional onUpdate callback: called when background revalidation gets new data
+*/
+async function fetchAPI(params, onUpdate) {
   const url = new URL(NEWS_CONFIG.API_URL);
   Object.entries(params).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v);
   });
 
   const cacheKey = url.toString();
-  const cached = _cache[cacheKey];
-  if (cached && Date.now() - cached.time < NEWS_CONFIG.CACHE_TTL) {
+  const cached = _getCache(cacheKey);
+  const now = Date.now();
+
+  // FRESH cache — return immediately
+  if (cached && (now - cached.time < NEWS_CONFIG.CACHE_TTL)) {
     return cached.data;
   }
 
+  // STALE cache — return immediately + revalidate in background
+  if (cached && (now - cached.time < NEWS_CONFIG.STALE_TTL)) {
+    // Background revalidate
+    fetch(url.toString()).then(r => r.json()).then(freshData => {
+      _setCache(cacheKey, freshData);
+      if (onUpdate) onUpdate(freshData);
+    }).catch(() => {});
+    return cached.data;
+  }
+
+  // EXPIRED or missing — must wait for network
   const res = await fetch(url.toString());
   const data = await res.json();
 
   if (!params.action || params.action.startsWith('get')) {
-    _cache[cacheKey] = { data, time: Date.now() };
+    _setCache(cacheKey, data);
   }
   return data;
 }
 
 async function postAPI(body) {
   const jsonStr = JSON.stringify(body);
-
-  // For large payloads (e.g. image uploads with base64 data),
-  // use POST with Content-Type: text/plain to avoid CORS preflight
-  // and bypass URL length limits (GET URLs max ~8KB).
-  // For small payloads, keep using GET with payload param (proven to work).
-  const USE_POST_THRESHOLD = 5000; // bytes
+  const USE_POST_THRESHOLD = 5000;
 
   if (jsonStr.length > USE_POST_THRESHOLD) {
     console.log('[postAPI] Large payload (' + jsonStr.length + ' chars), using POST');
     return await _postViaPost(jsonStr);
   }
 
-  // Small payload → GET with payload param (original approach)
   const url = new URL(NEWS_CONFIG.API_URL);
   url.searchParams.set('action', body.action);
   url.searchParams.set('payload', jsonStr);
@@ -58,7 +113,7 @@ async function postAPI(body) {
   const text = await res.text();
   try {
     const result = JSON.parse(text);
-    clearCache(); // Xóa cache sau mỗi write để data luôn mới
+    clearCache();
     return result;
   } catch (e) {
     console.error('[postAPI] JSON parse failed:', text.substring(0, 500));
@@ -67,9 +122,6 @@ async function postAPI(body) {
 }
 
 async function _postViaPost(jsonStr) {
-  // Google Apps Script web apps redirect 302 on both GET and POST.
-  // Using Content-Type: text/plain makes it a "simple" CORS request
-  // (no preflight), so the browser follows the redirect transparently.
   const url = NEWS_CONFIG.API_URL;
 
   const res = await fetch(url, {
@@ -85,7 +137,7 @@ async function _postViaPost(jsonStr) {
 
   try {
     const result = JSON.parse(text);
-    clearCache(); // Xóa cache sau mỗi write để data luôn mới
+    clearCache();
     return result;
   } catch (e) {
     console.error('[postAPI:POST] JSON parse failed:', text.substring(0, 500));
