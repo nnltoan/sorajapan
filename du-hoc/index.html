@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chương trình Du học Nhật Bản tại Sora Japan - Đa dạng lộ trình, học bổng hấp dẫn.">
+  <title>Du Học Nhật Bản | Sora Japan</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .service-detail-hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.35)), url('https://images.unsplash.com/photo-1493976040375-30114f6bdf63?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      color: white;
+      padding: 120px 20px 60px;
+      text-align: center;
+    }
+    .service-detail-content {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    .service-detail-content h2 {
+      color: var(--color-primary);
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+    .service-detail-content img {
+      width: 100%;
+      border-radius: 12px;
+      margin: 30px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .highlight-box {
+      background: #fff8f1;
+      border-left: 5px solid var(--color-cta);
+      padding: 20px;
+      margin: 30px 0;
+      font-weight: 500;
+    }
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 40px 0;
+      justify-content: space-around;
+      text-align: center;
+    }
+    .stats-row .stat {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      flex: 1;
+      min-width: 200px;
+    }
+    .stats-row .num {
+      font-size: 2.5rem;
+      color: var(--color-primary);
+      font-weight: bold;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  
+    .service-detail-hero h1 {
+      color: #38BDF8;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .service-detail-hero p {
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="nav">
+      <a href="../index.html" class="nav-logo" style="display: flex; align-items: center; gap: 8px; z-index: 1002; flex-shrink: 0;">
+        <img src="../images/logo_transparent.png" alt="Sora Japan">
+      </a>
+
+      <button class="nav-toggle" aria-label="Menu" style="flex-shrink: 0; margin-left: auto;">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="../index.html#home">Trang chủ</a>
+
+        <div class="dropdown">
+          <a href="../index.html" class="dropbtn active">Du học <svg width="12" height="12" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
+            <a href="bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
+            <a href="bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
+            <a href="tu-tuc.html">Du học tự túc</a>
+            <a href="du-bi.html">Du học dự bị</a>
+            <a href="chuyen-doi-visa.html">Du học chuyển đổi visa</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../ky-su/index.html" class="dropbtn">Kỹ sư <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../ky-su/cntt.html">Kỹ sư CNTT</a>
+            <a href="../ky-su/co-khi.html">Kỹ sư Cơ khí</a>
+            <a href="../ky-su/xay-dung.html">Kỹ sư Xây dựng</a>
+            <a href="../ky-su/dien.html">Kỹ sư Điện</a>
+            <a href="../ky-su/kinh-te.html">Kỹ sư Kinh tế</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../tieng-nhat/index.html" class="dropbtn">Đào tạo tiếng Nhật <svg width="12" height="12"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../tieng-nhat/basic.html">Shinjigen Basic (N5-N4)</a>
+            <a href="../tieng-nhat/intermediate.html">Shinjigen Intermediate (N3)</a>
+            <a href="../tieng-nhat/master.html">Shinjigen Master (N2-N1)</a>
+          </div>
+        </div>
+
+        <a href="../doi-tac/index.html">Đối tác</a>
+        <a href="../index.html#cases">Case Study</a>
+        <a href="../tin-tuc.html">Tin tức</a>
+        <a href="../index.html#contact">Liên hệ</a>
+      </nav>
+      <div class="nav-cta-wrapper hide-on-mobile">
+        <a href="../index.html#contact" class="nav-cta">Tư vấn miễn phí</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="service-detail-hero">
+    <h1 style="font-size: 2.5rem; margin-bottom: 20px;">DU HỌC NHẬT BẢN - CHẮP CÁNH TƯƠNG LAI</h1>
+    <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">Lựa chọn môi trường giáo dục hàng đầu châu Á cùng mạng lưới trường lớn từ Bắc chí Nam.</p>
+  </div>
+
+  <div class="service-detail-content">
+    
+    <p>Nhật Bản từ lâu đã vươn mình trở thành một trong những điểm đến hàng đầu dành cho du học sinh Việt Nam. <strong>Sora Japan</strong> cung cấp lộ trình du học hoàn thiện, minh bạch và phù hợp với năng lực tài chính cũng như học vấn của từng bạn trẻ.</p>
+    
+    <div class="stats-row">
+      <div class="stat">
+        <div class="num">700+</div>
+        <p>Học Viên Xuất Cảnh Hàng Năm</p>
+      </div>
+      <div class="stat">
+        <div class="num">99%</div>
+        <p>Tỷ Lệ Đậu Visa</p>
+      </div>
+      <div class="stat">
+        <div class="num">150+</div>
+        <p>Trường Đối Tác</p>
+      </div>
+    </div>
+
+    <h2>Chương Trình Đào Tạo Đa Dạng</h2>
+    <p>Với hệ thống hàng trăm đối tác lớn trải dài khắp đất nước, Sora Japan tự hào mỗi năm đưa <strong>hơn 700 học viên qua Nhật Bản du học</strong>. Chúng tôi mang đến hệ sinh thái giáo dục toàn diện, cung cấp các lựa chọn đa dạng từ:</p>
+    <div class="service-link-grid">
+      <a href="chuyen-doi-visa.html" class="service-link-card">
+        <div class="service-link-title">Du học chuyển đổi visa <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Chuyển đổi visa làm việc dài hạn cho người đã có bằng Đại học/Cao đẳng.</div>
+      </a>
+      <a href="du-bi.html" class="service-link-card">
+        <div class="service-link-title">Du học dự bị Đại học <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Chương trình ôn luyện tiếng Nhật học thuật để đỗ các trường lớn.</div>
+      </a>
+      <a href="bong-bao-yomiuri.html" class="service-link-card">
+        <div class="service-link-title">Du học bổng báo Yomiuri <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Nhận đài thọ 100% học phí, cấp phát nhà ở và hưởng lương hàng tháng.</div>
+      </a>
+      <a href="bong-nha-hang-zensho.html" class="service-link-card">
+        <div class="service-link-title">Du học bổng nhà hàng Zensho <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Nhận học bổng giá trị và được bố trí việc làm thêm tại chuỗi nhà hàng lớn.</div>
+      </a>
+      <a href="bong-dieu-duong.html" class="service-link-card">
+        <div class="service-link-title">Du học bổng điều dưỡng <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Giữ chỗ ngay việc làm viện dưỡng lão và tương lai lấy thẻ visa chuyên nghiệp.</div>
+      </a>
+      <a href="tu-tuc.html" class="service-link-card">
+        <div class="service-link-title">Du học tự túc <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Dễ dàng lựa chọn điểm lưu trú và chuyên ngành mà bạn đam mê.</div>
+      </a>
+    </div>
+
+    <img src="../images/du_hoc_sinh.png" alt="Du học sinh Nhật Bản trường Đại học">
+
+    <h2>Săn Học Bổng Giá Trị Cùng Sora Japan</h2>
+    <p>Một trong những đặc quyền khi lựa chọn Sora Japan là cơ hội tiếp cận với kho tàng học bổng dồi dào. Chúng tôi không chỉ nhận tư vấn mà còn chủ động <strong>giới thiệu các chương trình học bổng uy tín</strong> do ngân sách của trường học, hiệp hội doanh nghiệp Nhật tài trợ.</p>
+    
+    <div class="highlight-box">
+      <strong>Đặc Biệt:</strong> Các chương trình học bổng do công ty giới thiệu luôn ghi nhận có <strong>tỷ lệ đậu cao</strong>. Chúng tôi tư vấn chiến lược hồ sơ, hướng dẫn phỏng vấn, giúp học viên dễ dàng giành lấy các gói tài trợ từ 50% đến 100% học phí hoặc chi phi sinh hoạt (tùy thuộc vào chương trình).
+    </div>
+
+    <h2>Hỗ Trợ Toàn Diện Tại Nhật Bản</h2>
+    <p>Hành trình của bạn không dừng lại ở sân bay. Đối với các sinh viên mới nhập học tại Nhật Bản, Sora Japan cam kết hỗ trợ tối đa trong giai đoạn đầu bỡ ngỡ với các dịch vụ thiết thực:</p>
+    <ul>
+      <li><strong>Tìm nhà & Ký túc xá:</strong> Bố trí chỗ ở an toàn, tiện nghi, gần trường và nơi làm việc với chi phí hợp lý nhất định.</li>
+      <li><strong>Đăng ký SIM điện thoại & Ngân hàng:</strong> Hỗ trợ hoàn tất thủ tục đăng ký các dịch vụ thiết yếu ngay trong những ngày đầu đến Nhật.</li>
+      <li><strong>Tìm việc làm thêm (Arubaito):</strong> Giới thiệu công việc làm thêm phù hợp với năng lực tiếng Nhật để du học sinh có thể trang trải chi phí sinh hoạt kịp thời.</li>
+    </ul>
+    
+    <p>Nếu bạn đang ấp ủ giấc mơ vươn ra biển lớn, môi trường chuyên nghiệp cùng hành trình do Sora Japan định hình sẽ là bệ phóng tuyệt vời nhất.</p>
+
+    <div style="text-align: center;">
+      <a href="../index.html#contact" class="back-btn" style="background: var(--color-cta); padding: 15px 30px; font-size: 1.2rem;">GIỮ CHỖ & NHẬN HỌC BỔNG NGAY</a>
+      <br>
+      <a href="../index.html#services" style="display: inline-block; margin-top: 15px; color: var(--color-primary); text-decoration: underline;">&larr; Quay lại danh sách dịch vụ</a>
+    </div>
+
+  </div>
+
+  <!-- Footer placeholder -->
+  <footer class="footer" style="text-align: center; padding: 20px; background: #1a1a1a; color: white;">
+    &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
+  </footer>
+
+  <script src="../scripts.js"></script>
+</body>
+</html>

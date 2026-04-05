@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Khóa học tiếng Nhật tại Sora Japan - Đạt N4 chỉ trong 5 tháng, cam kết chất lượng 99% đậu.">
+  <title>Khóa Học Tiếng Nhật | Sora Japan</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .service-detail-hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.35)), url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      color: white;
+      padding: 120px 20px 60px;
+      text-align: center;
+    }
+    .service-detail-content {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    .service-detail-content h2 {
+      color: var(--color-primary);
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+    .service-detail-content img {
+      width: 100%;
+      border-radius: 12px;
+      margin: 30px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .feature-list {
+      background: #f8fafc;
+      padding: 30px;
+      border-radius: 12px;
+      border-left: 4px solid var(--color-primary);
+      margin-bottom: 30px;
+    }
+    .feature-list ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .feature-list li {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+    }
+    .feature-list li::before {
+      content: '✓';
+      color: var(--color-success);
+      font-weight: bold;
+      margin-right: 12px;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  
+    .service-detail-hero h1 {
+      color: #38BDF8;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .service-detail-hero p {
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="header">
+    <div class="nav">
+      <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 8px; z-index: 1002; flex-shrink: 0;">
+        <img src="../images/logo_transparent.png" alt="Sora Japan">
+      </a>
+
+      <div class="nav-announcement show-on-mobile">
+        <div class="marquee">
+          <span>Khai giảng khóa mới & Nhận hồ sơ tháng 4/2026</span>
+        </div>
+      </div>
+
+      <button class="nav-toggle" aria-label="Menu" style="flex-shrink: 0; margin-left: auto;">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="../index.html#home" class="active">Trang chủ</a>
+        
+        <div class="dropdown">
+          <a href="../du-hoc/index.html" class="dropbtn">Du học <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+          <div class="dropdown-content">
+            <a href="../du-hoc/bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
+            <a href="../du-hoc/bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
+            <a href="../du-hoc/bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
+            <a href="../du-hoc/tu-tuc.html">Du học tự túc</a>
+            <a href="../du-hoc/du-bi.html">Du học dự bị</a>
+            <a href="../du-hoc/chuyen-doi-visa.html">Du học chuyển đổi visa</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../ky-su/index.html" class="dropbtn">Kỹ sư <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+          <div class="dropdown-content">
+            <a href="../ky-su/cntt.html">Kỹ sư CNTT</a>
+            <a href="../ky-su/co-khi.html">Kỹ sư Cơ khí</a>
+            <a href="../ky-su/xay-dung.html">Kỹ sư Xây dựng</a>
+            <a href="../ky-su/dien.html">Kỹ sư Điện</a>
+            <a href="../ky-su/kinh-te.html">Kỹ sư Kinh tế</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../index.html" class="dropbtn">Đào tạo tiếng Nhật <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+          <div class="dropdown-content">
+            <a href="basic.html">Shinjigen Basic (N5-N4)</a>
+            <a href="intermediate.html">Shinjigen Intermediate (N3)</a>
+            <a href="master.html">Shinjigen Master (N2-N1)</a>
+          </div>
+        </div>
+
+        <a href="../index.html#partners">Đối tác</a>
+        <a href="../index.html#cases">Case Study</a>
+        <a href="../tin-tuc.html">Tin tức</a>
+        <a href="../index.html#contact">Liên hệ</a>
+      </nav>
+
+      <div class="nav-cta-wrapper hide-on-mobile">
+        <a href="../index.html#contact" class="nav-cta">
+          Tư vấn miễn phí
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="service-detail-hero">
+    <h1 style="font-size: 2.5rem; margin-bottom: 20px;">ĐÀO TẠO TIẾNG NHẬT CHUẨN ĐẦU RA</h1>
+    <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">Chinh phục JLPT N4 chỉ trong 5 tháng. Tự tin giao tiếp và sẵn sàng cho tương lai tại Nhật Bản.</p>
+  </div>
+
+  <div class="service-detail-content">
+    
+    <p>Chương trình đào tạo tiếng Nhật tại <strong>Sora Japan</strong> được thiết kế đặc biệt dành cho những người mới bắt đầu hoặc muốn đẩy nhanh tiến độ học tập để phục vụ cho mục tiêu du học, xuất khẩu lao động và phát triển sự nghiệp.</p>
+
+    <img src="../images/lop_hoc_tieng_nhat.png" alt="Lớp học tiếng Nhật tại Sora Japan">
+
+    <h2>Chương Trình Học Đột Phá - Lấy N4 Trong 5 Tháng</h2>
+    <p>Thời gian luôn là vàng bạc đối với mỗi học viên. Hiểu được điều đó, Sora Japan mang đến chương trình đào tạo tối ưu hóa giúp bạn học xong chương trình N4 chỉ trong vỏn vẹn <strong>5 tháng</strong>. Lịch học được sắp xếp khoa học:</p>
+    
+    <div class="feature-list">
+      <ul>
+        <li><strong>Tần suất tối ưu:</strong> 3 buổi học/tuần, mỗi buổi kéo dài 2 giờ đồng hồ, giúp học viên không bị quá tải nhưng vẫn duy trì được môi trường ngôn ngữ liên tục.</li>
+        <li><strong>Cam kết chất lượng:</strong> Đảm bảo tỷ lệ đậu N4 lên tới <strong>99%</strong>.</li>
+        <li><strong>Bảo hành trọn đời:</strong> Nếu học viên không đạt chứng chỉ N4 như cam kết, trung tâm sẽ hỗ trợ <strong>học lại hoàn toàn miễn phí</strong>.</li>
+      </ul>
+    </div>
+
+    <h2>Khám Phá Chi Tiết Các Khóa Học</h2>
+    <div class="service-link-grid">
+      <a href="basic.html" class="service-link-card">
+        <div class="service-link-title">Shinjigen Basic (N5-N4) <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Khóa học nền tảng dành cho người mới bắt đầu.</div>
+      </a>
+      <a href="intermediate.html" class="service-link-card">
+        <div class="service-link-title">Shinjigen Intermediate (N3) <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Bứt phá lên trung cấp vững chắc, làm chủ tiếng Nhật.</div>
+      </a>
+      <a href="master.html" class="service-link-card">
+        <div class="service-link-title">Shinjigen Master (N2-N1) <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Nâng cao tư duy như người bản xứ ở trình độ chuyên nghiệp.</div>
+      </a>
+    </div>
+
+    <h2>Tự Tin Giao Tiếp Thực Tế</h2>
+    <p>Tại Sora Japan, chúng tôi không chỉ dạy bạn cách thi qua bằng cấp. Đích đến cuối cùng là khả năng ứng dụng thực tiễn. Đảm bảo đầu ra tự tin giao tiếp ở level N4, học viên hoàn toàn có thể sinh sống, làm việc và giao tiếp với người bản xứ Nhật Bản một cách trôi chảy, hiểu rõ văn hóa và phong cách giao tiếp chuẩn mực.</p>
+
+    <img src="../images/giao_vien_huong_dan.png" alt="Giáo viên hướng dẫn lộ trình tiếng Nhật">
+
+    <h2>Đội Ngũ Biên Soạn Tiêu Chuẩn Quốc Tế</h2>
+    <p>Điểm khác biệt lớn nhất tạo nên sự thành công của khóa học chính là <strong>Giáo trình độc quyền</strong>. Chương trình học được đích thân các <strong>Giáo sư ngôn ngữ học người Nhật</strong> hợp tác cùng đội ngũ <strong>Giáo viên Nhật ngữ người Việt</strong> với nhiều năm kinh nghiệm giảng dạy và tu nghiệp tại Nhật Bản tiến hành soạn thảo và chắt lọc.</p>
+    <p>Chúng tôi tập trung vào trọng tâm, loại bỏ kiến thức rườm rà, kết hợp các phương pháp ghi nhớ từ vựng và Kanban hiện đại nhất.</p>
+
+    <div style="text-align: center;">
+      <a href="../index.html#contact" class="back-btn" style="background: var(--color-cta); padding: 15px 30px; font-size: 1.2rem;">ĐĂNG KÝ HỌC NGAY</a>
+      <br>
+      <a href="../index.html#services" style="display: inline-block; margin-top: 15px; color: var(--color-primary); text-decoration: underline;">&larr; Quay lại danh sách dịch vụ</a>
+    </div>
+
+  </div>
+
+  <!-- Footer placeholder (giữ ngắn gọn để demo) -->
+  <footer class="footer" style="text-align: center; padding: 20px; background: #1a1a1a; color: white;">
+    &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Du Học Bổng Nhà Hàng Zensho | Sora Japan</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .service-detail-hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.35)), url('../images/hero-bg.png') center/cover;
+      color: white;
+      padding: 120px 20px 60px;
+      text-align: center;
+    }
+    .service-detail-content {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    .service-detail-content h2 {
+      color: var(--color-primary);
+      margin-top: 40px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--color-border);
+    }
+    .service-detail-content h3 {
+      color: var(--color-text);
+      margin-top: 25px;
+      margin-bottom: 15px;
+    }
+    .service-detail-content ul {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+    .service-detail-content li {
+      margin-bottom: 10px;
+    }
+    .highlight-box {
+      background: #f0f9ff;
+      border-left: 5px solid var(--color-cta);
+      padding: 20px;
+      margin: 30px 0;
+      font-weight: 500;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  
+    .service-detail-hero h1 {
+      color: #38BDF8;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .service-detail-hero p {
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="nav">
+      <a href="../index.html" class="nav-logo" style="display: flex; align-items: center; gap: 8px; z-index: 1002; flex-shrink: 0;">
+        <img src="../images/logo_transparent.png" alt="Sora Japan">
+      </a>
+
+      <button class="nav-toggle" aria-label="Menu" style="flex-shrink: 0; margin-left: auto;">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="../index.html#home">Trang chủ</a>
+
+        <div class="dropdown">
+          <a href="../index.html" class="dropbtn active">Du học <svg width="12" height="12" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
+            <a href="bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
+            <a href="bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
+            <a href="tu-tuc.html">Du học tự túc</a>
+            <a href="du-bi.html">Du học dự bị</a>
+            <a href="chuyen-doi-visa.html">Du học chuyển đổi visa</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../ky-su/index.html" class="dropbtn">Kỹ sư <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../ky-su/cntt.html">Kỹ sư CNTT</a>
+            <a href="../ky-su/co-khi.html">Kỹ sư Cơ khí</a>
+            <a href="../ky-su/xay-dung.html">Kỹ sư Xây dựng</a>
+            <a href="../ky-su/dien.html">Kỹ sư Điện</a>
+            <a href="../ky-su/kinh-te.html">Kỹ sư Kinh tế</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../tieng-nhat/index.html" class="dropbtn">Đào tạo tiếng Nhật <svg width="12" height="12"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../tieng-nhat/basic.html">Shinjigen Basic (N5-N4)</a>
+            <a href="../tieng-nhat/intermediate.html">Shinjigen Intermediate (N3)</a>
+            <a href="../tieng-nhat/master.html">Shinjigen Master (N2-N1)</a>
+          </div>
+        </div>
+
+        <a href="../doi-tac/index.html">Đối tác</a>
+        <a href="../index.html#cases">Case Study</a>
+        <a href="../tin-tuc.html">Tin tức</a>
+        <a href="../index.html#contact">Liên hệ</a>
+      </nav>
+      <div class="nav-cta-wrapper hide-on-mobile">
+        <a href="../index.html#contact" class="nav-cta">Tư vấn miễn phí</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="service-detail-hero">
+    <h1 style="font-size: 2.5rem; margin-bottom: 20px;">HỌC BỔNG NHÀ HÀNG ZENSHO</h1>
+    <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">Nhận tài trợ học phí lên đến 30 man và đảm bảo việc làm thêm với thu nhập 1.386 Yên/giờ.</p>
+  </div>
+
+  <div class="service-detail-content">
+
+    <div class="highlight-box">
+      Chương trình học bổng nhận tài trợ trực tiếp học phí và được bố trí làm thêm tại hệ thống nhà hàng tập đoàn Zensho Nhật Bản.
+    </div>
+
+    <h2>1. Chế độ học bổng</h2>
+    <ul>
+      <li>Học sinh sẽ được nhận học bổng là: 30 man (số tiền này sẽ được trừ thẳng vào học phí khi nộp sang trường năm đầu).</li>
+      <li>Hợp đồng là 1 năm, trường hợp gia hạn năm thứ 2 thì được nhận tối đa 15 man (Giữ lại trừ thẳng học phí năm 2).</li>
+      <li>Khi sang Nhật, học sinh sẽ được học tại trường Nhật ngữ <em>Tokyo World</em> và làm thêm tại nhà hàng thuộc tập đoàn <strong>Zensho</strong>.</li>
+      <li>Lịch học tại trường vào buổi chiều: 14h00 – 17h30. Học sinh làm thêm tại nhà hàng vào buổi sáng.</li>
+      <li>Lương giờ làm thêm trung bình là: <strong>1.386 yên/giờ</strong>.</li>
+    </ul>
+
+    <h2>2. Điều kiện ứng tuyển</h2>
+    <ul>
+      <li>Học sinh tốt nghiệp THPT trở lên.</li>
+      <li>Học sinh có sức khỏe và tinh thần tốt (Không mắc các bệnh mãn tính như lao phổi, bệnh tâm thần, viêm gan B, <em>không có hình xăm</em> trên cơ thể…).</li>
+      <li>Tình trạng hôn nhân: Chưa kết hôn.</li>
+      <li>Đỗ bài thi và phỏng vấn của bên nhà hàng Zensho.</li>
+      <li>Nhập cảnh theo lịch trình mà nhà trường chỉ định.</li>
+    </ul>
+
+    <h2>3. Yêu cầu tiếng Nhật</h2>
+    <ul>
+      <li>Phải tham gia học tiếng tại văn phòng của trường tại Hà Nội. Học phí: 1.500.000 vnđ/tháng, chỗ ở học sinh tự túc.</li>
+      <li>Tỉ lệ đi học phải đạt trên 95% số buổi học.</li>
+      <li>Kỳ thi được chấp nhận: NAT-TEST, TOPJ, JLPT.</li>
+      <li><strong>Bắt buộc đạt trình độ tương đương N5 trước khi nộp hồ sơ xin tư cách lưu trú (COE).</strong></li>
+    </ul>
+
+    <h2>4. Lưu ý quan trọng</h2>
+    <p>Trong quá trình tuyển khảo, nếu có hành vi không trung thực, học sinh sẽ bị hủy tư cách nhập học và cấp lưu trú.<br>
+    Học sinh có thể bị huỷ tư cách nhận học bổng nếu tỉ lệ chuyên cần và thái độ học tập tại trung tâm Việt Nam không đạt yêu cầu.<br>
+    Yêu cầu nộp giấy chứng nhận sức khỏe, đặc biệt là chứng nhận không mắc bệnh lao tới trường đúng thời hạn.</p>
+
+    <div style="text-align: center; margin-top: 50px;">
+      <a href="../index.html#contact" class="back-btn" style="background: var(--color-cta); padding: 15px 30px; font-size: 1.2rem;">ĐĂNG KÝ TƯ VẤN NGAY</a>
+      <br>
+      <a href="../index.html" style="display: inline-block; margin-top: 15px; color: var(--color-primary); text-decoration: underline;">&larr; Quay lại danh mục Du học</a>
+    </div>
+  </div>
+
+  <footer class="footer" style="text-align: center; padding: 20px; background: #1a1a1a; color: white;">
+    &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
+  </footer>
+
+  <script src="../scripts.js"></script>
+</body>
+</html>

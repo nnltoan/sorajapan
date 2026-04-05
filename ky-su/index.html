@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tuyển dụng Kỹ sư Nhật Bản tại Sora Japan - Đa ngành nghề, đối tác Nhà máy AI.">
+  <title>Tuyển Dụng Kỹ Sư | Sora Japan</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .service-detail-hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.35)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      color: white;
+      padding: 120px 20px 60px;
+      text-align: center;
+    }
+    .service-detail-content {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    .service-detail-content h2 {
+      color: var(--color-primary);
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+    .service-detail-content img {
+      width: 100%;
+      border-radius: 12px;
+      margin: 30px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .tag {
+      background: #e2e8f0;
+      color: #334155;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .bonus-box {
+      border: 2px dashed var(--color-cta);
+      padding: 25px;
+      border-radius: 12px;
+      margin: 35px 0;
+      text-align: center;
+      background: #fffaf5;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  
+    .service-detail-hero h1 {
+      color: #38BDF8;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .service-detail-hero p {
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="nav">
+      <a href="../index.html" class="nav-logo" style="display: flex; align-items: center; gap: 8px; z-index: 1002; flex-shrink: 0;">
+        <img src="../images/logo_transparent.png" alt="Sora Japan">
+      </a>
+
+      <button class="nav-toggle" aria-label="Menu" style="flex-shrink: 0; margin-left: auto;">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="../index.html#home">Trang chủ</a>
+
+        <div class="dropdown">
+          <a href="../du-hoc/index.html" class="dropbtn">Du học <svg width="12" height="12" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../du-hoc/bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
+            <a href="../du-hoc/bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
+            <a href="../du-hoc/bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
+            <a href="../du-hoc/tu-tuc.html">Du học tự túc</a>
+            <a href="../du-hoc/du-bi.html">Du học dự bị</a>
+            <a href="../du-hoc/chuyen-doi-visa.html">Du học chuyển đổi visa</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../index.html" class="dropbtn active">Kỹ sư <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="cntt.html">Kỹ sư CNTT</a>
+            <a href="co-khi.html">Kỹ sư Cơ khí</a>
+            <a href="xay-dung.html">Kỹ sư Xây dựng</a>
+            <a href="dien.html">Kỹ sư Điện</a>
+            <a href="kinh-te.html">Kỹ sư Kinh tế</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../tieng-nhat/index.html" class="dropbtn">Đào tạo tiếng Nhật <svg width="12" height="12"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../tieng-nhat/basic.html">Shinjigen Basic (N5-N4)</a>
+            <a href="../tieng-nhat/intermediate.html">Shinjigen Intermediate (N3)</a>
+            <a href="../tieng-nhat/master.html">Shinjigen Master (N2-N1)</a>
+          </div>
+        </div>
+
+        <a href="../doi-tac/index.html">Đối tác</a>
+        <a href="../index.html#cases">Case Study</a>
+        <a href="../tin-tuc.html">Tin tức</a>
+        <a href="../index.html#contact">Liên hệ</a>
+      </nav>
+      <div class="nav-cta-wrapper hide-on-mobile">
+        <a href="../index.html#contact" class="nav-cta">Tư vấn miễn phí</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="service-detail-hero">
+    <h1 style="font-size: 2.5rem; margin-bottom: 20px;">TUYỂN DỤNG KỸ SƯ CÔNG NGHỆ CAO</h1>
+    <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">Tham gia vận hành các chuỗi Nhà máy AI hiện đại, mọi ngành nghề, độ tuổi linh hoạt lên tới 45 tuổi.</p>
+  </div>
+
+  <div class="service-detail-content">
+    
+    <p>Chương trình tuyển dụng Kỹ sư Nhật Bản tại <strong>Sora Japan</strong> mở ra một kỷ nguyên mới cho trí thức và nhân sự lành nghề Việt Nam mong muốn cống hiến tại cường quốc công nghệ số 1 Châu Á.</p>
+    
+    <h2>Trực Tiếp Hợp Tác Cùng Nhà Máy AI & Tập Đoàn Lớn</h2>
+    <p>Thuộc mạng lưới phái cử tinh hoa nhất Việt Nam, Sora Japan hiện tự hào là <strong>đối tác cung ứng chiến lược cho hệ thống các Nhà máy Ứng dụng AI công nghệ cao</strong> tại Nhật Bản.</p>
+    <p>Không dừng lại ở đó, hàng trăm cơ hội việc làm đang chào mời các Kỹ sư do chúng tôi đồng thời là đối tác trực tiếp của nhiều nhà máy, tập đoàn công nghiệp đa quốc gia và công ty chế tạo khác như: <strong>ABC Corporation, XYZ Heavy Industries...</strong></p>
+
+    <div class="service-link-grid">
+      <a href="cntt.html" class="service-link-card">
+        <div class="service-link-title">Kỹ sư Công nghệ thông tin <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Phát triển phần mềm, quản trị mạng, AI và hệ thống Cloud.</div>
+      </a>
+      <a href="co-khi.html" class="service-link-card">
+        <div class="service-link-title">Kỹ sư Cơ khí / Tự động hóa <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Vận hành máy công nghiệp CNC, ô tô, chế tạo và thiết kế CAD/CAM.</div>
+      </a>
+      <a href="dien.html" class="service-link-card">
+        <div class="service-link-title">Kỹ sư Điện / Điện tử <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Thiết kế vi mạch, tự động hóa linh kiện và năng lượng số.</div>
+      </a>
+      <a href="xay-dung.html" class="service-link-card">
+        <div class="service-link-title">Kỹ sư Xây dựng <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Giám sát công trình, vẽ kiến trúc và quản lý dự án nhà tiền chế.</div>
+      </a>
+      <a href="kinh-te.html" class="service-link-card">
+        <div class="service-link-title">Kỹ sư Kinh tế <i class="fas fa-arrow-right"></i></div>
+        <div class="service-link-desc">Tài chính, Kế toán, Logistics, Nhân sự, Biên phiên dịch và nghiệp vụ văn phòng.</div>
+      </a>
+      <a href="don-hang-ky-su/index.html" class="service-link-card" style="background: var(--color-bg);">
+        <div class="service-link-title">Danh sách Đơn hàng <i class="fas fa-eye"></i></div>
+        <div class="service-link-desc">Khám phá và ứng tuyển ngay vào hệ thống dữ liệu hàng trăm công việc Mới mỗi ngày.</div>
+      </a>
+    </div>
+
+    <img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80" alt="Nhà máy kỹ sư ứng dụng AI">
+
+    <h2>Không Giới Hạn Đam Mê - Tuyển Dụng Lên Tới 45 Tuổi</h2>
+    <p>Tại Nhật Bản, kinh nghiệm của bạn chính là vốn quý giá. Với mạng lưới đối tác rộng lớn, chúng tôi xóa bỏ những rào cản thông thường về độ tuổi khi cấp thư mời làm việc. Đặc biệt: chúng tôi <strong>tuyển dụng mọi nền tảng kỹ thuật và ngành nghề</strong> với độ tuổi linh hoạt <strong>lên đến 45 tuổi</strong>.</p>
+    <p>Chỉ cần bạn có tay nghề và khát vọng, đối tác của Sora Japan sẵn sàng chiêu mộ.</p>
+
+    <div class="bonus-box">
+      <h3 style="color: var(--color-cta); margin-top: 0;">ĐẠI NGỘ ĐẶC BIỆT: HỌC BỔNG TRƯỚC KHI LÀM CHÍNH THỨC</h3>
+      <p style="margin-bottom: 0;">Để chuẩn bị sẵn sàng nhất cho kỹ năng chuyên môn trước khi bắt tay vào thiết bị nhà máy AI tự động cực kỳ tinh vi, bạn sẽ được <strong>đài thọ và cấp học bổng hoàn toàn để tham gia khóa đào tạo chuyên sâu trong suốt 1,5 năm</strong> tại các học viện công nghệ liên kết. Sau 1,5 năm hoàn thiện khóa tu nghiệp, bạn sẽ chính thức nhậm chức với mức lương Kỹ sư đầy đủ cùng mọi đãi ngộ cao cấp.</p>
+    </div>
+
+    <img src="https://images.unsplash.com/photo-1549692520-acc6669e2f0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80" alt="Kỹ sư lập trình & cơ khí robot">
+
+    <h2>Các Đặc Quyền Vượt Trội</h2>
+    <ul>
+      <li>Hưởng lợi tức, tiền thưởng và tăng lương định kỳ chuẩn người bản xứ.</li>
+      <li>Cơ chế Visa không thời hạn, cấp phép bảo lãnh gia đình (vợ/chồng, con cái) theo cùng.</li>
+      <li>Hoàn toàn miễn phí xử lý môi giới cho nhiều gói đơn hàng công xưởng chất lượng cao.</li>
+    </ul>
+
+    <div style="text-align: center;">
+      <a href="../index.html#contact" class="back-btn" style="background: var(--color-cta); padding: 15px 30px; font-size: 1.2rem;">GỬI CV ĐĂNG KÝ PHỎNG VẤN</a>
+      <br>
+      <a href="../index.html#services" style="display: inline-block; margin-top: 15px; color: var(--color-primary); text-decoration: underline;">&larr; Quay lại danh sách dịch vụ</a>
+    </div>
+
+  </div>
+
+  <!-- Footer placeholder -->
+  <footer class="footer" style="text-align: center; padding: 20px; background: #1a1a1a; color: white;">
+    &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
+  </footer>
+
+  <script src="../scripts.js"></script>
+</body>
+</html>

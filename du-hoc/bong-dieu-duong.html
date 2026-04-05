@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Du Học Bổng Điều Dưỡng | Sora Japan</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .service-detail-hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.35)), url('../images/hero-bg.png') center/cover;
+      color: white;
+      padding: 120px 20px 60px;
+      text-align: center;
+    }
+    .service-detail-content {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    .service-detail-content h2 {
+      color: var(--color-primary);
+      margin-top: 40px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--color-border);
+    }
+    .service-detail-content h3 {
+      color: var(--color-text);
+      margin-top: 25px;
+      margin-bottom: 15px;
+    }
+    .service-detail-content ul {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+    .service-detail-content li {
+      margin-bottom: 10px;
+    }
+    .highlight-box {
+      background: #f0f9ff;
+      border-left: 5px solid var(--color-cta);
+      padding: 20px;
+      margin: 30px 0;
+      font-weight: 500;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: var(--color-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  
+    .service-detail-hero h1 {
+      color: #38BDF8;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .service-detail-hero p {
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="nav">
+      <a href="../index.html" class="nav-logo" style="display: flex; align-items: center; gap: 8px; z-index: 1002; flex-shrink: 0;">
+        <img src="../images/logo_transparent.png" alt="Sora Japan">
+      </a>
+
+      <button class="nav-toggle" aria-label="Menu" style="flex-shrink: 0; margin-left: auto;">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links">
+        <a href="../index.html#home">Trang chủ</a>
+
+        <div class="dropdown">
+          <a href="../index.html" class="dropbtn active">Du học <svg width="12" height="12" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
+            <a href="bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
+            <a href="bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
+            <a href="tu-tuc.html">Du học tự túc</a>
+            <a href="du-bi.html">Du học dự bị</a>
+            <a href="chuyen-doi-visa.html">Du học chuyển đổi visa</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../ky-su/index.html" class="dropbtn">Kỹ sư <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../ky-su/cntt.html">Kỹ sư CNTT</a>
+            <a href="../ky-su/co-khi.html">Kỹ sư Cơ khí</a>
+            <a href="../ky-su/xay-dung.html">Kỹ sư Xây dựng</a>
+            <a href="../ky-su/dien.html">Kỹ sư Điện</a>
+            <a href="../ky-su/kinh-te.html">Kỹ sư Kinh tế</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <a href="../tieng-nhat/index.html" class="dropbtn">Đào tạo tiếng Nhật <svg width="12" height="12"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg></a>
+          <div class="dropdown-content">
+            <a href="../tieng-nhat/basic.html">Shinjigen Basic (N5-N4)</a>
+            <a href="../tieng-nhat/intermediate.html">Shinjigen Intermediate (N3)</a>
+            <a href="../tieng-nhat/master.html">Shinjigen Master (N2-N1)</a>
+          </div>
+        </div>
+
+        <a href="../doi-tac/index.html">Đối tác</a>
+        <a href="../index.html#cases">Case Study</a>
+        <a href="../tin-tuc.html">Tin tức</a>
+        <a href="../index.html#contact">Liên hệ</a>
+      </nav>
+      <div class="nav-cta-wrapper hide-on-mobile">
+        <a href="../index.html#contact" class="nav-cta">Tư vấn miễn phí</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="service-detail-hero">
+    <h1 style="font-size: 2.5rem; margin-bottom: 20px;">DU HỌC BỔNG ĐIỀU DƯỠNG</h1>
+    <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">Chương trình tài trợ học phí lên đến 350.000.000 VNĐ và đảm bảo việc làm.</p>
+  </div>
+
+  <div class="service-detail-content">
+
+    <div class="highlight-box">
+      Cơ hội để học sinh có thể nhận được các gói học bổng để sang Nhật học tập và có cơ hội làm việc lâu dài tại Nhật Bản với chương trình học bổng điều dưỡng.
+    </div>
+
+    <img src="../images/partner_1.jpg" alt="Ban giám đốc và đối tác trường Đại Học" style="width: 100%; border-radius: 12px; margin: 30px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+
+    <h2>1. Lộ trình – Chương trình học</h2>
+    <h3>Giai đoạn 1: Học trường Nhật ngữ</h3>
+    <ul>
+      <li>Thời gian: 1 - 2 năm</li>
+      <li>Học phí: Được nhà trường hỗ trợ cho vay 100% học phí</li>
+      <li>Trong quá trình học được làm thêm tại các viện do trường giới thiệu với mức lương 10 - 12 man/ tháng (tương đương 18 - 20 triệu/ tháng)</li>
+    </ul>
+
+    <h3>Giai đoạn 2: Học chuyên môn điều dưỡng</h3>
+    <ul>
+      <li>Thời gian: 2 năm.</li>
+      <li>Học phí: Được phía Nhật hỗ trợ học phí trong suốt quá trình học chuyên ngành Điều dưỡng (Giá trị học bổng lên đến 350.000.000 VNĐ).</li>
+      <li>Sau khi tốt nghiệp học viên được giới thiệu làm việc tại các hệ thống bệnh viện hoặc viện dưỡng lão tại Nhật Bản với chế độ tương đương với người Nhật (từ 20 – 30 man/ tháng, tương đương 40 - 60 triệu/ tháng).</li>
+      <li>Tuyển thẳng ứng viên có trình độ N2 từ Việt Nam vào học Cao đẳng, Đại Học chuyên ngành Điều dưỡng.</li>
+    </ul>
+
+    <h2>2. Đối tượng tuyển sinh</h2>
+    <ul>
+      <li>Học sinh tốt nghiệp THPT hoặc chuẩn bị tốt nghiệp tuổi từ 17 – 30 tuổi.</li>
+      <li>Đam mê, yêu thích công việc điều dưỡng, có sức khoẻ tốt.</li>
+      <li>Ưu tiên các bạn có mong muốn làm việc lâu dài tại Nhật.</li>
+      <li>Yêu cầu tiếng Nhật tương đương N5 khi phỏng vấn (ứng viên chưa có tiếng Nhật sẽ được trung tâm đào tạo tiếng)</li>
+    </ul>
+    
+    <p><strong>Thời gian đăng ký:</strong> Muộn nhất trước 30/4/2026</p>
+
+    <div style="text-align: center; margin-top: 50px;">
+      <a href="../index.html#contact" class="back-btn" style="background: var(--color-cta); padding: 15px 30px; font-size: 1.2rem;">ĐĂNG KÝ TƯ VẤN NGAY</a>
+      <br>
+      <a href="../index.html" style="display: inline-block; margin-top: 15px; color: var(--color-primary); text-decoration: underline;">&larr; Quay lại danh mục Du học</a>
+    </div>
+  </div>
+
+  <footer class="footer" style="text-align: center; padding: 20px; background: #1a1a1a; color: white;">
+    &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
+  </footer>
+
+  <script src="../scripts.js"></script>
+</body>
+</html>
