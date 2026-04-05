@@ -7,9 +7,55 @@
 // ─── CONFIG ───
 const SPREADSHEET_ID = '1goqsX4WoM6dALboJhgyIod4xazgbNuhcLGFXyRROAlE'; // ← Thay bằng ID Google Sheet
 const DRIVE_FOLDER_ID = '1CNgojYZ1iU426ZVS3pfSGCFZhNJgiYvT'; // ← Thay bằng ID folder Google Drive cho ảnh
+const CACHE_TTL = 300; // 5 minutes (seconds) — CacheService max is 21600 (6h)
 
 function getSheet(name) {
   return SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(name);
+}
+
+// ─── CACHESERVICE LAYER ───
+// Reads sheet data from CacheService first (~50ms), falls back to Sheet API (~1-3s).
+// CacheService limit: 100KB per key → for large sheets, chunk or skip cache.
+
+function getSheetData(sheetName) {
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'sheet_' + sheetName;
+
+  // Try cache first
+  const cached = cache.get(cacheKey);
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch (e) { /* corrupted cache, fall through */ }
+  }
+
+  // Cache miss — read from Sheet
+  const sheet = getSheet(sheetName);
+  if (!sheet) return [];
+  const data = sheet.getDataRange().getValues();
+
+  // Store in cache (convert Dates to ISO strings for JSON serialization)
+  try {
+    const serializable = data.map(row =>
+      row.map(cell => cell instanceof Date ? cell.toISOString() : cell)
+    );
+    const json = JSON.stringify(serializable);
+    if (json.length < 100000) { // CacheService 100KB limit per key
+      cache.put(cacheKey, json, CACHE_TTL);
+    }
+  } catch (e) { /* too large or other error — skip caching */ }
+
+  return data;
+}
+
+function invalidateCache(sheetName) {
+  const cache = CacheService.getScriptCache();
+  if (sheetName) {
+    cache.remove('sheet_' + sheetName);
+  } else {
+    // Invalidate all known sheets
+    cache.removeAll(['sheet_Posts', 'sheet_Categories', 'sheet_Jobs', 'sheet_Contacts', 'sheet_Config']);
+  }
 }
 
 // ─── ROUTER ───
@@ -77,7 +123,9 @@ function handleWrite(data) {
 
   // Public actions (no auth required)
   if (action === 'submitContact') {
-    return submitContact(data);
+    const result = submitContact(data);
+    invalidateCache('Contacts');
+    return result;
   }
 
   // Auth check for all other write operations
@@ -85,37 +133,62 @@ function handleWrite(data) {
     return { error: 'Unauthorized' };
   }
 
+  let result;
   switch (action) {
     case 'login':
       return { status: 'success', message: 'Đăng nhập thành công' };
     case 'createPost':
-      return createPost(data);
+      result = createPost(data);
+      invalidateCache('Posts');
+      return result;
     case 'updatePost':
-      return updatePost(data);
+      result = updatePost(data);
+      invalidateCache('Posts');
+      return result;
     case 'deletePost':
-      return deletePost(data.id);
+      result = deletePost(data.id);
+      invalidateCache('Posts');
+      return result;
     case 'uploadImage':
       return uploadImage(data);
     case 'deleteImage':
       return deleteImage(data.fileId);
     case 'createCategory':
-      return manageCategory('create', data);
+      result = manageCategory('create', data);
+      invalidateCache('Categories');
+      return result;
     case 'updateCategory':
-      return manageCategory('update', data);
+      result = manageCategory('update', data);
+      invalidateCache('Categories');
+      return result;
     case 'deleteCategory':
-      return manageCategory('delete', data);
+      result = manageCategory('delete', data);
+      invalidateCache('Categories');
+      return result;
     case 'updateConfig':
-      return updateConfig(data.key, data.value, data.password);
+      result = updateConfig(data.key, data.value, data.password);
+      invalidateCache('Config');
+      return result;
     case 'createJob':
-      return createJob(data);
+      result = createJob(data);
+      invalidateCache('Jobs');
+      return result;
     case 'updateJob':
-      return updateJob(data);
+      result = updateJob(data);
+      invalidateCache('Jobs');
+      return result;
     case 'deleteJob':
-      return deleteJob(data.id);
+      result = deleteJob(data.id);
+      invalidateCache('Jobs');
+      return result;
     case 'updateContact':
-      return updateContact(data);
+      result = updateContact(data);
+      invalidateCache('Contacts');
+      return result;
     case 'deleteContact':
-      return deleteContact(data.id);
+      result = deleteContact(data.id);
+      invalidateCache('Contacts');
+      return result;
     default:
       return { error: 'Unknown action: ' + action };
   }
@@ -145,8 +218,7 @@ function doPost(e) {
 
 function auth(password) {
   if (!password) return false;
-  const configSheet = getSheet('Config');
-  const data = configSheet.getDataRange().getValues();
+  const data = getSheetData('Config');
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === 'admin_password' && data[i][1] === password) {
       return true;
@@ -158,8 +230,7 @@ function auth(password) {
 // ─── POSTS: READ ───
 
 function getPosts(params) {
-  const sheet = getSheet('Posts');
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Posts');
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -220,8 +291,7 @@ function getPosts(params) {
 function getPost(slug) {
   if (!slug) return { error: 'Missing slug' };
 
-  const sheet = getSheet('Posts');
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Posts');
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -251,8 +321,7 @@ function getPost(slug) {
       // Include categories so frontend doesn't need a 2nd call
       let categories = [];
       try {
-        const catSheet = getSheet('Categories');
-        const catData = catSheet.getDataRange().getValues();
+        const catData = getSheetData('Categories');
         const catHeaders = catData[0];
         categories = catData.slice(1).map(row => {
           let c = {};
@@ -261,9 +330,11 @@ function getPost(slug) {
         }).sort((a, b) => (a.order || 0) - (b.order || 0));
       } catch (e) { /* ignore */ }
 
-      // Write viewCount AFTER building response (deferred)
+      // Write viewCount AFTER building response (deferred, uses real sheet)
       if (viewColIndex !== -1) {
-        sheet.getRange(i + 2, viewColIndex + 1).setValue(currentViews + 1);
+        try {
+          getSheet('Posts').getRange(i + 2, viewColIndex + 1).setValue(currentViews + 1);
+        } catch (e) { /* non-critical */ }
       }
 
       return {
@@ -387,8 +458,7 @@ function deletePost(id) {
 // ─── CATEGORIES ───
 
 function getCategories() {
-  const sheet = getSheet('Categories');
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Categories');
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -407,9 +477,8 @@ function getCategories() {
 // ─── BATCH: News page (categories + featured + posts in 1 call) ───
 
 function getNewsPage(params) {
-  // 1. Categories
-  const catSheet = getSheet('Categories');
-  const catData = catSheet.getDataRange().getValues();
+  // 1. Categories (from cache)
+  const catData = getSheetData('Categories');
   const catHeaders = catData[0];
   const categories = catData.slice(1).map(row => {
     let obj = {};
@@ -417,9 +486,8 @@ function getNewsPage(params) {
     return obj;
   }).sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  // 2. Posts (shared data for featured + list)
-  const postSheet = getSheet('Posts');
-  const postData = postSheet.getDataRange().getValues();
+  // 2. Posts (from cache)
+  const postData = getSheetData('Posts');
   const postHeaders = postData[0];
 
   let allPosts = postData.slice(1).map(row => {
@@ -466,10 +534,8 @@ function getNewsPage(params) {
 // ─── BATCH: Jobs page (jobs + nganh options in 1 call) ───
 
 function getJobsPage(params) {
-  const sheet = getSheet('Jobs');
-  if (!sheet) return { status: 'success', jobs: [], nganhList: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
-
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Jobs');
+  if (!data || data.length === 0) return { status: 'success', jobs: [], nganhList: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -621,8 +687,7 @@ function deleteImage(fileId) {
 }
 
 function getMedia(params) {
-  const sheet = getSheet('Media');
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Media');
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -650,10 +715,8 @@ function getMedia(params) {
 // ─── JOBS: READ ───
 
 function getJobs(params) {
-  const sheet = getSheet('Jobs');
-  if (!sheet) return { status: 'success', jobs: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
-
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Jobs');
+  if (!data || data.length === 0) return { status: 'success', jobs: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -694,10 +757,8 @@ function getJobs(params) {
 function getJob(id) {
   if (!id) return { error: 'Missing job ID' };
 
-  const sheet = getSheet('Jobs');
-  if (!sheet) return { error: 'Jobs sheet not found' };
-
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Jobs');
+  if (!data || data.length === 0) return { error: 'Jobs sheet not found' };
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -844,10 +905,9 @@ function submitContact(data) {
 
 function getContact(id) {
   if (!id) return { error: 'Missing contact ID' };
-  const sheet = getSheet('Contacts');
-  if (!sheet) return { error: 'Contacts sheet not found' };
 
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Contacts');
+  if (!data || data.length === 0) return { error: 'Contacts sheet not found' };
   const headers = data[0];
   const idStr = String(id);
   for (let i = 1; i < data.length; i++) {
@@ -861,10 +921,8 @@ function getContact(id) {
 }
 
 function getContacts(params) {
-  const sheet = getSheet('Contacts');
-  if (!sheet) return { status: 'success', contacts: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
-
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Contacts');
+  if (!data || data.length === 0) return { status: 'success', contacts: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
   const headers = data[0];
   const rows = data.slice(1);
 
@@ -961,8 +1019,7 @@ function deleteContact(id) {
 function getStats(password) {
   if (!auth(password)) return { error: 'Unauthorized' };
 
-  const postsSheet = getSheet('Posts');
-  const postsData = postsSheet.getDataRange().getValues();
+  const postsData = getSheetData('Posts');
   const headers = postsData[0];
   const rows = postsData.slice(1);
 
@@ -1006,12 +1063,11 @@ function getStats(password) {
   const mediaSheet = getSheet('Media');
   const mediaCount = Math.max(0, mediaSheet.getLastRow() - 1);
 
-  // Jobs stats
+  // Jobs stats (from cache)
   let totalJobs = 0, activeJobs = 0;
   const jobsByNganh = {};
-  const jobsSheet = getSheet('Jobs');
-  if (jobsSheet && jobsSheet.getLastRow() > 1) {
-    const jobsData = jobsSheet.getDataRange().getValues();
+  const jobsData = getSheetData('Jobs');
+  if (jobsData && jobsData.length > 1) {
     const jHeaders = jobsData[0];
     const jStatusIdx = jHeaders.indexOf('Status');
     const jNganhIdx = jHeaders.indexOf('Nganh');
@@ -1024,34 +1080,32 @@ function getStats(password) {
     });
   }
 
-  // Contact form stats (last 3 months including current)
+  // Contact form stats (from cache)
   const contactStats = [];
-  const contactsSheet = getSheet('Contacts');
-  if (contactsSheet && contactsSheet.getLastRow() > 1) {
-    const cData = contactsSheet.getDataRange().getValues();
-    const cRows = cData.slice(1);
+  const contactsData = getSheetData('Contacts');
+  if (contactsData && contactsData.length > 1) {
+    const cRows = contactsData.slice(1);
     const now = new Date();
     for (let m = 2; m >= 0; m--) {
       const d = new Date(now.getFullYear(), now.getMonth() - m, 1);
       const year = d.getFullYear();
-      const month = d.getMonth(); // 0-indexed
+      const month = d.getMonth();
       const label = String(month + 1).padStart(2, '0') + '/' + year;
       const count = cRows.filter(r => {
-        const ts = new Date(r[1]); // Timestamp is column index 1 (after ID)
+        const ts = new Date(r[1]);
         return ts.getFullYear() === year && ts.getMonth() === month;
       }).length;
       contactStats.push({ label, count });
     }
   }
-  const totalContacts = contactsSheet ? Math.max(0, contactsSheet.getLastRow() - 1) : 0;
+  const totalContacts = contactsData ? Math.max(0, contactsData.length - 1) : 0;
 
   // Contact pipeline (count per status)
   const contactPipeline = {};
-  if (contactsSheet && contactsSheet.getLastRow() > 1) {
-    const cpData = contactsSheet.getDataRange().getValues();
-    const cpHeaders = cpData[0];
+  if (contactsData && contactsData.length > 1) {
+    const cpHeaders = contactsData[0];
     const cpStatusIdx = cpHeaders.indexOf('Status');
-    cpData.slice(1).forEach(r => {
+    contactsData.slice(1).forEach(r => {
       const s = r[cpStatusIdx] || 'Mới';
       contactPipeline[s] = (contactPipeline[s] || 0) + 1;
     });
@@ -1081,8 +1135,7 @@ function getStats(password) {
 // ─── CONFIG ───
 
 function getConfig(key) {
-  const sheet = getSheet('Config');
-  const data = sheet.getDataRange().getValues();
+  const data = getSheetData('Config');
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === key) return data[i][1];
   }
