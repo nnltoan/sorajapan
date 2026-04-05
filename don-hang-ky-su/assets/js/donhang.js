@@ -1,38 +1,80 @@
 // === CONFIG ===
-// Dùng CMS API thay vì CSV để đồng bộ với admin panel
 const API_URL = 'https://script.google.com/macros/s/AKfycbwE1UrOdpMcRdMPN1kPGPjFacHHOBcgSHkhKCn0SqQfjIvWPZ2NvLZKdX5z8rBQSLyihg/exec';
 
 let allData = [];
 
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById("card-container");
-    container.innerHTML = '<div class="loading">Đang tải dữ liệu đơn hàng...</div>';
+// ── Simple in-memory cache (shared pattern with news-config.js) ──
+const _jobCache = {};
+const JOB_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
+async function fetchJobAPI(params) {
     const url = new URL(API_URL);
-    url.searchParams.set('action', 'getJobs');
-    url.searchParams.set('nganh', NGANH_HIEN_TAI);
-    url.searchParams.set('status', 'Active');
-    url.searchParams.set('limit', '100');
+    Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v);
+    });
 
-    fetch(url.toString())
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === 'success') {
-                allData = result.jobs || [];
-                renderCards(allData);
-                initFilters();
-            } else {
-                container.innerHTML = `<div class="error" style="color:red; padding:20px; text-align:center;"><strong>Lỗi:</strong> ${result.error || 'Không thể tải dữ liệu'}</div>`;
-            }
-        })
-        .catch(err => {
-            let msg = "Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.";
-            if (window.location.protocol === "file:") {
-                msg = "Trình duyệt đang chặn lấy dữ liệu vì bạn đang mở dưới dạng file local (file:///). Vui lòng sử dụng Live Server hoặc xem trên link thực tế (http://...) để test!";
-            }
-            container.innerHTML = `<div class="error" style="color:red; padding:20px; text-align:center;"><strong>Lỗi:</strong> ${msg}</div>`;
-            console.error("Fetch Error:", err);
+    const cacheKey = url.toString();
+    const cached = _jobCache[cacheKey];
+    if (cached && Date.now() - cached.time < JOB_CACHE_TTL) {
+        return cached.data;
+    }
+
+    const res = await fetch(url.toString());
+    const data = await res.json();
+    _jobCache[cacheKey] = { data, time: Date.now() };
+    return data;
+}
+
+// ── Skeleton loading ──
+function showSkeletons(container, count) {
+    let html = '';
+    for (let i = 0; i < count; i++) {
+        html += `
+      <div class="job-card skeleton-card">
+        <div class="skeleton-img skeleton-pulse"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line skeleton-pulse" style="width:70%;height:20px;margin-bottom:12px"></div>
+          <div class="skeleton-line skeleton-pulse" style="width:50%;height:14px;margin-bottom:20px"></div>
+          <div class="skeleton-grid">
+            <div class="skeleton-line skeleton-pulse" style="width:100%;height:14px"></div>
+            <div class="skeleton-line skeleton-pulse" style="width:100%;height:14px"></div>
+            <div class="skeleton-line skeleton-pulse" style="width:100%;height:14px"></div>
+            <div class="skeleton-line skeleton-pulse" style="width:100%;height:14px"></div>
+          </div>
+          <div class="skeleton-line skeleton-pulse" style="width:40%;height:36px;margin-top:16px;border-radius:8px"></div>
+        </div>
+      </div>`;
+    }
+    container.innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById("card-container");
+    showSkeletons(container, 4);
+
+    try {
+        const result = await fetchJobAPI({
+            action: 'getJobsPage',
+            nganh: NGANH_HIEN_TAI,
+            status: 'Active',
+            limit: '100'
         });
+
+        if (result.status === 'success') {
+            allData = result.jobs || [];
+            renderCards(allData);
+            initFilters();
+        } else {
+            container.innerHTML = `<div class="error" style="color:red; padding:20px; text-align:center;"><strong>Lỗi:</strong> ${result.error || 'Không thể tải dữ liệu'}</div>`;
+        }
+    } catch (err) {
+        let msg = "Không thể tải dữ liệu đơn hàng. Vui lòng thử lại sau.";
+        if (window.location.protocol === "file:") {
+            msg = "Trình duyệt đang chặn lấy dữ liệu vì bạn đang mở dưới dạng file local (file:///). Vui lòng sử dụng Live Server hoặc xem trên link thực tế (http://...) để test!";
+        }
+        container.innerHTML = `<div class="error" style="color:red; padding:20px; text-align:center;"><strong>Lỗi:</strong> ${msg}</div>`;
+        console.error("Fetch Error:", err);
+    }
 });
 
 function renderCards(data) {
@@ -56,7 +98,6 @@ function renderCards(data) {
             const match = hinhAnh.match(/[?&]id=([a-zA-Z0-9_-]+)/);
             if (match && match[1]) driveId = match[1];
         } else if (hinhAnh.includes('drive.google.com/thumbnail?id=')) {
-            // Already in thumbnail format, keep as-is
             driveId = null;
         }
 
@@ -66,7 +107,7 @@ function renderCards(data) {
 
         html += `
       <div class="job-card">
-        <div class="job-card-image" style="background-image: url('${hinhAnh}')">
+        <div class="job-card-image" style="background-image: url('${hinhAnh}')" loading="lazy">
             <div class="job-card-badge">${item.MaDon || ''}</div>
         </div>
         <div class="job-card-content">
@@ -108,7 +149,7 @@ function renderCards(data) {
 }
 
 function showDetail(id) {
-    const item = allData.find(d => d.ID === id);
+    const item = allData.find(d => String(d.ID) === String(id));
     if (!item) return;
 
     let modal = document.getElementById('jobModal');

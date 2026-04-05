@@ -26,6 +26,15 @@ function doGet(e) {
       result = handleWrite(data);
     } else {
       switch (action) {
+        case 'ping':
+          result = { status: 'ok', ts: Date.now() };
+          break;
+        case 'getNewsPage':
+          result = getNewsPage(e.parameter);
+          break;
+        case 'getJobsPage':
+          result = getJobsPage(e.parameter);
+          break;
         case 'getPosts':
           result = getPosts(e.parameter);
           break;
@@ -377,6 +386,117 @@ function getCategories() {
   categories.sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return { status: 'success', categories };
+}
+
+// ─── BATCH: News page (categories + featured + posts in 1 call) ───
+
+function getNewsPage(params) {
+  // 1. Categories
+  const catSheet = getSheet('Categories');
+  const catData = catSheet.getDataRange().getValues();
+  const catHeaders = catData[0];
+  const categories = catData.slice(1).map(row => {
+    let obj = {};
+    catHeaders.forEach((h, i) => obj[h] = row[i]);
+    return obj;
+  }).sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  // 2. Posts (shared data for featured + list)
+  const postSheet = getSheet('Posts');
+  const postData = postSheet.getDataRange().getValues();
+  const postHeaders = postData[0];
+
+  let allPosts = postData.slice(1).map(row => {
+    let obj = {};
+    postHeaders.forEach((h, i) => obj[h] = row[i]);
+    return obj;
+  }).filter(p => p.status === 'published');
+
+  // Sort newest first
+  allPosts.sort((a, b) => {
+    return new Date(b.publishedAt || b.createdAt) - new Date(a.publishedAt || a.createdAt);
+  });
+
+  // 3. Featured post
+  const featured = allPosts.find(p => p.featured === true || p.featured === 'TRUE');
+  let featuredPost = null;
+  if (featured) {
+    const { content, ...rest } = featured;
+    featuredPost = rest;
+  }
+
+  // 4. Paginated posts with optional category filter
+  const category = params.category || '';
+  let filtered = category ? allPosts.filter(p => p.category === category) : allPosts;
+
+  const page = parseInt(params.page) || 1;
+  const limit = parseInt(params.limit) || 9;
+  const total = filtered.length;
+  const start = (page - 1) * limit;
+  const listPosts = filtered.slice(start, start + limit).map(p => {
+    const { content, ...rest } = p;
+    return rest;
+  });
+
+  return {
+    status: 'success',
+    categories,
+    featured: featuredPost,
+    posts: listPosts,
+    pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
+  };
+}
+
+// ─── BATCH: Jobs page (jobs + nganh options in 1 call) ───
+
+function getJobsPage(params) {
+  const sheet = getSheet('Jobs');
+  if (!sheet) return { status: 'success', jobs: [], nganhList: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } };
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1);
+
+  let jobs = rows.map(row => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h] = row[i]);
+    return obj;
+  });
+
+  // Collect unique nganh values from active jobs for filter
+  const nganhSet = {};
+  jobs.filter(j => j.Status === 'Active').forEach(j => {
+    if (j.Nganh) nganhSet[j.Nganh] = (nganhSet[j.Nganh] || 0) + 1;
+  });
+
+  // Filter
+  const nganh = params.nganh || '';
+  const status = params.status || 'all';
+  jobs = jobs.filter(j => {
+    if (status && status !== 'all' && j.Status !== status) return false;
+    if (nganh && j.Nganh !== nganh) return false;
+    return true;
+  });
+
+  // Sort by NgayDang desc
+  jobs.sort((a, b) => {
+    const dA = parseVNDate(a.NgayDang);
+    const dB = parseVNDate(b.NgayDang);
+    return dB - dA;
+  });
+
+  const total = jobs.length;
+  const page = parseInt(params.page) || 1;
+  const limit = parseInt(params.limit) || 100;
+  const start = (page - 1) * limit;
+  const paginated = jobs.slice(start, start + limit);
+
+  return {
+    status: 'success',
+    jobs: paginated,
+    nganhList: Object.entries(nganhSet).map(([name, count]) => ({ name, count })),
+    pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
+  };
 }
 
 function manageCategory(action, data) {

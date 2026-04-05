@@ -17,12 +17,51 @@ let currentCategory = '';
 let categoriesData = [];
 
 async function initNewsList() {
-  // Load categories for filter
-  loadCategories();
-  // Load featured post
-  loadFeatured();
-  // Load posts
-  loadPosts();
+  // Batch load: categories + featured + posts in 1 API call
+  try {
+    const res = await fetchAPI({
+      action: 'getNewsPage',
+      page: currentPage,
+      limit: NEWS_CONFIG.POSTS_PER_PAGE,
+      category: currentCategory,
+      status: 'published'
+    });
+
+    if (res.status === 'success') {
+      // Categories
+      if (res.categories) {
+        categoriesData = res.categories;
+        renderCategoryFilter(res.categories);
+      }
+      // Featured
+      if (res.featured) {
+        renderFeatured(res.featured);
+      }
+      // Posts
+      const container = document.getElementById('posts-grid');
+      if (container) {
+        if (res.posts.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+              </svg>
+              <h3>Chưa có bài viết</h3>
+              <p>Chưa có bài viết nào trong danh mục này.</p>
+            </div>`;
+        } else {
+          renderPosts(res.posts);
+        }
+        renderPagination(res.pagination);
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load news page:', e);
+    // Fallback: load individually if batch fails
+    loadCategories();
+    loadFeatured();
+    loadPosts();
+  }
 }
 
 async function loadCategories() {
