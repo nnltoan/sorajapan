@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       <!-- Zalo -->
       <a href="https://zalo.me/0903539537" target="_blank" class="floating-btn btn-zalo" title="Chat Zalo ngay" aria-label="Chat qua Zalo">
-        <img src="${basePath}Icon_of_Zalo.svg.webp" alt="Zalo" style="width: 36px; height: 36px; object-fit: contain;">
+        <img src="${basePath}Icon_of_Zalo.png" alt="Zalo" style="width: 36px; height: 36px; object-fit: contain;">
       </a>
 
       <!-- Call -->
