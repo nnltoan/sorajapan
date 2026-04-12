@@ -69,31 +69,37 @@
 <body>
 
   <!-- HEADER -->
-  <header class="header">
+    <header class="header">
     <div class="nav">
-      <a href="../index.html" class="nav-logo" style="display: flex; align-items: center; gap: 8px; z-index: 1002; flex-shrink: 0;">
+      <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 8px; z-index: 1002; flex-shrink: 0;">
         <img src="../images/logo_transparent.png" alt="Sora Japan">
       </a>
+
+      <div class="nav-announcement show-on-mobile">
+        <div class="marquee">
+          <span>Khai giảng khóa mới & Nhận hồ sơ tháng 4/2026</span>
+        </div>
+      </div>
 
       <button class="nav-toggle" aria-label="Menu" style="flex-shrink: 0; margin-left: auto;">
         <span></span><span></span><span></span>
       </button>
 
       <nav class="nav-links">
-        <a href="../index.html#home">Trang chủ</a>
+        <a href="../index.html#home" class="active">Trang chủ</a>
 
         <div class="dropdown">
-          <a href="../index.html" class="dropbtn active">Du học <svg width="12" height="12" viewBox="0 0 24 24"
+          <a href="../du-hoc/index.html" class="dropbtn">Du học <svg width="12" height="12" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg></a>
           <div class="dropdown-content">
-            <a href="bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
-            <a href="bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
-            <a href="bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
-            <a href="tu-tuc.html">Du học tự túc</a>
-            <a href="du-bi.html">Du học dự bị</a>
-            <a href="chuyen-doi-visa.html">Du học chuyển đổi visa</a>
+            <a href="../du-hoc/bong-dieu-duong.html">Du học bổng Điều dưỡng</a>
+            <a href="../du-hoc/bong-bao-yomiuri.html">Du học bổng báo Yomiuri</a>
+            <a href="../du-hoc/bong-nha-hang-zensho.html">Du học bổng nhà hàng Zensho</a>
+            <a href="../du-hoc/tu-tuc.html">Du học tự túc</a>
+            <a href="../du-hoc/du-bi.html">Du học dự bị</a>
+            <a href="../du-hoc/chuyen-doi-visa.html">Du học chuyển đổi visa</a>
           </div>
         </div>
 
@@ -126,10 +132,14 @@
         <a href="../doi-tac/index.html">Đối tác</a>
         <a href="../index.html#cases">Case Study</a>
         <a href="../tin-tuc.html">Tin tức</a>
-        <a href="../index.html#contact">Liên hệ</a>
       </nav>
       <div class="nav-cta-wrapper hide-on-mobile">
-        <a href="../index.html#contact" class="nav-cta">Tư vấn miễn phí</a>
+        <a href="../index.html#contact" class="nav-cta">
+          Tư vấn miễn phí
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
       </div>
     </div>
   </header>
