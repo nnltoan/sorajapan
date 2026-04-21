@@ -6,6 +6,20 @@
 
 // ─── CONFIG ───
 const SPREADSHEET_ID = '1goqsX4WoM6dALboJhgyIod4xazgbNuhcLGFXyRROAlE'; // ← Thay bằng ID Google Sheet
+// reCAPTCHA v3 SECRET KEY (server-side)
+// ⚠️ KHÔNG dán secret vào code — dùng Script Properties để không lộ khi repo public.
+// Setup: Apps Script UI → Project Settings → Script properties → Add property:
+//   Key:   RECAPTCHA_SECRET
+//   Value: <paste secret key được gửi riêng qua kênh an toàn>
+// Nếu chưa set → verifyRecaptcha() bypass (chấp nhận mọi request) để không chặn khách thật.
+function getRecaptchaSecret() {
+  try {
+    return PropertiesService.getScriptProperties().getProperty('RECAPTCHA_SECRET') || '';
+  } catch (e) {
+    return '';
+  }
+}
+const RECAPTCHA_MIN_SCORE = 0.3; // 0.0-1.0, càng gần 1.0 càng chắc chắn là người thật
 const DRIVE_FOLDER_ID = '1CNgojYZ1iU426ZVS3pfSGCFZhNJgiYvT'; // ← Thay bằng ID folder Google Drive cho ảnh
 const CACHE_TTL = 300; // 5 minutes (seconds) — CacheService max is 21600 (6h)
 
@@ -882,11 +896,54 @@ function formatDateVN(d) {
 
 // ─── CONTACTS CRM ───
 
+/**
+ * Verify reCAPTCHA v3 token with Google API.
+ * Returns: { valid: true, score: 0.x } or { valid: false, reason: '...' }
+ * If RECAPTCHA_SECRET is placeholder → passes through (returns valid=true) so form still works.
+ */
+function verifyRecaptcha(token) {
+  const secret = getRecaptchaSecret();
+  if (!secret) {
+    return { valid: true, score: 1.0, note: 'recaptcha-disabled' };
+  }
+  if (!token) {
+    return { valid: false, reason: 'missing-token' };
+  }
+  try {
+    const resp = UrlFetchApp.fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'post',
+      payload: { secret: secret, response: token },
+      muteHttpExceptions: true
+    });
+    const result = JSON.parse(resp.getContentText());
+    if (!result.success) {
+      return { valid: false, reason: 'google-rejected', errors: result['error-codes'] };
+    }
+    if (typeof result.score === 'number' && result.score < RECAPTCHA_MIN_SCORE) {
+      return { valid: false, reason: 'score-too-low', score: result.score };
+    }
+    return { valid: true, score: result.score };
+  } catch (e) {
+    return { valid: false, reason: 'verify-exception', error: String(e) };
+  }
+}
+
 function submitContact(data) {
+  // --- Anti-spam: verify reCAPTCHA v3 token (if configured) ---
+  const rc = verifyRecaptcha(data.recaptchaToken || '');
+  if (!rc.valid) {
+    return { error: 'recaptcha-failed', reason: rc.reason, score: rc.score };
+  }
+
   const sheet = getSheet('Contacts');
   if (!sheet) return { error: 'Contacts sheet not found. Run setupSheets first.' };
 
   const id = 'CT-' + Date.now().toString(36).toUpperCase();
+  const source = data.source || 'website_main_form';
+  const note = rc.note === 'recaptcha-disabled'
+    ? 'source: ' + source
+    : 'source: ' + source + ' | recaptcha: ' + (rc.score || 'n/a');
+
   const row = [
     id,
     new Date().toISOString(),
@@ -895,9 +952,10 @@ function submitContact(data) {
     data.email || '',
     data.chuongTrinh || '',
     'Mới',          // Status
-    '',             // Note
+    note,           // Note (source + recaptcha score)
     '',             // AssignedTo
-    ''              // UpdatedAt
+    '',             // UpdatedAt
+    source          // Column 11: Source (exit_intent_popup, website_main_form, ...)
   ];
   sheet.appendRow(row);
   return { status: 'success', message: 'Cảm ơn! Thông tin đã được gửi.' };
