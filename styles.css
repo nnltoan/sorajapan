@@ -2034,18 +2034,18 @@ h6 {
   animation: slideFade 48s infinite;
 }
 
-.hero-slider img:nth-child(1) { animation-delay: 0s; }
-.hero-slider img:nth-child(2) { animation-delay: 4s; }
-.hero-slider img:nth-child(3) { animation-delay: 8s; }
-.hero-slider img:nth-child(4) { animation-delay: 12s; }
-.hero-slider img:nth-child(5) { animation-delay: 16s; }
-.hero-slider img:nth-child(6) { animation-delay: 20s; }
-.hero-slider img:nth-child(7) { animation-delay: 24s; }
-.hero-slider img:nth-child(8) { animation-delay: 28s; }
-.hero-slider img:nth-child(9) { animation-delay: 32s; }
-.hero-slider img:nth-child(10) { animation-delay: 36s; }
-.hero-slider img:nth-child(11) { animation-delay: 40s; }
-.hero-slider img:nth-child(12) { animation-delay: 44s; }
+.hero-slider > picture:nth-child(1) img { animation-delay: 0s; }
+.hero-slider > picture:nth-child(2) img { animation-delay: 4s; }
+.hero-slider > picture:nth-child(3) img { animation-delay: 8s; }
+.hero-slider > picture:nth-child(4) img { animation-delay: 12s; }
+.hero-slider > picture:nth-child(5) img { animation-delay: 16s; }
+.hero-slider > picture:nth-child(6) img { animation-delay: 20s; }
+.hero-slider > picture:nth-child(7) img { animation-delay: 24s; }
+.hero-slider > picture:nth-child(8) img { animation-delay: 28s; }
+.hero-slider > picture:nth-child(9) img { animation-delay: 32s; }
+.hero-slider > picture:nth-child(10) img { animation-delay: 36s; }
+.hero-slider > picture:nth-child(11) img { animation-delay: 40s; }
+.hero-slider > picture:nth-child(12) img { animation-delay: 44s; }
 
 @keyframes slideFade {
   0% {

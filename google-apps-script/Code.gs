@@ -913,10 +913,24 @@ function verifyRecaptcha(token) {
     const resp = UrlFetchApp.fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'post',
       payload: { secret: secret, response: token },
-      muteHttpExceptions: true
+      muteHttpExceptions: true,
+      followRedirects: true,
+      validateHttpsCertificates: true
     });
-    const result = JSON.parse(resp.getContentText());
+    const code = resp.getResponseCode();
+    const body = resp.getContentText();
+    if (code !== 200) {
+      console.error('[reCAPTCHA] HTTP ' + code + ' from Google: ' + body.substring(0, 500));
+      return { valid: false, reason: 'http-' + code, body: body.substring(0, 200) };
+    }
+    let result;
+    try { result = JSON.parse(body); }
+    catch (pe) {
+      console.error('[reCAPTCHA] JSON parse error: ' + pe + ' | body: ' + body.substring(0, 500));
+      return { valid: false, reason: 'parse-error', body: body.substring(0, 200) };
+    }
     if (!result.success) {
+      console.error('[reCAPTCHA] Google rejected: ' + JSON.stringify(result['error-codes']));
       return { valid: false, reason: 'google-rejected', errors: result['error-codes'] };
     }
     if (typeof result.score === 'number' && result.score < RECAPTCHA_MIN_SCORE) {
@@ -924,7 +938,16 @@ function verifyRecaptcha(token) {
     }
     return { valid: true, score: result.score };
   } catch (e) {
-    return { valid: false, reason: 'verify-exception', error: String(e) };
+    // Log full stack to Apps Script Executions → this exception usually means:
+    //   (a) UrlFetchApp authorization missing → run any function manually from editor to grant scope
+    //   (b) Quota exhausted → wait or switch Google account
+    console.error('[reCAPTCHA] Exception: ' + String(e) + ' | stack: ' + (e.stack || ''));
+    return {
+      valid: false,
+      reason: 'verify-exception',
+      error: String(e),
+      hint: 'Mo Apps Script editor > chay thu 1 function bat ky > cap quyen UrlFetch khi duoc hoi, roi Deploy lai.'
+    };
   }
 }
 
@@ -932,7 +955,16 @@ function submitContact(data) {
   // --- Anti-spam: verify reCAPTCHA v3 token (if configured) ---
   const rc = verifyRecaptcha(data.recaptchaToken || '');
   if (!rc.valid) {
-    return { error: 'recaptcha-failed', reason: rc.reason, score: rc.score };
+    // Return ALL diagnostic fields so browser console shows root cause
+    return {
+      error: 'recaptcha-failed',
+      reason: rc.reason,
+      score: rc.score,
+      errors: rc.errors,
+      detail: rc.error,
+      hint: rc.hint,
+      body: rc.body
+    };
   }
 
   const sheet = getSheet('Contacts');
