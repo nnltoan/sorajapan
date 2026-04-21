@@ -2,6 +2,49 @@
    SORA JAPAN – Interactivity & Animations
    ============================================ */
 
+/* ============================================
+   ANALYTICS CONFIG — điền ID vào đây khi đã có
+   ============================================
+   Hướng dẫn:
+   1. Tạo property GA4 tại https://analytics.google.com → lấy Measurement ID dạng "G-XXXXXXXXXX"
+   2. Dán vào biến GA4_ID bên dưới (thay cả dấu 'G-XXXXXXXXXX')
+   3. Commit + deploy → GA4 tự động bắn trên toàn bộ 107 trang
+   4. Để verify Google Search Console: xem meta tag trong <head> của index.html
+   Nếu ID còn là placeholder, đoạn code GA4 sẽ KHÔNG chạy → an toàn 100%.
+   ============================================ */
+const ANALYTICS = {
+  GA4_ID: 'G-PMXJ7W8WCY'  // GA4 Main Web stream — stream ID 14408864458
+};
+
+// Inject GA4 (gtag.js) — chỉ khi ID đã được điền thật
+(function injectGA4() {
+  if (!ANALYTICS.GA4_ID || ANALYTICS.GA4_ID === 'G-XXXXXXXXXX') return;
+
+  // 1. Loader script từ Google
+  const loader = document.createElement('script');
+  loader.async = true;
+  loader.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANALYTICS.GA4_ID;
+  document.head.appendChild(loader);
+
+  // 2. Khởi tạo gtag
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', ANALYTICS.GA4_ID, {
+    anonymize_ip: true,
+    send_page_view: true
+  });
+})();
+
+// Helper: bắn sự kiện conversion tùy ý từ bất kỳ đâu
+// VD: window.trackEvent('contact_form_submit', { program: 'Du hoc' });
+window.trackEvent = function (name, params) {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, params || {});
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- Config ---
@@ -237,6 +280,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (data.result === 'success' || data.status === 'success') {
           if(messageDiv) messageDiv.innerHTML = '<p style="color:var(--color-success); font-weight: 500;"><i class="fas fa-check-circle"></i> Cảm ơn bạn! Thông tin đã được gửi thành công. Chúng tôi sẽ sớm liên hệ lại.</p>';
+          // Track conversion trên GA4 (chỉ bắn khi GA4_ID đã được cấu hình)
+          if (typeof window.trackEvent === 'function') {
+            window.trackEvent('generate_lead', {
+              form_name: 'contact_form_main',
+              program: contactForm.querySelector('[name="chuong-trinh"]').value || 'unknown'
+            });
+          }
           contactForm.reset();
         } else {
           console.warn('[Contact form] Server error:', data.error || data);

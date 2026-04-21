@@ -98,4 +98,20 @@ Mỗi lần sửa `Code.gs`, cần deploy lại:
 - Web App URL nên giữ kín (chỉ dùng trong code frontend)
 
 ### Giới hạn
-- Google Apps Script: 6 phút timeout/request, 2
+- Google Apps Script: 6 phút timeout/request, 20,000 URL fetches/ngày
+- Google Sheets: tối đa 10 triệu cells (đủ cho ~1000+ bài viết)
+- Image upload: Khuyến nghị resize ảnh < 2MB trước khi upload
+
+### Troubleshooting
+- **CORS error**: Đảm bảo đã chọn "Anyone" ở Who has access
+- **403 Forbidden**: Deploy lại với New version
+- **Ảnh không hiển thị**: Kiểm tra Drive folder đã public sharing chưa
+
+
+| Trường       | Điểm mạnh                | Phù hợp     |
+| ------------ | ------------------------ | ----------- |
+| KYORITSU     | Hệ thống lớn, hỗ trợ tốt | Học lâu dài |
+| Waseda Edu   | Học thuật cao            | Thi đại học |
+| Tokyo Yohoku | Ổn định, cân bằng        | Beginner    |
+| TOP A21      | Luyện thi EJU            | Học lên     |
+| SUN-A OEDO   | Chi phí hợp lý           | Người mới   |

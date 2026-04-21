@@ -1,0 +1,24 @@
+# robots.txt for Sora Japan
+# https://sorajapan.edu.vn
+
+User-agent: *
+Allow: /
+
+# Disallow admin / CMS pages
+Disallow: /admin.html
+Disallow: /tin-tuc-detail.html
+Disallow: /google-apps-script/
+Disallow: /.agent/
+Disallow: /.claude/
+Disallow: /.github/
+Disallow: /.venv/
+
+# Disallow duplicate root-level pages (canonical points to subfolder versions)
+Disallow: /du-hoc-*.html
+Disallow: /ky-su-*.html
+Disallow: /truong-*.html
+Disallow: /doi-tac-*.html
+Disallow: /service-*.html
+Disallow: /tieng-nhat-*.html
+
+Sitemap: https://sorajapan.edu.vn/sitemap.xml
