@@ -382,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </select>
             <button type="submit" style="padding:12px;background:#d32f2f;color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;">Nhận tư vấn miễn phí</button>
             <div id="sora-exit-msg" style="text-align:center;font-size:14px;min-height:18px;"></div>
+            <p style="font-size:11px;color:#888;text-align:center;line-height:1.5;margin:4px 0 0;">Bảo vệ bởi reCAPTCHA. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:#555;text-decoration:underline;">Chính sách bảo mật</a> và <a href="https://policies.google.com/terms" target="_blank" rel="noopener" style="color:#555;text-decoration:underline;">Điều khoản</a> Google áp dụng.</p>
           </form>
           <p style="text-align:center;color:#888;font-size:12px;margin:12px 0 0;">Chúng tôi sẽ liên hệ trong vòng 24h</p>
         </div>

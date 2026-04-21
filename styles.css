@@ -2461,3 +2461,22 @@ h6 {
 .error {
   color: #ef4444;
 }
+/* reCAPTCHA badge hidden — disclaimer shown inline per Google policy */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+/* Inline disclaimer: displayed under forms instead of badge */
+.recaptcha-disclaimer {
+  font-size: 11px;
+  color: #888;
+  margin-top: 10px;
+  line-height: 1.5;
+  text-align: center;
+}
+.recaptcha-disclaimer a {
+  color: #555;
+  text-decoration: underline;
+}
+.recaptcha-disclaimer a:hover {
+  color: #d32f2f;
+}
