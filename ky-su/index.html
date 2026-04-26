@@ -153,6 +153,16 @@
   <!-- SORA_SEO_BLOCK_END -->
 </head>
 <body>
+  <script>
+  // Inline failsafe: header scroll-bg toggle (runs before any external JS)
+  (function(){
+    function set(){var h=document.querySelector('.header');if(!h)return;
+      if(window.scrollY>60)h.classList.add('scrolled');else h.classList.remove('scrolled');}
+    window.addEventListener('scroll',set,{passive:true});
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',set);else set();
+  })();
+</script>
+  
 
   <!-- HEADER -->
   <header class="header">

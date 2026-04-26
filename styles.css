@@ -5645,4 +5645,28 @@ body.contact-modal-open {
 }
 /* END CTA PARTNERS */
 
+/* ============================================================================
+   NAV BACKGROUND ON SUBPAGES — always solid (not transparent)
+   On home, navbar transparent over dark hero gradient → text white visible.
+   On subpages, navbar should always have ivory bg + blur for text legibility.
+   Uses :has() to detect subpage hero markers.
+   ============================================================================ */
+/* Force .scrolled state to apply on subpages (in case JS misses or CSS specificity conflicts) */
+.header.scrolled {
+  background: rgba(252, 250, 242, 0.92) !important;
+  backdrop-filter: blur(20px) saturate(1.5) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.5) !important;
+  box-shadow: 0 1px 0 rgba(15, 37, 64, 0.08), 0 8px 24px rgba(15, 37, 64, 0.06) !important;
+}
+
+.header.scrolled .nav-links a,
+.header.scrolled .nav-links .dropbtn {
+  color: var(--color-text) !important;
+}
+
+.header.scrolled .nav-toggle span {
+  background: var(--color-text) !important;
+}
+/* END NAV BG ON SUBPAGES */
+
 /* END BREAKTHROUGH ANIMATION LAYER */

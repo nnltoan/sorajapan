@@ -1293,3 +1293,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 /* END CONTACT MODAL */
+
+
+/* ============================================================================
+   FAILSAFE: Header scrolled-state observer
+   Some pages may have an early JS error preventing the main DOMContentLoaded
+   handler from attaching the scroll listener. This standalone IIFE attaches
+   independently of any other code so .scrolled class is always added/removed.
+   ============================================================================ */
+(function headerScrolledFailsafe() {
+  function setup() {
+    const header = document.querySelector('.header');
+    if (!header) return;
+    function update() {
+      if (window.scrollY > 60) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
+})();
+/* END HEADER FAILSAFE */
