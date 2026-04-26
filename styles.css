@@ -231,7 +231,10 @@ h1 { letter-spacing: -0.03em; }
   -webkit-text-fill-color: transparent;
   position: relative;
   display: inline-block;
-  padding-bottom: 2px;
+  /* Vietnamese diacritic breathing room (ậ, ờ, ặ etc.) */
+  line-height: 1.25;
+  padding-bottom: 0.1em;
+  padding-top: 0.04em;
 }
 
 .section-subtitle {
@@ -4249,6 +4252,13 @@ form button[type="submit"]:hover,
   font-weight: 800;
   text-shadow: none;
   display: inline-block;
+  /* Breathing room for Vietnamese diacritics (ậ, ờ, ặ etc.) — without these,
+     background-clip:text + tight line-height clips descenders/marks below */
+  line-height: 1.3;
+  padding-bottom: 0.12em;
+  padding-top: 0.04em;
+  vertical-align: baseline;
+  overflow: visible;
 }
 
 /* Subtitle */
@@ -5003,5 +5013,636 @@ a.back-btn:hover {
 }
 
 /* END DETAIL PAGES BRAND ALIGN */
+
+/* ============================================================================
+   ENHANCED SUBPAGE HERO — stats trio + CTA pair + kanji watermark
+   Applied to .service-detail-hero, .hero-partners, .news-hero, .page-hero
+   ============================================================================ */
+
+/* Kanji watermark via data-kanji attr */
+.service-detail-hero[data-kanji],
+.hero-partners[data-kanji],
+.page-hero[data-kanji],
+.news-hero[data-kanji] {
+  position: relative;
+}
+
+.service-detail-hero[data-kanji]::before,
+.hero-partners[data-kanji]::before,
+.page-hero[data-kanji]::before,
+.news-hero[data-kanji]::before {
+  /* Override the existing ::before from earlier rule — composite */
+  content: attr(data-kanji);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: clamp(180px, 22vw, 360px);
+  line-height: 1;
+  color: #C9A961;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+  letter-spacing: -0.03em;
+  /* Combined gradient overlay above so kanji is visible through it */
+  background: none;
+}
+
+/* Re-add the original brand overlay as ::after instead, layered below content */
+.service-detail-hero[data-kanji]::after,
+.hero-partners[data-kanji]::after,
+.page-hero[data-kanji]::after,
+.news-hero[data-kanji]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 30% 30%, rgba(15, 37, 64, 0.50) 0%, rgba(15, 37, 64, 0.30) 60%, transparent 100%),
+    linear-gradient(135deg, rgba(15, 37, 64, 0.45) 0%, rgba(30, 58, 95, 0.30) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Ensure content stacks above kanji + overlay */
+.service-detail-hero > *,
+.hero-partners > *,
+.page-hero > *,
+.news-hero > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* -------------------- HERO STATS TRIO -------------------- */
+.hero-stats-trio {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 32px auto 28px;
+  padding: 18px 28px;
+  background: linear-gradient(135deg, rgba(252, 250, 242, 0.10) 0%, rgba(201, 169, 97, 0.10) 100%);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(201, 169, 97, 0.32);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.hero-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 22px;
+  text-align: center;
+  position: relative;
+}
+
+.hero-stat-item:not(:last-child) {
+  border-right: 1px solid rgba(201, 169, 97, 0.28);
+}
+
+.hero-stat-item .num {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #F5D98C;
+  text-shadow: 0 2px 8px rgba(15, 37, 64, 0.45);
+  margin-bottom: 4px;
+}
+
+.hero-stat-item .lbl {
+  font-family: var(--font-heading);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(252, 250, 242, 0.85);
+  white-space: nowrap;
+}
+
+/* -------------------- HERO ACTIONS PAIR -------------------- */
+.hero-actions-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.hero-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: #fff !important;
+  background: var(--gradient-accent);
+  border: none;
+  border-radius: var(--radius-full);
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow:
+    0 6px 20px rgba(200, 56, 62, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  transition: transform 280ms var(--ease-out), box-shadow 280ms var(--ease-out), filter 280ms;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cta-primary::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -80%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.30), transparent);
+  transform: skewX(-18deg);
+  transition: left 720ms var(--ease-out);
+}
+
+.hero-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 32px rgba(200, 56, 62, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  filter: brightness(1.05);
+}
+
+.hero-cta-primary:hover::after { left: 140%; }
+
+.hero-cta-primary svg {
+  transition: transform 320ms var(--ease-out);
+}
+
+.hero-cta-primary:hover svg { transform: translateX(3px); }
+
+.hero-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: rgba(252, 250, 242, 0.95) !important;
+  background: rgba(252, 250, 242, 0.08);
+  border: 1.5px solid rgba(201, 169, 97, 0.45);
+  border-radius: var(--radius-full);
+  text-decoration: none !important;
+  border-bottom-width: 1.5px !important;
+  border-bottom-color: rgba(201, 169, 97, 0.45) !important;
+  backdrop-filter: blur(10px) saturate(1.3);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
+  transition: transform 280ms, background 280ms, border-color 280ms;
+}
+
+.hero-cta-ghost:hover {
+  transform: translateY(-2px);
+  background: rgba(201, 169, 97, 0.18);
+  border-color: var(--color-gold) !important;
+  color: #FCFAF2 !important;
+}
+
+/* -------------------- ENHANCED HERO TYPOGRAPHY -------------------- */
+.service-detail-hero h1,
+.hero-partners h1,
+.page-hero h1 {
+  font-size: clamp(36px, 5.2vw, 60px) !important;
+  margin-bottom: 18px !important;
+}
+
+.service-detail-hero p,
+.hero-partners p,
+.page-hero p {
+  font-size: clamp(16px, 1.6vw, 19px) !important;
+  max-width: 720px !important;
+  margin: 0 auto 8px !important;
+}
+
+/* -------------------- HERO SCROLL INDICATOR (subtle) -------------------- */
+.service-detail-hero,
+.hero-partners,
+.page-hero {
+  padding-bottom: 110px !important;
+}
+
+/* -------------------- RESPONSIVE -------------------- */
+@media (max-width: 768px) {
+  .hero-stats-trio {
+    padding: 14px 16px;
+    gap: 0;
+    margin: 24px auto 22px;
+    flex-wrap: nowrap;
+  }
+  .hero-stat-item { padding: 4px 12px; }
+  .hero-stat-item .num { font-size: 22px; }
+  .hero-stat-item .lbl { font-size: 10px; letter-spacing: 0.04em; }
+
+  .hero-actions-pair {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .hero-cta-primary,
+  .hero-cta-ghost {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+  }
+
+  .service-detail-hero[data-kanji]::before,
+  .hero-partners[data-kanji]::before,
+  .page-hero[data-kanji]::before {
+    font-size: 160px;
+  }
+}
+
+/* END ENHANCED SUBPAGE HERO */
+
+/* ============================================================================
+   CONTACT MODAL — auto-injected on all subpages
+   ============================================================================ */
+.contact-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 37, 64, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 320ms var(--ease-out);
+}
+
+.contact-modal-overlay.show {
+  display: flex;
+  opacity: 1;
+}
+
+.contact-modal {
+  background: var(--color-bg-white);
+  border-radius: var(--radius-xl);
+  max-width: 560px;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow:
+    0 30px 80px rgba(15, 37, 64, 0.40),
+    0 0 0 1px rgba(201, 169, 97, 0.18);
+  transform: translateY(40px) scale(0.96);
+  transition: transform 480ms var(--ease-spring);
+  padding: 36px 32px 32px;
+}
+
+.contact-modal-overlay.show .contact-modal {
+  transform: translateY(0) scale(1);
+}
+
+/* Decorative top gold accent */
+.contact-modal::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 50%, var(--color-gold) 100%);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.contact-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-bg-section);
+  border: 1px solid var(--color-border-soft);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 240ms, transform 240ms, color 240ms;
+  color: var(--color-text-light);
+  font-size: 0;
+  z-index: 1;
+}
+
+.contact-modal-close::before,
+.contact-modal-close::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 1.8px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.contact-modal-close::before { transform: rotate(45deg); }
+.contact-modal-close::after  { transform: rotate(-45deg); }
+
+.contact-modal-close:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transform: rotate(90deg);
+}
+
+.contact-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.contact-modal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  margin-bottom: 14px;
+}
+
+.contact-modal-eyebrow::before {
+  content: "";
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.contact-modal-title {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.contact-modal-subtitle {
+  font-size: 14.5px;
+  color: var(--color-text-light);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* Form inside modal — re-style without conflicting with site form */
+.contact-modal form .form-group { margin-bottom: 14px; }
+
+.contact-modal form .form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-body);
+  margin-bottom: 6px;
+  font-family: var(--font-heading);
+}
+
+.contact-modal form .form-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-white);
+  color: var(--color-text);
+  transition: border-color 240ms, box-shadow 240ms;
+  outline: none;
+}
+
+.contact-modal form .form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.10);
+}
+
+.contact-modal form .form-submit {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 28px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  color: #fff;
+  background: var(--gradient-accent);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(200, 56, 62, 0.30);
+  transition: transform 240ms, box-shadow 240ms, filter 240ms;
+}
+
+.contact-modal form .form-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(200, 56, 62, 0.42);
+  filter: brightness(1.05);
+}
+
+.contact-modal form .form-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.contact-modal-message {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 18px;
+}
+
+.contact-modal-disclaimer {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.contact-modal-disclaimer a {
+  color: var(--color-text-light);
+  text-decoration: underline;
+}
+
+/* Quick contact strip below form */
+.contact-modal-quick {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border-soft);
+}
+
+.contact-modal-quick a {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background 240ms, transform 240ms;
+}
+
+.contact-modal-quick a:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.contact-modal-quick svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Zalo button — preserve full Zalo brand circle (override generic 16px) */
+.contact-modal-quick .quick-zalo svg {
+  width: 20px;
+  height: 20px;
+}
+
+.contact-modal-quick .quick-zalo {
+  color: #0068FF;
+  background: rgba(0, 104, 255, 0.10);
+}
+
+.contact-modal-quick .quick-zalo:hover {
+  background: #0068FF;
+  color: #fff;
+}
+
+.contact-modal-quick .quick-zalo:hover svg circle { fill: #fff; }
+.contact-modal-quick .quick-zalo:hover svg text   { fill: #0068FF; }
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .contact-modal {
+    padding: 28px 22px 24px;
+    max-height: 100vh;
+    border-radius: var(--radius-md);
+  }
+  .contact-modal-quick {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Body scroll lock when modal open */
+body.contact-modal-open {
+  overflow: hidden;
+}
+
+/* END CONTACT MODAL */
+
+/* ============================================================================
+   CTA PARTNERS SECTION — fix invisible text + brand polish
+   Global h2 rule was setting color to deep Kon, which is invisible on indigo bg.
+   ============================================================================ */
+.cta-partners {
+  background: linear-gradient(135deg, #0F2540 0%, #1E3A5F 50%, #3D5A80 100%) !important;
+  color: var(--color-text-on-dark) !important;
+  padding: 100px 24px !important;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cta-partners::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 60% at 30% 30%, rgba(61, 90, 128, 0.45) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(200, 56, 62, 0.18) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta-partners > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-partners h2 {
+  font-family: var(--font-heading) !important;
+  font-size: clamp(26px, 3.4vw, 38px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.2 !important;
+  margin-bottom: 16px !important;
+  color: #FCFAF2 !important;
+  background: linear-gradient(135deg, #FCFAF2 0%, #F0D68F 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cta-partners p {
+  font-size: 17px !important;
+  line-height: 1.7 !important;
+  color: rgba(252, 250, 242, 0.85) !important;
+  max-width: 600px !important;
+  margin: 0 auto 28px !important;
+  opacity: 1 !important;
+}
+
+.cta-partners .btn,
+.cta-partners a.btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 32px !important;
+  font-family: var(--font-heading) !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  color: #fff !important;
+  background: var(--gradient-accent) !important;
+  border: none !important;
+  border-radius: var(--radius-full) !important;
+  text-decoration: none !important;
+  box-shadow: 0 6px 20px rgba(200, 56, 62, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+  transition: transform 280ms var(--ease-out), box-shadow 280ms var(--ease-out), filter 280ms !important;
+}
+
+.cta-partners .btn:hover,
+.cta-partners a.btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 30px rgba(200, 56, 62, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  filter: brightness(1.05);
+}
+/* END CTA PARTNERS */
 
 /* END BREAKTHROUGH ANIMATION LAYER */

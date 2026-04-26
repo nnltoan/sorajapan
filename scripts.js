@@ -1073,3 +1073,223 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 /* END DEFENSIVE NAV HREF GUARD */
+
+
+/* ============================================================================
+   CONTACT MODAL — auto-injects on non-home pages
+   - On home page: links pointing to #contact still scroll naturally
+   - On other pages: clicking same link opens modal with cloned form
+   - Reuses reCAPTCHA + Google Apps Script submission logic
+   ============================================================================ */
+(function contactModal() {
+  // Detect if current page is the ROOT home (only place where #contact section exists)
+  function isHomePage() {
+    const path = window.location.pathname;
+    // Any subfolder pages → NOT home
+    const subfolders = ['du-hoc', 'ky-su', 'tieng-nhat', 'dieu-duong', 'doi-tac', 'truong', 'don-hang-ky-su'];
+    for (const sub of subfolders) {
+      if (path.includes('/' + sub + '/')) return false;
+    }
+    // Specific top-level non-home pages
+    const otherTopPages = ['tin-tuc.html', 'tin-tuc-detail.html', 'case-study.html', 'admin.html', 'quotation.html'];
+    for (const p of otherTopPages) {
+      if (path.endsWith('/' + p) || path.endsWith(p)) return false;
+    }
+    // Otherwise = root home (path '/', '/index.html', or any other root file)
+    return true;
+  }
+
+  function buildModalHTML() {
+    return `
+<div class="contact-modal-overlay" id="contact-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+  <div class="contact-modal" role="document">
+    <button type="button" class="contact-modal-close" aria-label="Đóng" id="contact-modal-close-btn">×</button>
+    <div class="contact-modal-header">
+      <div class="contact-modal-eyebrow">Liên hệ</div>
+      <h2 class="contact-modal-title" id="contact-modal-title">Bắt đầu hành trình của bạn</h2>
+      <p class="contact-modal-subtitle">Để lại thông tin, đội ngũ chuyên gia Sora Japan sẽ liên hệ tư vấn lộ trình phù hợp nhất hoàn toàn miễn phí.</p>
+    </div>
+    <form id="contact-form-modal" novalidate>
+      <div class="form-group">
+        <label for="ho-ten-modal" class="form-label">Họ và tên *</label>
+        <input type="text" id="ho-ten-modal" name="ho-ten" class="form-input" placeholder="Nhập họ tên của bạn" required>
+      </div>
+      <div class="form-group">
+        <label for="sdt-modal" class="form-label">Số điện thoại *</label>
+        <input type="tel" id="sdt-modal" name="sdt" class="form-input" placeholder="090x xxx xxx" required pattern="[0-9]{9,11}">
+      </div>
+      <div class="form-group">
+        <label for="email-modal" class="form-label">Email *</label>
+        <input type="email" id="email-modal" name="email" class="form-input" placeholder="email@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="chuong-trinh-modal" class="form-label">Bạn quan tâm đến chương trình nào?</label>
+        <select id="chuong-trinh-modal" name="chuong-trinh" class="form-input" required>
+          <option value="">Chọn chương trình</option>
+          <option value="Du học Nhật Bản">Du học Nhật Bản</option>
+          <option value="Kỹ sư CNTT">Kỹ sư CNTT</option>
+          <option value="Kỹ sư Cơ khí">Kỹ sư Cơ khí</option>
+          <option value="Điều dưỡng">Điều dưỡng</option>
+          <option value="Học tiếng Nhật">Học tiếng Nhật</option>
+        </select>
+      </div>
+      <button type="submit" class="form-submit">Gửi yêu cầu tư vấn</button>
+    </form>
+    <div id="contact-modal-message" class="contact-modal-message" aria-live="polite"></div>
+    <p class="contact-modal-disclaimer">
+      Biểu mẫu này được bảo vệ bởi reCAPTCHA. Áp dụng <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Chính sách bảo mật</a> và <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Điều khoản dịch vụ</a> của Google.
+    </p>
+    <div class="contact-modal-quick">
+      <a href="tel:0903539537">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Gọi ngay
+      </a>
+      <a href="https://zalo.me/0903539537" target="_blank" rel="noopener" class="quick-zalo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <circle cx="12" cy="12" r="11" fill="#0068FF"/>
+          <text x="12" y="16" text-anchor="middle" fill="#ffffff" font-family="Arial Black, Arial, sans-serif" font-size="9" font-weight="900" letter-spacing="-0.4">Zalo</text>
+        </svg>
+        Chat Zalo
+      </a>
+    </div>
+  </div>
+</div>`;
+  }
+
+  function inject() {
+    // Always inject — modal is hidden by default
+    if (document.getElementById('contact-modal-overlay')) return;
+    document.body.insertAdjacentHTML('beforeend', buildModalHTML());
+
+    const overlay = document.getElementById('contact-modal-overlay');
+    const closeBtn = document.getElementById('contact-modal-close-btn');
+    const form = document.getElementById('contact-form-modal');
+    const messageDiv = document.getElementById('contact-modal-message');
+
+    function open() {
+      overlay.classList.add('show');
+      document.body.classList.add('contact-modal-open');
+      // Focus first input for UX
+      setTimeout(() => {
+        const first = form.querySelector('input');
+        if (first) first.focus();
+      }, 200);
+    }
+    function close() {
+      overlay.classList.remove('show');
+      document.body.classList.remove('contact-modal-open');
+      messageDiv.textContent = '';
+      messageDiv.style.color = '';
+    }
+
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('show')) close();
+    });
+
+    // Form submit handler — same logic as inline form, just with modal IDs
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const submitBtn = form.querySelector('.form-submit');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Đang gửi...';
+      submitBtn.disabled = true;
+      messageDiv.style.color = '';
+      messageDiv.textContent = '';
+
+      const tokenPromise = (typeof window.getRecaptchaToken === 'function')
+        ? window.getRecaptchaToken('contact_form_modal')
+        : Promise.resolve(null);
+
+      tokenPromise.then((recaptchaToken) => {
+        const payload = JSON.stringify({
+          action: 'submitContact',
+          hoTen: form.querySelector('[name="ho-ten"]').value,
+          sdt: form.querySelector('[name="sdt"]').value,
+          email: form.querySelector('[name="email"]').value,
+          chuongTrinh: form.querySelector('[name="chuong-trinh"]').value,
+          recaptchaToken: recaptchaToken || ''
+        });
+
+        // Use the SAME Google Apps Script endpoint as the inline form (CONFIG.API_URL)
+        // Use GET with payload param for CORS-safe submission (matching main form behavior)
+        const apiUrl = (typeof CONFIG !== 'undefined' && CONFIG.API_URL)
+          ? CONFIG.API_URL
+          : 'https://script.google.com/macros/s/AKfycbwE1UrOdpMcRdMPN1kPGPjFacHHOBcgSHkhKCn0SqQfjIvWPZ2NvLZKdX5z8rBQSLyihg/exec';
+        const url = new URL(apiUrl);
+        url.searchParams.set('action', 'submitContact');
+        url.searchParams.set('payload', payload);
+
+        return fetch(url.toString(), { redirect: 'follow' })
+          .then(r => r.text())
+          .then(text => {
+            let data;
+            try { data = JSON.parse(text); } catch (e) {
+              throw new Error('Phản hồi không hợp lệ');
+            }
+            if (data.result === 'success' || data.status === 'success') {
+              return true;
+            }
+            throw new Error(data.message || 'Lỗi không xác định');
+          });
+      })
+      .then(() => {
+        // Track GA4 event if available
+        if (typeof gtag === 'function') {
+          gtag('event', 'generate_lead', { form_name: 'contact_form_modal' });
+        }
+        messageDiv.style.color = '#16A34A';
+        messageDiv.innerHTML = '<strong>✓ Cảm ơn bạn!</strong> Sora Japan sẽ liên hệ trong vòng 24h.';
+        form.reset();
+        // Auto-close after 3.5s
+        setTimeout(close, 3500);
+      })
+      .catch((err) => {
+        messageDiv.style.color = '#EF4444';
+        messageDiv.textContent = 'Không gửi được, vui lòng kiểm tra mạng hoặc gọi hotline 0903 539 537.';
+        console.warn('[Contact modal]', err);
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      });
+    });
+
+    // Intercept all clicks on contact links — open modal except on home
+    const onHome = isHomePage();
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      // Match any href ending with index.html#contact OR exactly #contact
+      const pointsToContact = /index\.html#contact$/i.test(href) || href === '#contact';
+      if (!pointsToContact) return;
+      // Allow modifier clicks for new tab
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      if (link.target === '_blank') return;
+
+      if (onHome) {
+        // On home: let smooth-scroll handler do its job (don't prevent default)
+        return;
+      }
+      // Off-home: prevent navigation, open modal instead
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      open();
+    }, true); // capture phase — runs before defensive nav guard
+
+    // Expose openContactModal globally
+    window.openContactModal = open;
+    window.closeContactModal = close;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inject);
+  } else {
+    inject();
+  }
+})();
+/* END CONTACT MODAL */
