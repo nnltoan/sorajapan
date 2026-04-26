@@ -50,12 +50,8 @@ CUSTOM_DESC = {
     "tieng-nhat/basic.html":           "Khoa tieng Nhat Shinjigen Basic N5-N4 tai Sora Japan - Lo trinh 4-6 thang, giao vien ban ngu, cam ket dau ra JLPT N4.",
     "tieng-nhat/intermediate.html":    "Khoa tieng Nhat Shinjigen Intermediate N3 - Luyen thi JLPT N3, giao tiep cong viec, chuan bi phong van don hang tai Sora Japan.",
     "tieng-nhat/master.html":          "Khoa tieng Nhat Shinjigen Master N2-N1 - Luyen thi JLPT N2, N1 chuyen sau, giao vien nguoi Nhat kem 1-1 tai Sora Japan.",
-    "don-hang-ky-su/index.html":       "Don hang ky su Nhat Ban cap nhat lien tuc - CNTT, Co khi, Xay dung, Dien, Kinh te. Sora Japan la cau noi ky su Viet va doanh nghiep Nhat.",
-    "don-hang-ky-su/cntt.html":        "Don hang ky su CNTT tai Nhat Ban - Luong 25-40 man/thang, visa ky su, cac cong ty cong nghe o Tokyo, Osaka.",
-    "don-hang-ky-su/cokhi.html":       "Don hang ky su Co khi tai Nhat - Nha may oto, thiet bi cong nghiep. Luong on dinh, phu cap nha o. Dang ky phong van mien phi.",
-    "don-hang-ky-su/xaydung.html":     "Don hang ky su Xay dung tai Nhat Ban - Cong trinh cao oc, ha tang. Muc luong hap dan, ho tro visa ky su dai han.",
-    "don-hang-ky-su/dien.html":        "Don hang ky su Dien tai Nhat - Nha may dien, M&E, tu dong hoa. Luong 28-38 man/thang, phuc loi tot.",
-    "don-hang-ky-su/kinhte.html":      "Don hang ky su Kinh te tai Nhat Ban - Vi tri tai cac tap doan thuong mai, tai chinh, ke toan.",
+    # don-hang-ky-su/* entries removed 2026-04-26 — folder converted to redirect stubs.
+    # Canonical engineer SEO meta now lives on /ky-su/* pages. Skip this folder in batch SEO runs.
     "quotation.html":                   "Bao gia dich vu Sora Japan - Chi phi du hoc, tuyen dung ky su, hoc tieng Nhat minh bach, tron goi, khong phat sinh.",
 }
 
@@ -198,7 +194,7 @@ def classify(rel_path):
         schema_type = "EducationalOrganization_Partner"
     elif rel_path.startswith("doi-tac/") and rel_path != "doi-tac/index.html":
         schema_type = "Organization_Partner"
-    elif rel_path in ("du-hoc/index.html","ky-su/index.html","tieng-nhat/index.html","dieu-duong/index.html","doi-tac/index.html","don-hang-ky-su/index.html"):
+    elif rel_path in ("du-hoc/index.html","ky-su/index.html","tieng-nhat/index.html","dieu-duong/index.html","doi-tac/index.html"):
         schema_type = "Service"
     crumbs = build_breadcrumbs(rel_path)
     return (canonical, IMG[img_key], schema_type, crumbs, noindex)

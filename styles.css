@@ -4576,6 +4576,47 @@ form button[type="submit"]:hover,
   .related-card-icon { font-size: 26px; width: 48px; height: 48px; }
 }
 
+/* Cross-category variant — visually differentiated to signal "outside this category" */
+.related-pages-cross {
+  background: linear-gradient(180deg, var(--color-bg-section) 0%, var(--color-bg-warm, #FAF7EE) 100%);
+  border-top: 1px dashed var(--color-border-soft);
+  padding-top: 70px;
+  padding-bottom: 90px;
+}
+
+.related-pages-cross::before {
+  background-image: radial-gradient(circle, rgba(201, 169, 97, 0.08) 1px, transparent 1px);
+  opacity: 0.55;
+}
+
+.related-pages-cross .related-pages-eyebrow {
+  color: var(--color-accent-warm, #B58E3D);
+  background: rgba(201, 169, 97, 0.12);
+}
+
+.related-pages-cross .related-pages-title {
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent-warm, #B58E3D) 70%, #C9A961 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.related-pages-cross .related-card:hover {
+  border-color: #C9A961;
+  box-shadow: var(--shadow-4), 0 8px 32px rgba(201, 169, 97, 0.18);
+}
+
+.related-pages-cross .related-card::before {
+  background: linear-gradient(90deg, #C9A961 0%, var(--color-primary) 100%);
+}
+
+@media (max-width: 1024px) {
+  .related-pages-cross { padding: 56px 20px 70px; }
+}
+@media (max-width: 600px) {
+  .related-pages-cross { padding: 44px 16px 56px; }
+}
+
 /* END RELATED PAGES SECTION */
 
 /* ============================================================================

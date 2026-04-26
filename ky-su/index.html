@@ -72,6 +72,83 @@
     .service-detail-hero p {
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
     }
+
+    /* Industries grid (merged from don-hang-ky-su/index.html) */
+    .industries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+    .industry-card {
+      background: var(--color-bg-white);
+      border: 1px solid var(--color-border-soft);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-2);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 320ms var(--ease-out), box-shadow 320ms var(--ease-out), border-color 320ms;
+      position: relative;
+      overflow: hidden;
+    }
+    .industry-card::before {
+      content: "";
+      position: absolute; top: 0; left: 50%;
+      width: 0; height: 3px;
+      background: var(--gradient-accent);
+      transition: width 480ms var(--ease-out), left 480ms var(--ease-out);
+      border-radius: 3px;
+    }
+    .industry-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-4), var(--shadow-glow-primary);
+      border-color: var(--color-primary-light);
+    }
+    .industry-card:hover::before { width: 70%; left: 15%; }
+    .industry-card-icon {
+      font-size: 36px;
+      width: 64px; height: 64px;
+      border-radius: var(--radius-md);
+      background: var(--color-primary-soft);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+      transition: background 360ms, transform 480ms var(--ease-spring);
+    }
+    .industry-card:hover .industry-card-icon {
+      background: var(--color-accent-soft);
+      transform: scale(1.08) rotate(-4deg);
+    }
+    .industry-card-title {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0 0 6px;
+      letter-spacing: -0.015em;
+    }
+    .industry-card-meta {
+      font-size: 13px;
+      color: var(--color-primary);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
+    }
+    .industry-card-desc {
+      font-size: 14.5px;
+      color: var(--color-text-light);
+      line-height: 1.6;
+      margin: 0 0 16px;
+    }
+    .industry-card-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-primary);
+      transition: gap 280ms;
+    }
+    .industry-card:hover .industry-card-cta { gap: 10px; color: var(--color-accent); }
   </style>
 
   <!-- SORA_SEO_BLOCK_START -->
@@ -262,30 +339,55 @@
     <p>Thuộc mạng lưới phái cử tinh hoa nhất Việt Nam, Sora Japan hiện tự hào là <strong>đối tác cung ứng chiến lược cho hệ thống các Nhà máy Ứng dụng AI công nghệ cao</strong> tại Nhật Bản.</p>
     <p>Không dừng lại ở đó, hàng trăm cơ hội việc làm đang chào mời các Kỹ sư do chúng tôi đồng thời là đối tác trực tiếp của nhiều nhà máy, tập đoàn công nghiệp đa quốc gia và công ty chế tạo khác như: <strong>ABC Corporation, XYZ Heavy Industries...</strong></p>
 
-    <div class="service-link-grid">
-      <a href="cntt.html" class="service-link-card">
-        <div class="service-link-title">Kỹ sư Công nghệ thông tin <i class="fas fa-arrow-right"></i></div>
-        <div class="service-link-desc">Phát triển phần mềm, quản trị mạng, AI và hệ thống Cloud.</div>
+    <div class="industries-grid">
+      <a href="cntt.html" class="industry-card">
+        <div class="industry-card-icon">💻</div>
+        <h3 class="industry-card-title">Kỹ sư CNTT</h3>
+        <div class="industry-card-meta">20-35 vạn yên/tháng · JLPT N2</div>
+        <p class="industry-card-desc">Phát triển phần mềm, AI, Cloud, hệ thống quản lý cho Sony, Rakuten, NTT Data, Fujitsu, NEC.</p>
+        <span class="industry-card-cta">Tìm hiểu ngành
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
       </a>
-      <a href="co-khi.html" class="service-link-card">
-        <div class="service-link-title">Kỹ sư Cơ khí / Tự động hóa <i class="fas fa-arrow-right"></i></div>
-        <div class="service-link-desc">Vận hành máy công nghiệp CNC, ô tô, chế tạo và thiết kế CAD/CAM.</div>
+
+      <a href="co-khi.html" class="industry-card">
+        <div class="industry-card-icon">⚙️</div>
+        <h3 class="industry-card-title">Kỹ sư Cơ khí</h3>
+        <div class="industry-card-meta">22-32 vạn yên/tháng · JLPT N2</div>
+        <p class="industry-card-desc">Vận hành CNC, robot, dây chuyền tự động hóa tại Toyota, Honda, Mitsubishi, Yamaha, Yanmar.</p>
+        <span class="industry-card-cta">Tìm hiểu ngành
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
       </a>
-      <a href="dien.html" class="service-link-card">
-        <div class="service-link-title">Kỹ sư Điện / Điện tử <i class="fas fa-arrow-right"></i></div>
-        <div class="service-link-desc">Thiết kế vi mạch, tự động hóa linh kiện và năng lượng số.</div>
+
+      <a href="dien.html" class="industry-card">
+        <div class="industry-card-icon">⚡</div>
+        <h3 class="industry-card-title">Kỹ sư Điện</h3>
+        <div class="industry-card-meta">22-30 vạn yên/tháng · JLPT N2</div>
+        <p class="industry-card-desc">Hệ thống điện công nghiệp, năng lượng tái tạo, IoT, smart factory tại Mitsubishi Electric, Panasonic, Hitachi.</p>
+        <span class="industry-card-cta">Tìm hiểu ngành
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
       </a>
-      <a href="xay-dung.html" class="service-link-card">
-        <div class="service-link-title">Kỹ sư Xây dựng <i class="fas fa-arrow-right"></i></div>
-        <div class="service-link-desc">Giám sát công trình, vẽ kiến trúc và quản lý dự án nhà tiền chế.</div>
+
+      <a href="xay-dung.html" class="industry-card">
+        <div class="industry-card-icon">🏗️</div>
+        <h3 class="industry-card-title">Kỹ sư Xây dựng</h3>
+        <div class="industry-card-meta">22-32 vạn yên/tháng · JLPT N2</div>
+        <p class="industry-card-desc">Thiết kế kết cấu, BIM, công trình hạ tầng tại Big-5: Shimizu, Taisei, Obayashi, Kajima, Takenaka.</p>
+        <span class="industry-card-cta">Tìm hiểu ngành
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
       </a>
-      <a href="kinh-te.html" class="service-link-card">
-        <div class="service-link-title">Kỹ sư Kinh tế <i class="fas fa-arrow-right"></i></div>
-        <div class="service-link-desc">Tài chính, Kế toán, Logistics, Nhân sự, Biên phiên dịch và nghiệp vụ văn phòng.</div>
-      </a>
-      <a href="../don-hang-ky-su/index.html" class="service-link-card" style="background: var(--color-bg);">
-        <div class="service-link-title">Danh sách Đơn hàng <i class="fas fa-eye"></i></div>
-        <div class="service-link-desc">Khám phá và ứng tuyển ngay vào hệ thống dữ liệu hàng trăm công việc Mới mỗi ngày.</div>
+
+      <a href="kinh-te.html" class="industry-card">
+        <div class="industry-card-icon">📈</div>
+        <h3 class="industry-card-title">Kỹ sư Kinh tế</h3>
+        <div class="industry-card-meta">20-30 vạn yên/tháng · JLPT N2</div>
+        <p class="industry-card-desc">Quản lý sản xuất, kế toán quốc tế, logistics tại sōgō shōsha — Mitsubishi Corp, Itochu, Marubeni, Sumitomo.</p>
+        <span class="industry-card-cta">Tìm hiểu ngành
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
       </a>
     </div>
 
@@ -306,4 +408,71 @@
     <ul>
       <li>Hưởng lợi tức, tiền thưởng và tăng lương định kỳ chuẩn người bản xứ.</li>
       <li>Cơ chế Visa không thời hạn, cấp phép bảo lãnh gia đình (vợ/chồng, con cái) theo cùng.</li>
-      <li>Hoàn toàn miễn phí xử lý m
+      <li>Hoàn toàn miễn phí xử lý mọi thủ tục giấy tờ — visa kỹ sư, COE (Certificate of Eligibility), hộ chiếu, dịch thuật công chứng.</li>
+      <li>Chế độ bảo hiểm trọn gói: y tế, lương hưu, bảo hiểm thất nghiệp theo chuẩn quốc gia Nhật Bản.</li>
+      <li>Hỗ trợ chỗ ở miễn phí 3-12 tháng đầu, tư vấn ngân hàng, sim điện thoại, đăng ký My Number.</li>
+      <li>Đào tạo Business Japanese trước nhập việc — sẵn sàng giao tiếp văn phòng từ ngày đầu.</li>
+    </ul>
+
+    <h2>So Sánh Mức Lương 5 Ngành Kỹ Sư</h2>
+    <p>Bảng so sánh mức lương khởi điểm và cao điểm sau 5 năm kinh nghiệm tại các tập đoàn lớn Nhật Bản (đơn vị: vạn yên/tháng):</p>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+      <thead>
+        <tr style="background: var(--color-primary); color: white;">
+          <th style="padding: 14px 18px; text-align: left;">Ngành</th>
+          <th style="padding: 14px 18px; text-align: left;">Lương khởi điểm</th>
+          <th style="padding: 14px 18px; text-align: left;">Sau 5 năm</th>
+          <th style="padding: 14px 18px; text-align: left;">JLPT yêu cầu</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding: 12px 18px;"><strong><a href="cntt.html">CNTT</a></strong></td><td style="padding: 12px 18px;">20-35 vạn</td><td style="padding: 12px 18px;">45-60 vạn</td><td style="padding: 12px 18px;">N2</td></tr>
+        <tr style="background: #f9f9f9;"><td style="padding: 12px 18px;"><strong><a href="co-khi.html">Cơ khí / Tự động hóa</a></strong></td><td style="padding: 12px 18px;">22-32 vạn</td><td style="padding: 12px 18px;">40-55 vạn</td><td style="padding: 12px 18px;">N2</td></tr>
+        <tr><td style="padding: 12px 18px;"><strong><a href="dien.html">Điện / Điện tử</a></strong></td><td style="padding: 12px 18px;">22-30 vạn</td><td style="padding: 12px 18px;">40-50 vạn</td><td style="padding: 12px 18px;">N2</td></tr>
+        <tr style="background: #f9f9f9;"><td style="padding: 12px 18px;"><strong><a href="xay-dung.html">Xây dựng</a></strong></td><td style="padding: 12px 18px;">22-32 vạn</td><td style="padding: 12px 18px;">40-55 vạn</td><td style="padding: 12px 18px;">N2</td></tr>
+        <tr><td style="padding: 12px 18px;"><strong><a href="kinh-te.html">Kinh tế / Logistics</a></strong></td><td style="padding: 12px 18px;">20-30 vạn</td><td style="padding: 12px 18px;">40-50 vạn</td><td style="padding: 12px 18px;">N2</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 14px; color: var(--color-text-light); font-style: italic;">* Mức lương trên chưa bao gồm bonus 2 kỳ/năm (4-6 tháng lương cơ bản).<br>* <strong>JLPT N2</strong> là yêu cầu bắt buộc của visa Engineer 2026 cho tất cả 5 ngành (cập nhật theo quy định mới của Cục Xuất nhập cảnh Nhật Bản).</p>
+
+    <h2>Quy Trình Ứng Tuyển — 6 Bước Chuẩn Quốc Tế</h2>
+    <ol>
+      <li><strong>Tư vấn miễn phí:</strong> Đánh giá năng lực, định hướng ngành phù hợp với chuyên môn và sở thích của bạn.</li>
+      <li><strong>Đào tạo tiếng Nhật:</strong> Khóa học JLPT N3-N2 chuyên sâu (3-12 tháng tùy trình độ đầu vào).</li>
+      <li><strong>Chuẩn bị hồ sơ:</strong> CV chuẩn Nhật, certificates, business Japanese, portfolio kỹ thuật cá nhân.</li>
+      <li><strong>Phỏng vấn online:</strong> Sora Japan kết nối trực tiếp với HR doanh nghiệp Nhật + training mock interview.</li>
+      <li><strong>Xin visa Engineer:</strong> Hỗ trợ COE + visa work — thời gian 2-3 tháng, tỷ lệ đậu 99%.</li>
+      <li><strong>Đào tạo trước nhập việc:</strong> 1-3 tháng định hướng văn hóa doanh nghiệp Nhật + ổn định cuộc sống tại Nhật.</li>
+    </ol>
+
+    <h2>Câu Hỏi Thường Gặp</h2>
+    <div class="bonus-box" style="border-style: solid; background: var(--color-bg-section);">
+      <h3 style="margin-top: 0;">Tôi chưa có kinh nghiệm thực tế, có thể tham gia không?</h3>
+      <p>Có. Sora Japan có chương trình <strong>học bổng đào tạo trước nhập việc</strong> — bạn được đào tạo full-time 1-1.5 năm (lương + nhà ở miễn phí) tại học viện kỹ thuật liên kết, sau đó mới chính thức làm việc.</p>
+    </div>
+    <div class="bonus-box" style="border-style: solid; background: var(--color-bg-section);">
+      <h3 style="margin-top: 0;">Trên 35 tuổi có còn cơ hội không?</h3>
+      <p>Có. Sora Japan tuyển dụng <strong>lên tới 45 tuổi</strong>. Người có nhiều năm kinh nghiệm chuyên môn được ưu tiên cho vị trí Senior Engineer / Project Manager với mức lương cao hơn fresher.</p>
+    </div>
+    <div class="bonus-box" style="border-style: solid; background: var(--color-bg-section);">
+      <h3 style="margin-top: 0;">Có thể đưa gia đình sang Nhật không?</h3>
+      <p>Có. Visa "Engineer" cho phép bảo lãnh <strong>vợ/chồng + con cái</strong>. Con cái được học miễn phí trường công lập Nhật, vợ/chồng được phép làm việc bán thời gian.</p>
+    </div>
+    <div class="bonus-box" style="border-style: solid; background: var(--color-bg-section);">
+      <h3 style="margin-top: 0;">Có chi phí gì cần đóng cho Sora Japan không?</h3>
+      <p>Hoàn toàn <strong>miễn phí tư vấn</strong>. Một số chương trình đào tạo có học phí, nhưng nhiều chương trình được công ty đối tác Nhật <strong>tài trợ 100%</strong> theo dạng "đơn hàng 0 đồng".</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px;">
+      <a href="../index.html#contact" class="cta-btn" style="padding: 15px 30px; font-size: 1.2rem;">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</a>
+    </div>
+  </div>
+
+  <footer class="footer" style="text-align: center; padding: 20px; background: #1a1a1a; color: white;">
+    &copy; 2026 Sora Japan JSC. Chắp cánh ước mơ. <br> Hotline: +84 903539537
+  </footer>
+
+  <script src="../scripts.js"></script>
+  <script src="../js/related-pages.js" defer></script>
+</body>
+</html>

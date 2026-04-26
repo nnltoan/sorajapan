@@ -333,44 +333,10 @@
     <priority>0.6</priority>
   </url>
 
-  <!-- ============================================
-       ĐƠN HÀNG KỸ SƯ (priority 0.5–0.6)
-       ============================================ -->
-  <url>
-    <loc>https://sorajapan.edu.vn/don-hang-ky-su/</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://sorajapan.edu.vn/don-hang-ky-su/cntt.html</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sorajapan.edu.vn/don-hang-ky-su/cokhi.html</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sorajapan.edu.vn/don-hang-ky-su/dien.html</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sorajapan.edu.vn/don-hang-ky-su/kinhte.html</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sorajapan.edu.vn/don-hang-ky-su/xaydung.html</loc>
-    <lastmod>2026-04-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
+  <!-- Note: 2026-04-26 — entire /don-hang-ky-su/ folder converted to redirect stubs.
+       /don-hang-ky-su/index.html  → ../ky-su/index.html
+       /don-hang-ky-su/{industry}.html → ../ky-su/{industry}.html
+       All redirect pages noindex,follow → not in sitemap.
+       Canonical engineer content lives under /ky-su/. -->
 
 </urlset>

@@ -89,6 +89,58 @@
     }
   };
 
+  // -------------- CROSS-CATEGORY LINKS --------------
+  // Cross-link from a detail page to specific pages in ANOTHER category.
+  // Helps SEO + UX: visitors reading a du-hoc article can discover relevant
+  // schools; ky-su readers can discover partner companies.
+  const CROSS_LINKS = {
+    'du-hoc': {
+      targetCategory: 'truong',
+      label: 'Trường Nhật ngữ liên kết',
+      title: 'Trường Nhật ngữ phù hợp với chương trình này',
+      subtitle: 'Các trường Sora Japan thường giới thiệu cho học viên đi theo lộ trình này',
+      mapping: {
+        'tu-tuc.html':              ['ica.html', 'osafune.html', 'oji.html'],
+        'du-bi.html':               ['kuraku.html', 'topa21.html', 'waseda-edu.html'],
+        'chuyen-doi-visa.html':     ['kyoritsu.html', 'jin-tokyo.html', 'sophia.html'],
+        'bong-bao-yomiuri.html':    ['tokyo-yohoku.html', 'ica.html', 'asahi.html'],
+        'bong-dieu-duong.html':     ['kyorin.html', 'jvc.html', 'kuraku.html'],
+        'bong-nha-hang-zensho.html':['ica.html', 'sophia.html', 'oji.html']
+      }
+    },
+    'ky-su': {
+      // Custom mode: items are explicit (not pulled from RELATED_PAGES manifest).
+      // Reason: existing /doi-tac/ partners are all medical/care — not relevant
+      // for engineering pages. We instead point engineers to job-orders + N2 prep
+      // which are the immediate next steps in their journey.
+      label: 'Bước tiếp theo',
+      title: 'Cùng tìm hiểu thêm',
+      subtitle: 'Đơn hàng kỹ sư đang tuyển + lộ trình tiếng Nhật N2 bắt buộc cho visa Engineer 2026',
+      customItems: {
+        'cntt.html': [
+          { url: 'index.html',                title: 'Tổng quan 5 ngành Kỹ sư',         desc: 'So sánh mức lương, yêu cầu JLPT và doanh nghiệp tiếp nhận của tất cả 5 ngành.' },
+          { url: '../tieng-nhat/master.html', title: 'Khóa Shinjigen Master (N2–N1)',  desc: 'Lộ trình đạt JLPT N2 — yêu cầu bắt buộc của visa Engineer từ 2026.' }
+        ],
+        'co-khi.html': [
+          { url: 'index.html',                title: 'Tổng quan 5 ngành Kỹ sư',         desc: 'So sánh mức lương, yêu cầu JLPT và doanh nghiệp tiếp nhận của tất cả 5 ngành.' },
+          { url: '../tieng-nhat/master.html', title: 'Khóa Shinjigen Master (N2–N1)',  desc: 'Lộ trình đạt JLPT N2 — yêu cầu bắt buộc của visa Engineer từ 2026.' }
+        ],
+        'dien.html': [
+          { url: 'index.html',                title: 'Tổng quan 5 ngành Kỹ sư',         desc: 'So sánh mức lương, yêu cầu JLPT và doanh nghiệp tiếp nhận của tất cả 5 ngành.' },
+          { url: '../tieng-nhat/master.html', title: 'Khóa Shinjigen Master (N2–N1)',  desc: 'Lộ trình đạt JLPT N2 — yêu cầu bắt buộc của visa Engineer từ 2026.' }
+        ],
+        'xay-dung.html': [
+          { url: 'index.html',                title: 'Tổng quan 5 ngành Kỹ sư',         desc: 'So sánh mức lương, yêu cầu JLPT và doanh nghiệp tiếp nhận của tất cả 5 ngành.' },
+          { url: '../tieng-nhat/master.html', title: 'Khóa Shinjigen Master (N2–N1)',  desc: 'Lộ trình đạt JLPT N2 — yêu cầu bắt buộc của visa Engineer từ 2026.' }
+        ],
+        'kinh-te.html': [
+          { url: 'index.html',                title: 'Tổng quan 5 ngành Kỹ sư',         desc: 'So sánh mức lương, yêu cầu JLPT và doanh nghiệp tiếp nhận của tất cả 5 ngành.' },
+          { url: '../tieng-nhat/master.html', title: 'Khóa Shinjigen Master (N2–N1)',  desc: 'Lộ trình đạt JLPT N2 — yêu cầu bắt buộc của visa Engineer từ 2026.' }
+        ]
+      }
+    }
+  };
+
   // -------------- DETECT CURRENT PAGE --------------
   function detectCurrent() {
     const pathname = window.location.pathname;
@@ -155,6 +207,65 @@
     }[c]));
   }
 
+  // -------------- BUILD CROSS-CATEGORY SECTION --------------
+  function buildCrossSection(current) {
+    const crossConfig = CROSS_LINKS[current.category];
+    if (!crossConfig) return null;
+
+    let items = [];
+
+    // Mode 1: customItems — full {url, title, desc} per page (e.g., ky-su)
+    if (crossConfig.customItems) {
+      const list = crossConfig.customItems[current.filename];
+      if (!list || !list.length) return null;
+      items = list.slice();
+    }
+    // Mode 2: mapping — slug list resolved from RELATED_PAGES manifest (e.g., du-hoc → truong)
+    else if (crossConfig.mapping) {
+      const targetUrls = crossConfig.mapping[current.filename];
+      if (!targetUrls || !targetUrls.length) return null;
+      const targetCat = RELATED_PAGES[crossConfig.targetCategory];
+      if (!targetCat) return null;
+      items = targetUrls.map(url => {
+        const found = targetCat.items.find(it => it.url === url);
+        if (!found) return null;
+        return {
+          url: '../' + crossConfig.targetCategory + '/' + url,
+          title: found.title,
+          desc: found.desc
+        };
+      }).filter(Boolean);
+    }
+
+    if (!items.length) return null;
+
+    const cards = items.map(it => `
+        <a href="${escapeHtml(it.url)}" class="related-card">
+          <div class="related-card-body">
+            <h3 class="related-card-title">${escapeHtml(it.title)}</h3>
+            <p class="related-card-desc">${escapeHtml(it.desc)}</p>
+            <span class="related-card-cta">Tìm hiểu thêm
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+        </a>`).join('');
+
+    return `
+      <section class="related-pages-section related-pages-cross" aria-label="${escapeHtml(crossConfig.label)}">
+        <div class="related-pages-inner">
+          <div class="related-pages-header">
+            <div class="related-pages-eyebrow">${escapeHtml(crossConfig.label)}</div>
+            <h2 class="related-pages-title">${escapeHtml(crossConfig.title)}</h2>
+            <p class="related-pages-subtitle">${escapeHtml(crossConfig.subtitle)}</p>
+          </div>
+          <div class="related-pages-grid">${cards}</div>
+        </div>
+      </section>`;
+  }
+
   // -------------- INJECT --------------
   function findInjectionPoint() {
     // Prefer placing BEFORE footer if exists, ELSE before floating-contact, ELSE end of body
@@ -170,7 +281,9 @@
     if (!current) return;
     // Skip on index.html (doesn't need related)
     if (current.filename === 'index.html') return;
-    const html = buildSection(current);
+    const sameHtml = buildSection(current) || '';
+    const crossHtml = buildCrossSection(current) || '';
+    const html = sameHtml + crossHtml;
     if (!html) return;
     const { node, position } = findInjectionPoint();
     if (position === 'before') {
