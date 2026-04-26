@@ -14,7 +14,7 @@
   <link rel="canonical" href="https://sorajapan.edu.vn/">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="author" content="Công ty Cổ phần Quốc tế Sora Japan">
-  <meta name="theme-color" content="#d32f2f">
+  <meta name="theme-color" content="#1E3A5F">
   <meta http-equiv="content-language" content="vi-VN">
 
   <!-- ===== Google Search Console verification (thay content sau khi lấy token ở search.google.com/search-console) ===== -->
@@ -42,6 +42,11 @@
   <link rel="icon" type="image/png" href="images/logo_transparent.png">
   <link rel="apple-touch-icon" sizes="180x180" href="images/logo_transparent.png">
   <link rel="manifest" href="/manifest.json">
+
+  <!-- Google Fonts preconnect (performance) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link rel="stylesheet" href="styles.css">
 
   <!-- Font Awesome (for some social icons if needed, but styling uses SVG mainly) -->
@@ -135,6 +140,7 @@
       <picture><source srcset="images/hero-bg.webp" type="image/webp"><img src="images/hero-bg.png" alt="Phong cảnh Nhật Bản núi Phú Sĩ và hoa anh đào" fetchpriority="high" decoding="async"></picture>
     </div>
     <div class="hero-overlay"></div>
+    <div class="hero-mesh"><span></span></div>
     <div class="hero-particles"></div>
 
     <div class="hero-slider hero-slider-desktop">
@@ -158,10 +164,9 @@
         Khai giảng khóa mới & Nhận hồ sơ tháng 4/2026
       </div>
 
-      <h1 class="hero-title reveal stagger-children visible">
-        Chắp cánh ước<br>
-        <span style="color: var(--color-cta)">mơ Nhật Bản</span>
-        <span class="hero-title-jp">日本の夢に翼を</span>
+      <h1 class="hero-title reveal visible">
+        Chắp cánh <strong>ước mơ</strong><br>
+        <strong>Nhật Bản</strong>
       </h1>
 
       <p class="hero-desc reveal">
@@ -248,7 +253,7 @@
     <div class="container about-grid">
       <div class="about-content reveal-left">
         <div class="section-tag">Về Chúng Tôi</div>
-        <h2 class="section-title">Đồng Hành Cùng Bạn Xây Dựng Tương Lai</h2>
+        <h2 class="section-title">Đồng Hành Cùng Bạn Xây Dựng <em class="accent">Tương Lai</em></h2>
 
         <p class="about-text">
           <strong>SORA JAPAN</strong> là Công ty Cổ phần Quốc tế chuyên tư vấn đào tạo tiếng Nhật, Hàn, Anh, Trung.
@@ -294,9 +299,9 @@
   <!-- ================= PROBLEMS ================= -->
   <section class="section problems">
     <div class="container">
-      <div class="section-header reveal">
+      <div class="section-header reveal" data-kanji="悩">
         <div class="section-tag">Thấu Hiểu</div>
-        <h2 class="section-title">Những Vấn Đề Bạn Lo Lắng?</h2>
+        <h2 class="section-title">Những <em class="accent">Vấn Đề</em> Bạn Lo Lắng?</h2>
         <p class="section-subtitle">Chúng tôi biết bạn đang gặp phải những khó khăn nào trên hành trình chinh phục giấc
           mơ Nhật Bản. Sora Japan ở đây để giải quyết tất cả.</p>
       </div>
@@ -374,9 +379,9 @@
   <!-- ================= SERVICES ================= -->
   <section id="services" class="section services">
     <div class="container">
-      <div class="section-header reveal">
+      <div class="section-header reveal" data-kanji="業">
         <div class="section-tag">Dịch Vụ Chính</div>
-        <h2 class="section-title">Khám Phá Cơ Hội Của Bạn</h2>
+        <h2 class="section-title">Khám Phá <em class="accent">Cơ Hội</em> Của Bạn</h2>
         <p class="section-subtitle">Chương trình đa dạng, đáp ứng mọi nhu cầu học tập và làm việc tại Nhật Bản với sự hỗ
           trợ toàn diện từ đội ngũ Sora Japan.</p>
       </div>
@@ -513,9 +518,9 @@
   <!-- ================= WHY US ================= -->
   <section class="section why-us">
     <div class="container">
-      <div class="section-header reveal">
+      <div class="section-header reveal" data-kanji="信">
         <div class="section-tag">Giá Trị Cốt Lõi</div>
-        <h2 class="section-title">Tại Sao Chọn Sora Japan?</h2>
+        <h2 class="section-title">Tại Sao Chọn <em class="accent">Sora Japan?</em></h2>
         <p class="section-subtitle">Cam kết mang lại chất lượng và sự hài lòng cao nhất trong hành trình thực hiện giấc
           mơ của bạn.</p>
       </div>
@@ -581,9 +586,9 @@
   <!-- ================= PARTNERS ================= -->
   <section id="partners" class="section partners">
     <div class="container">
-      <div class="section-header reveal">
+      <div class="section-header reveal" data-kanji="絆">
         <div class="section-tag">Mạng Lưới</div>
-        <h2 class="section-title">Đối Tác Chiến Lược</h2>
+        <h2 class="section-title">Đối Tác <em class="accent">Chiến Lược</em></h2>
         <p class="section-subtitle">Sora Japan tự hào hợp tác với các Trường Đại học và Tập đoàn danh tiếng hàng đầu tại
           Nhật Bản.</p>
       </div>
@@ -653,9 +658,9 @@
   <!-- ================= CASE STUDIES ================= -->
   <section id="cases" class="section case-studies">
     <div class="container">
-      <div class="section-header reveal">
+      <div class="section-header reveal" data-kanji="夢">
         <div class="section-tag">Thành Công</div>
-        <h2 class="section-title">Câu Chuyện Học Viên</h2>
+        <h2 class="section-title">Câu Chuyện <em class="accent">Học Viên</em></h2>
         <p class="section-subtitle">Hàng ngàn ước mơ đã thành hiện thực cùng Sora Japan. Lắng nghe những chia sẻ thực tế
           từ học viên của chúng tôi.</p>
       </div>
@@ -823,9 +828,9 @@
   <!-- ================= CONTACT ================= -->
   <section id="contact" class="section contact">
     <div class="container">
-      <div class="section-header reveal">
+      <div class="section-header reveal" data-kanji="縁">
         <div class="section-tag">Liên Hệ</div>
-        <h2 class="section-title">Bắt Đầu Hành Trình Của Bạn</h2>
+        <h2 class="section-title">Bắt Đầu <em class="accent">Hành Trình</em> Của Bạn</h2>
         <p class="section-subtitle">Để lại thông tin, đội ngũ chuyên gia của Sora Japan sẽ liên hệ tư vấn lộ trình phù
           hợp nhất cho bạn hoàn toàn miễn phí.</p>
       </div>

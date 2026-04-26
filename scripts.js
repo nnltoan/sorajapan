@@ -497,21 +497,579 @@ document.addEventListener('DOMContentLoaded', () => {
   const floatingHTML = `
     <!-- Floating Contact Buttons -->
     <div class="floating-contact">
-      <!-- Messenger -->
+      <!-- Messenger — white bubble icon on Messenger blue gradient -->
       <a href="https://m.me/61568999725231" target="_blank" class="floating-btn btn-messenger" title="Chat Messenger" aria-label="Chat qua Messenger">
-        <img src="${basePath}Messenger_Icon_Primary_Blue.png" alt="Messenger" style="width: 32px; height: 32px; object-fit: contain;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="30" height="30" fill="#ffffff" aria-hidden="true">
+          <path d="M18 2C9.2 2 2 8.7 2 16.9c0 4.7 2.3 8.8 5.9 11.4v5.7l5.4-3c1.4.4 2.9.6 4.7.6 8.8 0 16-6.7 16-14.9S26.8 2 18 2zm1.6 20l-4.1-4.4-8 4.4 8.8-9.3 4.2 4.4 7.9-4.4-8.8 9.3z"/>
+        </svg>
       </a>
-      
-      <!-- Zalo -->
+
+      <!-- Zalo — white wordmark on Zalo blue -->
       <a href="https://zalo.me/0903539537" target="_blank" class="floating-btn btn-zalo" title="Chat Zalo ngay" aria-label="Chat qua Zalo">
-        <img src="${basePath}Icon_of_Zalo.png" alt="Zalo" style="width: 36px; height: 36px; object-fit: contain;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 24" width="38" height="19" aria-hidden="true">
+          <text x="24" y="19" text-anchor="middle" fill="#ffffff" font-family="Arial Black, Arial, sans-serif" font-size="20" font-weight="900" letter-spacing="-0.5">Zalo</text>
+        </svg>
       </a>
 
       <!-- Call -->
       <a href="tel:0903539537" class="floating-btn btn-call" title="Gọi ngay" aria-label="Gọi hotline">
-        <svg fill="#ffffff" width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <svg fill="#ffffff" width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </a>
     </div>
   `;
   document.body.insertAdjacentHTML('beforeend', floatingHTML);
 });
+
+/* ============================================================================
+   UI MODERNIZATION — interactive enhancements
+   - Magnetic button hover (attracts to cursor within radius)
+   - Hero parallax on scroll (subtle depth)
+   - Text reveal line split for .reveal-lines elements
+   - Stagger indices auto-assigned for legacy IntersectionObserver fallback
+   - Dynamic kanji watermark follow-scroll subtle float
+   ============================================================================ */
+(function uiModernization() {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  /* ---------- Magnetic buttons ---------- */
+  // Add class .btn-magnetic to any button/link to enable
+  document.addEventListener('DOMContentLoaded', () => {
+    const magneticTargets = document.querySelectorAll('.btn-primary, .btn-magnetic, .nav-cta, .hero-actions .btn');
+    magneticTargets.forEach(el => {
+      el.classList.add('btn-magnetic');
+      const strength = 0.35;
+      const radius = 90;
+
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = e.clientX - cx;
+        const dy = e.clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist > radius * 1.4) return;
+        el.style.transform = `translate(${dx * strength}px, ${dy * strength}px)`;
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = '';
+      });
+    });
+  });
+
+  /* ---------- Hero parallax ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    const bg = hero.querySelector('.hero-bg');
+    const particles = hero.querySelector('.hero-particles');
+    const content = hero.querySelector('.hero-content');
+    const floating = hero.querySelector('.hero-floating');
+    let ticking = false;
+
+    function updateParallax() {
+      const y = window.scrollY;
+      if (y > window.innerHeight * 1.1) { ticking = false; return; }
+      if (bg)       bg.style.transform       = `translateY(${y * 0.25}px) scale(${1 + y * 0.0003})`;
+      if (particles) particles.style.transform = `translateY(${y * 0.15}px)`;
+      if (content)  content.style.transform   = `translateY(${y * -0.08}px)`;
+      if (floating) floating.style.transform  = `translate(${y * -0.04}px, calc(-50% + ${y * -0.12}px))`;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+  });
+
+  /* ---------- Text reveal: split lines for hero H1 with .reveal-lines ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const targets = document.querySelectorAll('.reveal-lines');
+    targets.forEach(el => {
+      if (el.dataset.split === 'done') return;
+      const html = el.innerHTML;
+      // Simple word-based split wrapped so each word animates on its own row
+      const words = html.split(/(<[^>]+>|\s+)/).filter(Boolean);
+      let out = '';
+      let idx = 0;
+      words.forEach(w => {
+        if (/^\s+$/.test(w)) { out += ' '; return; }
+        if (/^<[^>]+>$/.test(w)) { out += w; return; }
+        out += `<span style="display:inline-block;overflow:hidden;vertical-align:top;"><span style="display:inline-block;--i:${idx};transform:translateY(110%);animation:lineRise 900ms cubic-bezier(0.19,1,0.22,1) forwards;animation-delay:calc(${idx} * 60ms + 180ms);">${w}</span></span>`;
+        idx++;
+      });
+      el.innerHTML = out;
+      el.dataset.split = 'done';
+    });
+  });
+
+  /* ---------- Auto-assign stagger --stagger-i for Safari/older browsers ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.stagger-children').forEach(parent => {
+      Array.from(parent.children).forEach((child, i) => {
+        child.style.setProperty('--stagger-i', i + 1);
+      });
+    });
+  });
+
+  /* ---------- Kanji watermark subtle float on scroll ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const kanjiHeaders = document.querySelectorAll('.section-header[data-kanji]');
+    if (!kanjiHeaders.length) return;
+    let ticking = false;
+    function updateKanji() {
+      const y = window.scrollY;
+      kanjiHeaders.forEach((header) => {
+        const rect = header.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        const offset = (rect.top - window.innerHeight / 2) * 0.04;
+        header.style.setProperty('--kanji-offset', `${offset}px`);
+      });
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(updateKanji); ticking = true; }
+    }, { passive: true });
+  });
+
+  /* ---------- Service cards: 3D tilt on hover (light touch) ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.service-card, .case-card, .hero-float-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;  // 0..1
+        const y = (e.clientY - rect.top) / rect.height;  // 0..1
+        const rx = (y - 0.5) * -4;  // max 4deg
+        const ry = (x - 0.5) * 4;
+        card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  });
+
+  /* ---------- Smooth scroll progress bar (top) ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.createElement('div');
+    bar.setAttribute('aria-hidden', 'true');
+    bar.style.cssText = `
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, #1E3A5F, #C8383E, #C9A961);
+      z-index: 9999; transition: width 120ms linear; pointer-events: none;
+    `;
+    document.body.appendChild(bar);
+
+    let ticking = false;
+    function updateBar() {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      bar.style.width = `${Math.max(0, Math.min(1, scrolled)) * 100}%`;
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(updateBar); ticking = true; }
+    }, { passive: true });
+  });
+})();
+/* END UI MODERNIZATION */
+
+
+/* ============================================================================
+   BREAKTHROUGH ANIMATION INTERACTIVITY
+   - Cursor-follow spotlight on hero
+   - Counter reel digit effect with glitch
+   - Scroll-velocity reactive marquee speed
+   - Title glitch/decrypt flash on first reveal
+   - Smooth cursor trail on buttons
+   ============================================================================ */
+(function breakthroughAnimations() {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  /* ---------- 1. Cursor Spotlight on Hero ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    let raf = null;
+    hero.addEventListener('mousemove', (e) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        const rect = hero.getBoundingClientRect();
+        const mx = ((e.clientX - rect.left) / rect.width) * 100;
+        const my = ((e.clientY - rect.top) / rect.height) * 100;
+        hero.style.setProperty('--mx', `${mx}%`);
+        hero.style.setProperty('--my', `${my}%`);
+        raf = null;
+      });
+    });
+  });
+
+  /* ---------- 2. Counter Reel Effect ---------- */
+  /* Hijack existing counter animation to add glitch + burst */
+  document.addEventListener('DOMContentLoaded', () => {
+    const counters = document.querySelectorAll('[data-count]');
+    if (!counters.length) return;
+
+    const formatNumber = (n, format) => {
+      if (format === 'year') return String(n);
+      // Add thousand separator (Vietnamese locale: dot)
+      return n.toLocaleString('vi-VN');
+    };
+
+    const animateCounter = (el) => {
+      if (el.dataset.counted) return;
+      el.dataset.counted = '1';
+      const target = parseInt(el.dataset.count, 10) || 0;
+      const suffix = el.dataset.suffix || '';
+      const format = el.dataset.format || '';
+      const duration = 1800;
+      const start = performance.now();
+      const startValue = 0;
+      // Easing: ease-out-expo for dramatic slowdown
+      const easeOutExpo = t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+
+      let lastVal = -1;
+
+      function step(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutExpo(progress);
+        const current = Math.floor(startValue + (target - startValue) * eased);
+
+        if (current !== lastVal) {
+          el.textContent = formatNumber(current, format) + suffix;
+          // Brief reel glitch on digit change
+          el.classList.remove('count-reel');
+          void el.offsetWidth; // force reflow
+          el.classList.add('count-reel');
+          lastVal = current;
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = formatNumber(target, format) + suffix;
+          el.classList.remove('count-reel');
+          el.classList.add('count-done');
+          setTimeout(() => el.classList.remove('count-done'), 650);
+        }
+      }
+      requestAnimationFrame(step);
+    };
+
+    // IntersectionObserver to trigger when visible
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    counters.forEach(el => {
+      // Skip if already counted by prior JS
+      if (!el.dataset.counted) {
+        el.textContent = '0';
+        io.observe(el);
+      }
+    });
+  });
+
+  /* ---------- 3. Scroll-Velocity Reactive Marquee ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const marquees = document.querySelectorAll('.marquee');
+    if (!marquees.length) return;
+
+    let lastY = window.scrollY;
+    let lastTime = performance.now();
+    let currentSpeed = 1;
+    let targetSpeed = 1;
+
+    window.addEventListener('scroll', () => {
+      const now = performance.now();
+      const dy = Math.abs(window.scrollY - lastY);
+      const dt = now - lastTime;
+      const velocity = dy / dt; // px/ms
+      // Map velocity 0..5 → speed 1..2.8
+      targetSpeed = Math.min(2.8, 1 + velocity * 0.35);
+      lastY = window.scrollY;
+      lastTime = now;
+    }, { passive: true });
+
+    function tick() {
+      // Smooth lerp toward target, decay back to 1 when not scrolling
+      currentSpeed += (targetSpeed - currentSpeed) * 0.08;
+      targetSpeed += (1 - targetSpeed) * 0.04; // decay
+      marquees.forEach(m => m.style.setProperty('--marquee-speed', currentSpeed.toFixed(2)));
+      requestAnimationFrame(tick);
+    }
+    tick();
+  });
+
+  /* ---------- 4. Title Decrypt Glitch Flash on First Reveal ---------- */
+  /* Randomize chars briefly then settle to original — delightful surprise */
+  document.addEventListener('DOMContentLoaded', () => {
+    const titles = document.querySelectorAll('.section-title');
+    const glyphs = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789';
+
+    const decrypt = (el) => {
+      if (el.dataset.decrypted) return;
+      el.dataset.decrypted = '1';
+      const original = el.innerHTML;
+      const plainText = el.textContent;
+      // Only decrypt text nodes, preserve <em> tags. Simpler: scramble innerText briefly.
+      const iterations = 8;
+      let i = 0;
+      const interval = setInterval(() => {
+        let scrambled = '';
+        for (let j = 0; j < plainText.length; j++) {
+          if (Math.random() < i / iterations || plainText[j] === ' ' || plainText[j] === '\n') {
+            scrambled += plainText[j];
+          } else {
+            scrambled += glyphs[Math.floor(Math.random() * glyphs.length)];
+          }
+        }
+        el.textContent = scrambled;
+        i++;
+        if (i > iterations) {
+          clearInterval(interval);
+          el.innerHTML = original; // restore with emphasis tags
+        }
+      }, 42);
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          decrypt(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    titles.forEach(t => io.observe(t));
+  });
+
+  /* ---------- 5. Cursor Trail on Hero Primary Buttons ---------- */
+  document.addEventListener('DOMContentLoaded', () => {
+    const btns = document.querySelectorAll('.btn-primary, .btn-secondary');
+    btns.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        btn.style.setProperty('--bx', `${x}%`);
+        btn.style.setProperty('--by', `${y}%`);
+      });
+    });
+  });
+
+  /* ---------- 6. Service Card 3D Tilt + Glow Spot ---------- */
+  /* Upgrade: add CSS variable for a "hover glow spot" that follows mouse */
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.service-card, .case-card, .problem-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--gx', `${x}%`);
+        card.style.setProperty('--gy', `${y}%`);
+      });
+    });
+  });
+
+  /* ---------- 7. Kanji Watermark Cursor Reactivity ---------- */
+  /* Kanji subtly leans toward cursor when section is hovered */
+  document.addEventListener('DOMContentLoaded', () => {
+    const kanjiHeaders = document.querySelectorAll('.section-header[data-kanji]');
+    kanjiHeaders.forEach(header => {
+      header.addEventListener('mousemove', (e) => {
+        const rect = header.getBoundingClientRect();
+        const dx = (e.clientX - rect.left - rect.width / 2) / rect.width;
+        const dy = (e.clientY - rect.top - rect.height / 2) / rect.height;
+        header.style.setProperty('--kanji-dx', `${dx * 20}px`);
+        header.style.setProperty('--kanji-dy', `${dy * 14}px`);
+      });
+      header.addEventListener('mouseleave', () => {
+        header.style.setProperty('--kanji-dx', '0px');
+        header.style.setProperty('--kanji-dy', '0px');
+      });
+    });
+  });
+})();
+/* END BREAKTHROUGH ANIMATIONS */
+
+
+/* ============================================================================
+   ACTIVE NAV HIGHLIGHTING
+   - Auto-highlight nav-links item based on current URL
+   - When on a detail page, parent dropdown button (.dropbtn) gets .active too
+   - Also adds .active to exact submenu link if matches current page
+   - Removes hardcoded class="active" on Trang chủ from non-home pages
+   ============================================================================ */
+(function activeNavHighlight() {
+  // Map category folder slug → nav href that should be highlighted
+  // (truong/dieu-duong fall under "Đối tác" since schools/medical partners are listed there)
+  const CATEGORY_TO_NAV = {
+    'du-hoc':         'du-hoc/index.html',
+    'ky-su':          'ky-su/index.html',
+    'tieng-nhat':     'tieng-nhat/index.html',
+    'doi-tac':        'doi-tac/index.html',
+    'truong':         'doi-tac/index.html',  // schools listed under Partners
+    'dieu-duong':     'doi-tac/index.html',
+    'don-hang-ky-su': 'ky-su/index.html'
+  };
+
+  function detectCategory(path) {
+    const m = path.match(/\/(du-hoc|ky-su|tieng-nhat|dieu-duong|truong|doi-tac|don-hang-ky-su)(?:\/|$)/);
+    if (m) return m[1];
+    if (/tin-tuc(-detail)?\.html$/.test(path)) return 'tin-tuc';
+    return 'home';
+  }
+
+  function highlight() {
+    const nav = document.querySelector('.nav-links');
+    if (!nav) return;
+
+    // Strip ALL existing .active to start fresh (overrides hardcoded class="active" on home)
+    nav.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+
+    const currentPath = window.location.pathname;
+    const category = detectCategory(currentPath);
+
+    const links = Array.from(nav.querySelectorAll('a'));
+
+    // 1) Exact submenu match — highlight the deepest matching link first
+    let exactLink = null;
+    for (const a of links) {
+      const href = a.getAttribute('href') || '';
+      if (!href || href.startsWith('#')) continue;
+      try {
+        const linkPath = new URL(href, window.location.href).pathname;
+        if (linkPath === currentPath) {
+          exactLink = a;
+          break;
+        }
+      } catch (_) {}
+    }
+    if (exactLink) {
+      exactLink.classList.add('active');
+      // If inside a dropdown, also highlight parent .dropbtn AND the .dropdown wrapper
+      const parent = exactLink.closest('.dropdown');
+      if (parent) {
+        parent.classList.add('active');
+        const btn = parent.querySelector('.dropbtn');
+        if (btn) btn.classList.add('active');
+      }
+    }
+
+    // 2) Category match — resolve hrefs to absolute paths so relative URLs match
+    if (category !== 'home' && category !== 'tin-tuc') {
+      const targetHrefSuffix = CATEGORY_TO_NAV[category];
+      if (targetHrefSuffix) {
+        for (const a of links) {
+          const href = a.getAttribute('href') || '';
+          if (!href || href.startsWith('#')) continue;
+          let linkPath;
+          try {
+            linkPath = new URL(href, window.location.href).pathname;
+          } catch (_) { continue; }
+          // Compare absolute path tail against targetHrefSuffix
+          if (linkPath.endsWith('/' + targetHrefSuffix) || linkPath.endsWith(targetHrefSuffix)) {
+            a.classList.add('active');
+            const parent = a.closest('.dropdown');
+            if (parent) parent.classList.add('active');
+          }
+        }
+      }
+    }
+
+    // 3) Tin tức special
+    if (category === 'tin-tuc') {
+      for (const a of links) {
+        const href = a.getAttribute('href') || '';
+        if (/tin-tuc\.html(\?|$|#)/.test(href)) {
+          a.classList.add('active');
+        }
+      }
+    }
+
+    // 4) Home
+    if (category === 'home') {
+      // Home page: index.html (root) — find link that points to index.html#home or root
+      const isRootIndex = /(?:^|\/)(index\.html)?$/.test(currentPath) ||
+                          currentPath === '/' ||
+                          currentPath.endsWith('/index.html') === false; // fallthrough
+
+      // Prefer exact "#home" link
+      for (const a of links) {
+        const href = a.getAttribute('href') || '';
+        if (/index\.html#home$/.test(href) || href === '#home' || href === '/' || href === 'index.html') {
+          a.classList.add('active');
+          break;
+        }
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', highlight);
+  } else {
+    highlight();
+  }
+})();
+/* END ACTIVE NAV HIGHLIGHTING */
+
+
+/* ============================================================================
+   DEFENSIVE NAV HREF GUARD
+   For top-level nav links (Đối tác, Tin tức, dropbtn parent links, etc.) — bypass
+   any interfering smooth-scroll or click handler by forcing navigation via
+   window.location.assign in capture phase. Stops other listeners from preventing
+   default navigation on legit page links.
+   ============================================================================ */
+(function navHrefGuard() {
+  function setup() {
+    const nav = document.querySelector('.nav-links');
+    if (!nav) return;
+
+    nav.querySelectorAll('a').forEach(a => {
+      const href = a.getAttribute('href') || '';
+      // Skip empty / pure-anchor / no-href links — anchors are for in-page scroll, leave alone
+      if (!href || href.startsWith('#')) return;
+      // Skip submenu items (.dropdown-content a) — handled normally for now
+      if (a.closest('.dropdown-content')) return;
+
+      a.addEventListener('click', (e) => {
+        // Allow modifier-clicks (cmd/ctrl/shift/middle) for new-tab/save-link behavior
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        if (a.target === '_blank') return;
+
+        let absolute;
+        try {
+          absolute = new URL(href, window.location.href).href;
+        } catch (_) { return; }
+
+        // Force navigation, bypassing any other click handler
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        window.location.assign(absolute);
+      }, true); // capture phase — runs before any other listener
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
+})();
+/* END DEFENSIVE NAV HREF GUARD */

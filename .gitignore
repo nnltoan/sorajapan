@@ -1,0 +1,48 @@
+# ============================================
+# Sora Japan — Git Ignore
+# ============================================
+
+# Archive folder — files removed from active site
+# (redirect-stub HTMLs from old URL structure + unused images)
+# Kept locally for reference; not committed to repo.
+_archive/
+
+# Backup files created during refactor sessions
+*.backup
+*.bak
+*.old
+
+# OS / Editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Python (utility scripts)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node / build artifacts (defensive — none used now but future-proof)
+node_modules/
+dist/
+build/
+
+# Sora Japan specific:
+# Strange Windows shortcut/config file in repo
+*.ini
