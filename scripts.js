@@ -1258,28 +1258,74 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Intercept all clicks on contact links — open modal except on home
+    // -------- Contact-link interception (off-home pages) --------
+    // Strategy (defense in depth):
+    //  1. REWRITE href on all matching anchors: index.html#contact / #contact → #contact-modal
+    //     This prevents ANY navigation to /index.html#contact even if JS fails afterwards.
+    //  2. CAPTURE-PHASE click listener: opens modal when any [data-contact-modal] anchor
+    //     OR any [href$=#contact-modal] anchor is clicked.
+    //  3. MUTATION OBSERVER: re-runs rewrite when new content is injected dynamically
+    //     (e.g., related-pages.js inserting cards after page load).
     const onHome = isHomePage();
+
+    function pointsToHomeContact(href) {
+      return /(^|\/)index\.html#contact$/i.test(href) || href === '#contact';
+    }
+    function rewriteContactLinks(root) {
+      (root || document).querySelectorAll('a').forEach(a => {
+        const href = a.getAttribute('href') || '';
+        if (pointsToHomeContact(href)) {
+          a.setAttribute('href', '#contact-modal');
+          a.setAttribute('data-contact-modal', 'true');
+          a.removeAttribute('data-original-href'); // keep simple — no need to restore
+        }
+      });
+    }
+
+    if (!onHome) {
+      // Off-home: rewrite immediately
+      rewriteContactLinks(document);
+
+      // Re-rewrite on dynamic content injection (related-pages.js etc.)
+      try {
+        const mo = new MutationObserver((mutations) => {
+          for (const m of mutations) {
+            for (const node of m.addedNodes) {
+              if (node.nodeType === 1) rewriteContactLinks(node);
+            }
+          }
+        });
+        mo.observe(document.body, { childList: true, subtree: true });
+      } catch (_) {}
+    }
+
+    // Click listener — capture phase, runs BEFORE any other handler
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a');
       if (!link) return;
       const href = link.getAttribute('href') || '';
-      // Match any href ending with index.html#contact OR exactly #contact
-      const pointsToContact = /index\.html#contact$/i.test(href) || href === '#contact';
-      if (!pointsToContact) return;
-      // Allow modifier clicks for new tab
+
+      // Modal triggers: rewritten anchor (data-contact-modal) OR raw home-contact href
+      const isModalTrigger =
+        link.hasAttribute('data-contact-modal') ||
+        href === '#contact-modal' ||
+        pointsToHomeContact(href);
+      if (!isModalTrigger) return;
+
+      // Allow modifier clicks (cmd/ctrl/shift/middle) for new tab
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       if (link.target === '_blank') return;
 
-      if (onHome) {
-        // On home: let smooth-scroll handler do its job (don't prevent default)
+      if (onHome && pointsToHomeContact(href)) {
+        // On home, raw #contact href → let smooth-scroll handler do its job
         return;
       }
-      // Off-home: prevent navigation, open modal instead
+
+      // Off-home OR rewritten anchor → open modal
       e.preventDefault();
       e.stopImmediatePropagation();
       open();
-    }, true); // capture phase — runs before defensive nav guard
+    }, true);
 
     // Expose openContactModal globally
     window.openContactModal = open;
@@ -1319,3 +1365,121 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 /* END HEADER FAILSAFE */
+
+
+/* ============================================================================
+   URGENCY COUNTDOWN BANNER
+   Sticky banner top of page với live countdown tới deadline tuyển sinh.
+   - Auto-injects vào home + 4 trang dịch vụ chính (du-hoc, ky-su, tieng-nhat, dieu-duong)
+   - Dismissible (X button) — lưu sessionStorage, reset khi tab đóng
+   - Tự ẩn khi past deadline
+   - CTA button mở modal liên hệ (off-home) hoặc scroll to #contact (home)
+   ============================================================================ */
+(function urgencyBanner() {
+  // -------- CONFIG --------
+  const DEADLINE = new Date('2026-06-30T23:59:59+07:00').getTime();
+  const DEADLINE_LABEL = '30/06/2026';
+  const TITLE = 'Kỳ tuyển sinh tháng 10/2026';
+  const STORAGE_KEY = 'sj_urgency_dismissed_2026_10';
+
+  function shouldShowOnPage() {
+    const path = window.location.pathname;
+    // Home
+    if (path === '/' || path.endsWith('/index.html')) {
+      // Subfolder index.html count as service pages, not home
+      const subfolders = ['du-hoc', 'ky-su', 'tieng-nhat', 'dieu-duong'];
+      const inSub = subfolders.some(s => path.includes('/' + s + '/'));
+      if (inSub) return true;
+      // Root home
+      return /\/(index\.html)?$/.test(path);
+    }
+    return false;
+  }
+
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function buildBannerHTML() {
+    return `
+<div class="urgency-banner" id="urgency-banner" role="region" aria-label="Hạn đăng ký">
+  <div class="urgency-inner">
+    <span class="urgency-eyebrow"><span>Hạn đăng ký</span></span>
+    <span class="urgency-text">${TITLE} — đóng đăng ký <strong>${DEADLINE_LABEL}</strong></span>
+    <div class="urgency-countdown" aria-live="polite" aria-atomic="true">
+      <div class="urgency-time"><span data-urgency-d>00</span><label>ngày</label></div>
+      <div class="urgency-time"><span data-urgency-h>00</span><label>giờ</label></div>
+      <div class="urgency-time"><span data-urgency-m>00</span><label>phút</label></div>
+      <div class="urgency-time"><span data-urgency-s>00</span><label>giây</label></div>
+    </div>
+    <a href="#contact-modal" class="urgency-cta" data-contact-modal="true">Đăng ký ngay</a>
+    <button type="button" class="urgency-close" aria-label="Đóng banner">×</button>
+  </div>
+</div>`;
+  }
+
+  function init() {
+    if (!shouldShowOnPage()) return;
+
+    // Past deadline — don't show
+    if (Date.now() >= DEADLINE) return;
+
+    // User previously dismissed in this session
+    try {
+      if (sessionStorage.getItem(STORAGE_KEY) === '1') return;
+    } catch (_) {}
+
+    // Inject banner at top of body
+    document.body.insertAdjacentHTML('afterbegin', buildBannerHTML());
+    document.body.classList.add('has-urgency');
+
+    const banner = document.getElementById('urgency-banner');
+    if (!banner) return;
+
+    const dEl = banner.querySelector('[data-urgency-d]');
+    const hEl = banner.querySelector('[data-urgency-h]');
+    const mEl = banner.querySelector('[data-urgency-m]');
+    const sEl = banner.querySelector('[data-urgency-s]');
+    const closeBtn = banner.querySelector('.urgency-close');
+    let timerId = null;
+
+    function tick() {
+      const now = Date.now();
+      const diff = DEADLINE - now;
+      if (diff <= 0) {
+        hide();
+        return;
+      }
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      if (dEl) dEl.textContent = pad2(days);
+      if (hEl) hEl.textContent = pad2(hours);
+      if (mEl) mEl.textContent = pad2(mins);
+      if (sEl) sEl.textContent = pad2(secs);
+    }
+
+    function hide() {
+      banner.classList.remove('show');
+      document.body.classList.remove('has-urgency');
+      setTimeout(() => banner.remove(), 400);
+      if (timerId) clearInterval(timerId);
+    }
+
+    closeBtn.addEventListener('click', () => {
+      try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (_) {}
+      hide();
+    });
+
+    // Initial tick + animate in
+    tick();
+    requestAnimationFrame(() => banner.classList.add('show'));
+    timerId = setInterval(tick, 1000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+/* END URGENCY BANNER */
