@@ -136,25 +136,34 @@ document.addEventListener('DOMContentLoaded', () => {
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', (e) => {
         const dropdownParent = link.parentElement;
-        
-        // Mobile dropdown logic
-        if (dropdownParent && dropdownParent.classList.contains('dropdown') && window.innerWidth <= 900) {
-          // If the dropdown is not yet expanded, prevent navigation and expand it
+        const isParentDropbtn = dropdownParent && dropdownParent.classList.contains('dropdown');
+
+        // ── Mobile dropdown UX ──
+        // Tap parent (submenu hidden) → expand this submenu, close others.
+        // Tap parent (submenu showing) → navigate to parent page.
+        // Tap parent of OTHER dropdown → close current submenu, open new one.
+        // Tap child link → navigate to child page (default).
+        if (isParentDropbtn && window.innerWidth <= 900) {
           if (!dropdownParent.classList.contains('active')) {
             e.preventDefault();
+            // Close all other open dropdowns first
+            document.querySelectorAll('.dropdown.active').forEach(d => {
+              if (d !== dropdownParent) d.classList.remove('active');
+            });
+            // Open this one
             dropdownParent.classList.add('active');
-            return; // Exit here, keeping menu open
-                }
-          // If already expanded, let the default navigation happen (second tap navigates to the page)
-          // Still need to close the mobile menu overlay manually though so it doesn't linger
+            return; // Keep menu open
+          }
+          // Already expanded → second tap navigates to parent page.
+          // Close the mobile menu overlay first so it doesn't linger after navigation.
           navToggle.classList.remove('open');
           navLinks.classList.remove('open');
           document.body.style.overflow = '';
           document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
-            return;
+          return;
         }
 
-        // Normal link behavior (close the menu)
+        // Normal link behavior — child anchor or non-dropdown top link → close menu
         navToggle.classList.remove('open');
         navLinks.classList.remove('open');
         document.body.style.overflow = '';
@@ -1053,6 +1062,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
         if (a.target === '_blank') return;
 
+        // Mobile dropdown UX — let dropdown toggle handler expand submenu BEFORE navigating.
+        // Parent dropbtn only navigates when its submenu is already shown (second tap).
+        if (window.innerWidth <= 900) {
+          const dropdownEl = a.closest('.dropdown');
+          if (dropdownEl && !dropdownEl.classList.contains('active')) {
+            // Submenu chưa show — không force navigate, để dropdown logic mở submenu
+            return;
+          }
+        }
+
         let absolute;
         try {
           absolute = new URL(href, window.location.href).href;
@@ -1483,3 +1502,45 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 /* END URGENCY BANNER */
+
+
+/* ============================================================================
+   VIDEO TESTIMONIAL — lite-youtube lazy embed
+   Click thumbnail → swap to YouTube iframe with autoplay=1.
+   Saves ~500KB initial JS + iframe cost per page.
+   ============================================================================ */
+(function videoTestimonialLazy() {
+  function setup() {
+    document.querySelectorAll('.video-card-frame[data-yt-id]').forEach(frame => {
+      // Only attach once
+      if (frame.dataset.bound === '1') return;
+      frame.dataset.bound = '1';
+
+      frame.addEventListener('click', (e) => {
+        e.preventDefault();
+        const ytId = frame.getAttribute('data-yt-id');
+        if (!ytId || frame.classList.contains('is-playing')) return;
+        // Build iframe URL — use youtube-nocookie for privacy + autoplay
+        const src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(ytId)}?autoplay=1&rel=0&modestbranding=1`;
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.title = frame.getAttribute('aria-label') || 'Video testimonial';
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', '');
+        // Remove existing thumbnail content + insert iframe
+        const img = frame.querySelector('img');
+        if (img) img.style.display = 'none';
+        frame.appendChild(iframe);
+        frame.classList.add('is-playing');
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
+})();
+/* END VIDEO TESTIMONIAL */
