@@ -1436,6 +1436,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ============================================================================
+   SITE CREDIT — auto-inject "Designed by danaexperts.com" inline beside copyright
+   Pattern A (full footer): append vào .footer-bottom
+   Pattern B (simple footer): append vào trực tiếp <footer> (đứng cùng dòng © text)
+   ============================================================================ */
+(function siteCredit() {
+  function buildCredit() {
+    const span = document.createElement('span');
+    span.className = 'site-credit';
+    span.innerHTML = 'Designed by <a href="https://danaexperts.com" target="_blank" rel="noopener noreferrer">danaexperts.com</a>';
+    return span;
+  }
+  function inject() {
+    document.querySelectorAll('footer').forEach(footer => {
+      if (footer.dataset.creditInjected === '1') return;
+      footer.dataset.creditInjected = '1';
+      // Prefer .footer-bottom (full footer) — credit beside copyright line
+      const bottom = footer.querySelector('.footer-bottom');
+      if (bottom) {
+        bottom.appendChild(buildCredit());
+        return;
+      }
+      // Simple footer (subpage indexes, detail pages) — append directly
+      footer.appendChild(buildCredit());
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inject);
+  } else {
+    inject();
+  }
+})();
+/* END SITE CREDIT */
+
+
+/* ============================================================================
    URGENCY COUNTDOWN BANNER
    Sticky banner top of page với live countdown tới deadline tuyển sinh.
    - Auto-injects vào home + 4 trang dịch vụ chính (du-hoc, ky-su, tieng-nhat, dieu-duong)
