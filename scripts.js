@@ -117,21 +117,20 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', throttleRAF(handleScroll), { passive: true });
   handleScroll();
 
-  // --- Mobile nav toggle ---
+  // --- Defensive state reset on page load ---
+  // Recover from any leftover state if previous page's menu was open during navigation
+  // (e.g., second-tap on parent dropbtn navigates while body.style.overflow='hidden').
+  document.body.style.overflow = '';
+  document.querySelectorAll('.nav-toggle.open, .nav-links.open, .dropdown.active').forEach(el => {
+    el.classList.remove('open');
+    el.classList.remove('active');
+  });
+
+  // --- Mobile nav: hamburger toggle handled by hamburgerFailsafe IIFE (document-level
+  //     delegated capture-phase listener). Keep dropdown logic per-anchor below. ---
   const navToggle = document.querySelector('.nav-toggle');
   const navLinks = document.querySelector('.nav-links');
   if (navToggle && navLinks) {
-    navToggle.addEventListener('click', () => {
-      navToggle.classList.toggle('open');
-      navLinks.classList.toggle('open');
-      document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
-      
-      // Reset dropdowns when closing the menu
-      if (!navLinks.classList.contains('open')) {
-        document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
-      }
-    });
-
     // Close nav when a link without dropdown is clicked, or handle dropdown toggle
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', (e) => {
@@ -156,20 +155,25 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           // Already expanded → second tap navigates to parent page.
           // Close the mobile menu overlay first so it doesn't linger after navigation.
-          navToggle.classList.remove('open');
-          navLinks.classList.remove('open');
-          document.body.style.overflow = '';
-          document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
+          closeMobileMenu();
           return;
         }
 
         // Normal link behavior — child anchor or non-dropdown top link → close menu
-        navToggle.classList.remove('open');
-        navLinks.classList.remove('open');
-        document.body.style.overflow = '';
-        document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
+        closeMobileMenu();
       });
     });
+  }
+
+  // Helper — reset all menu state. Called from dropdown click handler.
+  function closeMobileMenu() {
+    if (navToggle) navToggle.classList.remove('open');
+    if (navLinks) navLinks.classList.remove('open');
+    document.body.style.overflow = '';
+    document.body.classList.remove('mobile-menu-open');
+    document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
+    const banner = document.querySelector('.urgency-banner');
+    if (banner) banner.style.display = '';
   }
 
   // --- Active nav highlight on scroll ---
@@ -1387,6 +1391,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ============================================================================
+   HAMBURGER FAILSAFE — delegated click handler tại document level.
+   Đảm bảo hamburger luôn fire dù direct attach trong main IIFE bị fail.
+   Cũng auto-hide urgency banner khi menu open (fallback nếu :has() CSS không support).
+   ============================================================================ */
+(function hamburgerFailsafe() {
+  document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('.nav-toggle');
+    if (!toggle) return;
+    const navLinks = document.querySelector('.nav-links');
+    if (!navLinks) return;
+    // Block default + ngăn các handler khác fire trên cùng button
+    e.preventDefault();
+    e.stopPropagation();
+    const willOpen = !navLinks.classList.contains('open');
+    toggle.classList.toggle('open', willOpen);
+    navLinks.classList.toggle('open', willOpen);
+    document.body.style.overflow = willOpen ? 'hidden' : '';
+    document.body.classList.toggle('mobile-menu-open', willOpen);
+    if (!willOpen) {
+      document.querySelectorAll('.dropdown.active').forEach(d => d.classList.remove('active'));
+    }
+    // Belt-and-suspenders: hide urgency banner via JS in case :has() CSS fails
+    const banner = document.querySelector('.urgency-banner');
+    if (banner) {
+      banner.style.display = willOpen ? 'none' : '';
+    }
+  }, true); // capture phase — wins over any other click handler
+
+  // Also reset state on pageshow (back/forward cache restore)
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return; // chỉ khi từ bfcache
+    document.body.style.overflow = '';
+    document.body.classList.remove('mobile-menu-open');
+    document.querySelectorAll('.nav-toggle.open, .nav-links.open, .dropdown.active').forEach(el => {
+      el.classList.remove('open');
+      el.classList.remove('active');
+    });
+    const banner = document.querySelector('.urgency-banner');
+    if (banner) banner.style.display = '';
+  });
+})();
+/* END HAMBURGER FAILSAFE */
+
+
+/* ============================================================================
    URGENCY COUNTDOWN BANNER
    Sticky banner top of page với live countdown tới deadline tuyển sinh.
    - Auto-injects vào home + 4 trang dịch vụ chính (du-hoc, ky-su, tieng-nhat, dieu-duong)
@@ -1403,16 +1452,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function shouldShowOnPage() {
     const path = window.location.pathname;
-    // Home
-    if (path === '/' || path.endsWith('/index.html')) {
-      // Subfolder index.html count as service pages, not home
-      const subfolders = ['du-hoc', 'ky-su', 'tieng-nhat', 'dieu-duong'];
-      const inSub = subfolders.some(s => path.includes('/' + s + '/'));
-      if (inSub) return true;
-      // Root home
-      return /\/(index\.html)?$/.test(path);
-    }
-    return false;
+    // Whitelist explicit: home + 4 trang dịch vụ chính
+    const allowed = [
+      '/', '/index.html',
+      '/du-hoc/', '/du-hoc/index.html',
+      '/ky-su/', '/ky-su/index.html',
+      '/tieng-nhat/', '/tieng-nhat/index.html',
+      '/dieu-duong/', '/dieu-duong/index.html'
+    ];
+    return allowed.includes(path);
   }
 
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }

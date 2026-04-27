@@ -1918,6 +1918,24 @@ h1 { letter-spacing: -0.03em; }
   .nav-links.open {
     opacity: 1;
     pointer-events: all;
+    /* Above urgency banner (1010) and any other overlays so menu always covers them */
+    z-index: 1020;
+  }
+
+  /* Hamburger button must stay above the open menu so X-close icon is clickable */
+  .nav-toggle {
+    z-index: 1025;
+  }
+
+  /* When mobile menu is open, hide urgency banner so it doesn't peek through.
+     Two selectors for browser compatibility — :has() (modern) + body class (JS-driven fallback). */
+  body:has(.nav-links.open) .urgency-banner,
+  body.mobile-menu-open .urgency-banner {
+    display: none !important;
+  }
+  body:has(.nav-links.open),
+  body.mobile-menu-open {
+    --urgency-h: 0px;
   }
 
   .dropdown {
