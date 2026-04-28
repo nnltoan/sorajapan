@@ -92,6 +92,37 @@ Test thêm:
 Mỗi lần sửa `Code.gs`, cần deploy lại:
 - **Deploy** → **Manage deployments** → Chọn deployment → **Edit** (icon bút chì) → **Version**: "New version" → **Deploy**
 
+### Email notification khi có form contact mới
+Khi khách gửi form, hệ thống tự động:
+1. Lưu vào Google Sheet (sheet `Contacts`)
+2. **Gửi email notification** tới các địa chỉ trong `NOTIFY_EMAILS` (top of `Code.gs`):
+   ```js
+   const NOTIFY_EMAILS = ['info@sorajapan.edu.vn', 'nnl.toan@gmail.com'];
+   ```
+3. Để thêm/đổi recipient: edit array này và **redeploy** (Deploy → New version).
+
+**Lần đầu deploy có email notification cần grant `MailApp` permission:**
+- Mở Apps Script editor → chọn function `sendContactNotification` → Run
+- Hộp thoại hỏi quyền → **Review permissions** → chọn account → **Allow**
+- Sau khi grant 1 lần thì mọi submit form sau đều tự động gửi email không cần thao tác.
+
+**Quota MailApp:**
+- Free Google account: 100 emails/day
+- Google Workspace: 1,500 emails/day
+- Tracking: Apps Script editor → **Executions** xem log gửi/lỗi.
+
+**Test email:**
+Submit form trên website thật, hoặc gọi function test trong editor:
+```js
+function testEmailNotification() {
+  sendContactNotification(
+    { hoTen: 'Test User', sdt: '0903xxxxxx', email: 'test@example.com', chuongTrinh: 'Du học' },
+    'CT-TEST-001',
+    'manual_test'
+  );
+}
+```
+
 ### Bảo mật
 - Đổi `admin_password` trong Sheet Config ngay sau khi setup
 - Không chia sẻ Google Sheet cho người không cần thiết

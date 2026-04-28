@@ -6,6 +6,8 @@
 
 // ─── CONFIG ───
 const SPREADSHEET_ID = '1goqsX4WoM6dALboJhgyIod4xazgbNuhcLGFXyRROAlE'; // ← Thay bằng ID Google Sheet
+// Email notification recipients khi có form contact mới
+const NOTIFY_EMAILS = ['info@sorajapan.edu.vn', 'nnl.toan@gmail.com'];
 // reCAPTCHA v3 SECRET KEY (server-side)
 // ⚠️ KHÔNG dán secret vào code — dùng Script Properties để không lộ khi repo public.
 // Setup: Apps Script UI → Project Settings → Script properties → Add property:
@@ -990,7 +992,137 @@ function submitContact(data) {
     source          // Column 11: Source (exit_intent_popup, website_main_form, ...)
   ];
   sheet.appendRow(row);
+
+  // Email notification — non-blocking. Lỗi gửi email KHÔNG fail submission.
+  try {
+    sendContactNotification(data, id, source);
+  } catch (e) {
+    console.error('[submitContact] Email notification failed: ' + String(e));
+  }
+
   return { status: 'success', message: 'Cảm ơn! Thông tin đã được gửi.' };
+}
+
+/**
+ * Gửi email notification cho team Sora Japan khi có form contact mới.
+ * Recipients định nghĩa trong NOTIFY_EMAILS (top of file).
+ * Quota: MailApp.sendEmail giới hạn ~100 emails/day cho free Google account,
+ * 1500/day cho Workspace. 100 contacts/day là quá đủ.
+ */
+function sendContactNotification(data, contactId, source) {
+  // Defensive — nếu chạy từ editor không có args, fallback sang test data để không throw.
+  data = data || {};
+  contactId = contactId || 'CT-MANUAL-' + Date.now().toString(36).toUpperCase();
+  source = source || 'manual_run';
+
+  const recipients = (typeof NOTIFY_EMAILS !== 'undefined' && NOTIFY_EMAILS.length)
+    ? NOTIFY_EMAILS.join(',')
+    : 'info@sorajapan.edu.vn';
+
+  const hoTen = (data.hoTen || '').toString().trim() || 'Khách hàng';
+  const sdt = (data.sdt || '').toString().trim();
+  const email = (data.email || '').toString().trim();
+  const chuongTrinh = (data.chuongTrinh || '').toString().trim() || '—';
+  const submittedAt = Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', "dd/MM/yyyy 'lúc' HH:mm:ss");
+
+  const subject = '🔔 [Sora Japan] Liên hệ mới: ' + hoTen + (chuongTrinh && chuongTrinh !== '—' ? ' (' + chuongTrinh + ')' : '');
+
+  const htmlBody =
+'<!DOCTYPE html><html><head><meta charset="UTF-8"></head>' +
+'<body style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;background:#f4f6f8;margin:0;padding:24px;color:#0f172a;">' +
+'<div style="max-width:620px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(15,37,64,0.08);">' +
+'<div style="background:linear-gradient(135deg,#1E3A5F 0%,#C8383E 100%);color:#fff;padding:26px 28px;">' +
+'<div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.85;margin-bottom:6px;">Sora Japan · Form liên hệ</div>' +
+'<h1 style="margin:0;font-size:22px;font-weight:800;letter-spacing:-0.01em;">🔔 Có khách hàng mới gửi form!</h1>' +
+'</div>' +
+'<div style="padding:26px 28px;">' +
+'<p style="margin:0 0 18px;color:#475569;font-size:14.5px;line-height:1.6;">Một khách hàng vừa gửi form liên hệ trên website. Vui lòng phản hồi trong vòng <strong>24 giờ</strong> để đảm bảo trải nghiệm tốt nhất.</p>' +
+'<table style="width:100%;border-collapse:collapse;font-size:14px;">' +
+'<tr><td style="padding:11px 0;color:#64748b;width:35%;">Họ và tên</td><td style="padding:11px 0;color:#0f172a;font-weight:700;">' + escapeHtmlGS(hoTen) + '</td></tr>' +
+'<tr style="border-top:1px solid #e5e7eb;"><td style="padding:11px 0;color:#64748b;">Số điện thoại</td><td style="padding:11px 0;font-weight:700;">' +
+  (sdt ? '<a href="tel:' + escapeHtmlGS(sdt) + '" style="color:#1E3A5F;text-decoration:none;border-bottom:1px dashed #1E3A5F;">' + escapeHtmlGS(sdt) + '</a>' : '<span style="color:#94a3b8;">—</span>') +
+'</td></tr>' +
+'<tr style="border-top:1px solid #e5e7eb;"><td style="padding:11px 0;color:#64748b;">Email</td><td style="padding:11px 0;font-weight:700;">' +
+  (email ? '<a href="mailto:' + escapeHtmlGS(email) + '" style="color:#1E3A5F;text-decoration:none;border-bottom:1px dashed #1E3A5F;">' + escapeHtmlGS(email) + '</a>' : '<span style="color:#94a3b8;">—</span>') +
+'</td></tr>' +
+'<tr style="border-top:1px solid #e5e7eb;"><td style="padding:11px 0;color:#64748b;">Chương trình quan tâm</td><td style="padding:11px 0;color:#0f172a;font-weight:700;">' + escapeHtmlGS(chuongTrinh) + '</td></tr>' +
+'<tr style="border-top:1px solid #e5e7eb;"><td style="padding:11px 0;color:#64748b;">Nguồn</td><td style="padding:11px 0;color:#475569;font-size:13px;">' + escapeHtmlGS(source || 'website_main_form') + '</td></tr>' +
+'<tr style="border-top:1px solid #e5e7eb;"><td style="padding:11px 0;color:#64748b;">Mã liên hệ</td><td style="padding:11px 0;color:#475569;font-family:Consolas,Monaco,monospace;font-size:13px;">' + escapeHtmlGS(contactId) + '</td></tr>' +
+'<tr style="border-top:1px solid #e5e7eb;"><td style="padding:11px 0;color:#64748b;">Thời gian gửi</td><td style="padding:11px 0;color:#475569;font-size:13px;">' + escapeHtmlGS(submittedAt) + '</td></tr>' +
+'</table>' +
+'<div style="margin-top:26px;padding-top:20px;border-top:1px solid #e5e7eb;">' +
+  (sdt ? '<a href="tel:' + escapeHtmlGS(sdt) + '" style="display:inline-block;background:#C8383E;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;margin-right:10px;margin-bottom:8px;">📞 Gọi ngay</a>' : '') +
+  (email ? '<a href="mailto:' + escapeHtmlGS(email) + '?subject=Sora%20Japan%20-%20Tu%20van%20du%20hoc%20Nhat%20Ban&body=Chao%20' + encodeURIComponent(hoTen) + '%2C%0A%0A" style="display:inline-block;background:#1E3A5F;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;margin-bottom:8px;">✉️ Trả lời qua email</a>' : '') +
+'</div>' +
+'</div>' +
+'<div style="padding:16px 28px;background:#f9fafb;color:#94a3b8;font-size:12px;text-align:center;border-top:1px solid #e5e7eb;">' +
+'Tự động gửi từ form liên hệ <a href="https://sorajapan.edu.vn" style="color:#64748b;">sorajapan.edu.vn</a>' +
+'</div>' +
+'</div></body></html>';
+
+  const plainBody = [
+    '═══════════════════════════════',
+    '  SORA JAPAN — LIÊN HỆ MỚI',
+    '═══════════════════════════════',
+    '',
+    '👤 Họ và tên:    ' + hoTen,
+    '📞 Số điện thoại: ' + (sdt || '—'),
+    '✉️  Email:        ' + (email || '—'),
+    '🎯 Chương trình:  ' + chuongTrinh,
+    '',
+    '──────────────────────────────',
+    'Nguồn:        ' + (source || 'website_main_form'),
+    'Mã liên hệ:   ' + contactId,
+    'Thời gian:    ' + submittedAt,
+    '──────────────────────────────',
+    '',
+    'Xem chi tiết và quản lý liên hệ tại admin dashboard.',
+    'Vui lòng phản hồi khách hàng trong vòng 24 giờ.',
+    '',
+    '— Sora Japan System (auto-notification)'
+  ].join('\n');
+
+  MailApp.sendEmail({
+    to: recipients,
+    subject: subject,
+    body: plainBody,
+    htmlBody: htmlBody,
+    name: 'Sora Japan Form Notification',
+    noReply: true
+  });
+}
+
+/**
+ * HTML escape helper cho email template.
+ * (Tách riêng khỏi global để không xung đột với client-side escapeHtml.)
+ */
+function escapeHtmlGS(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+  });
+}
+
+/**
+ * Test function — chạy trực tiếp từ Apps Script editor để:
+ *  1. Trigger permission dialog cho MailApp (lần đầu deploy cần grant)
+ *  2. Verify email template render đúng + nhận đúng địa chỉ
+ *
+ * Cách dùng:
+ *  - Apps Script editor → chọn function `testEmailNotification` trong dropdown
+ *  - Bấm Run (▶)
+ *  - Lần đầu sẽ hỏi quyền → Review permissions → Allow
+ *  - Check inbox của NOTIFY_EMAILS sau ~10 giây
+ */
+function testEmailNotification() {
+  const sampleData = {
+    hoTen: 'Nguyễn Test User',
+    sdt: '0903539537',
+    email: 'test@example.com',
+    chuongTrinh: 'Du học Nhật Bản'
+  };
+  sendContactNotification(sampleData, 'CT-TEST-' + Date.now().toString(36).toUpperCase(), 'manual_test');
+  Logger.log('Email test đã gửi tới: ' + (typeof NOTIFY_EMAILS !== 'undefined' ? NOTIFY_EMAILS.join(', ') : 'info@sorajapan.edu.vn'));
 }
 
 function getContact(id) {
